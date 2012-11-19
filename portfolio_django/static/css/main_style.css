@@ -1,0 +1,112 @@
+/*@import url("https://dl.dropbox.com/sh/631wm7d11mdr3mj/PFKr2MessB/portfolio/static/fonts/stylesheet.css");*/
+
+body {
+    background-image: url("https://dl.dropbox.com/sh/631wm7d11mdr3mj/2-Pghq9o9k/portfolio/static/images/paper_bg.jpg");
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    min-height: 100%;
+}
+
+#container {
+    position: relative;
+    width: 65%;
+    text-align: left;
+    margin: 20px 15% 0 20%;
+    padding-bottom: 0px;
+}
+
+#footer {
+    clear: both;
+    font-family: 'RobotoMedium', sans-serif;
+    font-size: 14px;
+    position: relative;
+    z-index: 10;
+    height: 25px;
+}
+
+#header {
+    padding-top: 15px;
+    padding-bottom: 0px;
+    position: relative;
+}
+
+#header h1 {
+    font-family: 'RobotoLight', sans-serif;
+    margin: 0;
+    padding: 0;
+    font-size: 38px;
+    color: #444444;
+    padding-left: 20px;
+}
+
+#sub_header {
+    font-family: 'RobotoLightItalic', sans-serif;
+    color: #777777;
+    padding: 0;
+    margin: 0;
+    font-size: 28px;
+    margin-bottom: 10;
+    padding-left: 30px;
+    padding-bottom: 10px;
+    display: inline;
+}
+
+#navlinks {
+    font-family: 'RobotoBlack', sans-serif;
+    font-size: 13px;
+    position: absolute;
+    bottom: 0;
+    right: 15px;
+    float: right;
+    display: inline;
+    padding-bottom: 0px;
+}
+
+.navlink {
+    padding-left: 10px;
+}
+
+#navcur {
+    text-decoration: underline;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+#navlinks a:link {text-decoration: none; color: black;}
+#navlinks a:visited {text-decoration: none; color: black;}
+#navlinks a:active {text-decoration: none; color: black;}
+#navlinks a:hover {text-decoration: underline; color: black;}
+
+.divider {
+    margin: 3px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+#content {
+    padding-top: 15px;
+    padding-left: 20px;
+    margin-bottom: 50px;
+    position: relative;
+    font-family: 'RobotoMedium', sans-serif;
+    line-height: 180%;
+}
+
+#inner {
+    width: 1200px;
+    overflow: hidden;
+}
+
+#content_text a:link {text-decoration: none; }
+#content_text a:visited {text-decoration: none; }
+#content_text a:active {text-decoration: none; }
+#content_text a:hover {text-decoration: none; }
+
+.indent {
+    padding-left: 20px;
+}
+
+.contact_label {
+    font-weight: bold;
+}

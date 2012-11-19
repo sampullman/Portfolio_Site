@@ -1,0 +1,51 @@
+
+#resume_title {
+    text-align: center;
+    margin: 0 auto;
+    width: 50%;
+    font-weight: bold;
+    font-size: 35px;
+}
+
+#resume_pdf_link {
+    text-align: center;
+    margin: 0 auto;
+    width: 50%;
+    font-size: 16px;
+}
+
+.resume_header {
+    text-align: center;
+    margin: 15px auto 0 auto;
+    width: 50%;
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 22px;
+}
+
+.resume_section_text {
+    font-family: 'RobotoRegular', sans-serif;
+    line-height: 140%;
+    margin: 5px 20% 0 auto;
+    font-size: 14px;
+    width: 100%;
+}
+
+.job_title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.course_title {
+    font-weight: bold;
+}
+
+.resume_list {
+    margin: 4px 0 4px 25px;
+    padding: 0;
+}
+
+.right_aligned {
+    position: relative;
+    float: right;
+}

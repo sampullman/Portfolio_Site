@@ -1,0 +1,129 @@
+
+#games_content {
+    margin-right: -200px;
+    padding-top: 15px;
+    padding-left: 20px;
+    margin-bottom: 50px;
+    position: relative;
+    font-family: 'RobotoMedium', sans-serif;
+    line-height: 180%;
+}
+
+#canvas {
+    position: relative;
+    float: left;
+    margin-left: -80px;
+    background-color: #777;
+    border: 1px solid;
+    background-image: url("https://dl.dropbox.com/sh/631wm7d11mdr3mj/UHBUGgDfii/portfolio/static/images/space_sprites/starBackground.png");
+}
+
+.fb-like {
+    margin-left: -25px;
+    top: -5px;
+}
+
+#highscores {
+    position: relative;
+    float: left;
+    margin-left: 60px;
+}
+
+#highscores h1 {
+    margin-top: 0px;
+    margin-left: 0px;
+    margin-bottom: 10px;
+    padding: 0;
+}
+
+#scores td {padding-right:20px;}
+
+#hs_nav {
+    margin-left: 30px;
+}
+
+#hs_goto {
+    width: 40px;
+    margin-left: 10px;
+}
+
+#hs_goto_button {
+    margin-right: 10px;
+}
+
+#hs_left {
+    position: relative;
+    top: 8px;
+    height: 25px;
+    width: 12px;
+}
+
+.instructions {
+    margin-left: -80px;
+    margin-top: -10px;
+    position: relative;
+    font-size: 0.8em;
+    text-align: center;
+    width: 480px;
+    line-height: 120%;
+}
+
+#instr_p {
+    float: left;
+}
+
+#feedback {
+    margin-left: -80px;
+    position: relative;
+    float: left;
+
+}
+
+#feedback_input {
+}
+
+#feedback_button {
+    position: absolute;
+    bottom: -20px;
+    left: 100px;
+}
+
+#hs_right {
+    position: relative;
+    top: 8px;
+    height: 25px;
+    width: 12px;
+}
+
+#submit_highscore {
+    position: absolute;
+    display: none;
+    left: 60px;
+    top: 440px;
+    width: 400px;
+    height: 100px;
+}
+
+#highscore_button {
+    position: relative;
+    margin-left: 80px;
+}
+
+#adsense_med_rect {
+    visibility: hidden;
+    position: absolute;
+    margin-top: 10px;
+}
+
+#adbrite_left_banner {
+    visibility: hidden;
+    position: absolute;
+    left: 0px;
+    top: 20px;
+}
+
+.adbrite_bottom {
+    visibility: hidden;
+    position: relative;
+    left: 15px;
+}

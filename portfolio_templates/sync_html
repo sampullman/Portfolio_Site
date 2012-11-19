@@ -1,0 +1,2 @@
+#!/bin/bash
+rsync -vaz -e ssh *.html sampullm@martha.asmallorange.com:~/django_templates/portfolio/

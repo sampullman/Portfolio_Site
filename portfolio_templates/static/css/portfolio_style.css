@@ -1,0 +1,109 @@
+
+.description_paragraph {
+}
+
+.portfolio_title {
+    font-family: 'RobotoItalic', sans-serif;
+    position: absolute;
+    left: -210px;
+    top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+#android_selector {
+    font-family: 'RobotoLightItalic', sans-serif;
+    position: absolute;
+    margin: 0;
+    left: -220px;
+    top: 50px;
+}
+
+.android_selector_item {
+    line-height: 150%;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 3px;
+    padding-top: 5px;
+    display: block;
+    width: 100%;
+    border-style: none solid solid solid;
+    border-width: 1px;
+    text-align: right;
+}
+
+.android_selector_item a:link {text-decoration: none; color: black;}
+.android_selector_item a:visited {text-decoration: none; color: black;}
+.android_selector_item a:active {text-decoration: none; color: black;}
+.android_selector_item a:hover {text-decoration: none; color: black;}
+
+#img_viewer {
+    position: relative;
+    float: right;
+}
+
+.img_nav {
+    position: relative;
+    float: left;
+    top: 180px;
+    padding: 5px;
+    width: auto;
+    height: 60px;
+}
+
+#img_nav_left {
+    visibility: hidden;
+}
+
+.screenshot_holder {
+    position: relative;
+    float: left;
+    height: 460px;
+    width: 170px;
+    background-image: url("https://dl.dropbox.com/sh/631wm7d11mdr3mj/kaVVT2CgsM/portfolio/static/images/phone.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    padding: 40px;
+}
+
+.screenshot {
+    position: absolute;
+    top: 13.6%;
+    left: 10%;
+    width: 82%;
+    height: 63.4%;
+}
+
+.portfolio_subtitle {
+    font-family: 'RobotoMedium', sans-serif;
+    font-size: 26px;
+    text-decoration: underline;
+    margin-bottom: 5px;
+    margin-left: -10px;
+    margin-top: 0;
+    text-align: center;
+}
+
+.portfolio_text {
+    line-height: 140%;
+    font-size: 15px;
+    font-family: 'RobotoRegular', sans-serif;
+    width: 450px;
+    margin: 0px;
+    margin-left: -5px;
+}
+.portfolio_text a:link {text-decoration: none; }
+.portfolio_text a:visited {text-decoration: none; }
+.portfolio_text a:active {text-decoration: none; }
+.portfolio_text a:hover {text-decoration: none; }
+
+.portfolio_text ul {
+    margin-left: -10px;
+    margin-top: 5px;
+}
+
+.hidden_portfolio_text {
+    display: none;
+}

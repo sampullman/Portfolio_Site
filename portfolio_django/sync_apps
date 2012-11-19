@@ -1,0 +1,4 @@
+#!/bin/bash
+rsync -vaz -e ssh ./portfolio/ sampullm@martha.asmallorange.com:~/django_site/portfolio/portfolio
+rsync -vaz -e ssh ./text_view/ sampullm@martha.asmallorange.com:~/django_site/portfolio/text_view
+rsync -vaz -e ssh ./static/*.html* sampullm@martha.asmallorange.com:~/public_html/static
