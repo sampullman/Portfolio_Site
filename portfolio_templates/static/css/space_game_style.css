@@ -1,16 +1,12 @@
 
 #games_content {
-    margin-right: -200px;
     padding-top: 15px;
     padding-left: 20px;
-    margin-bottom: 50px;
     position: relative;
     font-family: 'RobotoMedium', sans-serif;
-    line-height: 180%;
 }
 
 #game {
-    margin-left: -70px;
 }
 
 body {
@@ -68,13 +64,11 @@ body {
 }
 
 .instructions {
-    margin-left: -80px;
-    margin-top: -10px;
     position: relative;
     font-size: 0.8em;
     text-align: center;
     width: 480px;
-    line-height: 120%;
+    top: -20px;
 }
 
 #instr_p {
@@ -82,10 +76,9 @@ body {
 }
 
 #feedback {
-    margin-left: -80px;
     position: relative;
     float: left;
-
+    top: -10px;
 }
 
 #feedback_input {
@@ -121,13 +114,13 @@ body {
 #adsense_med_rect {
     position: absolute;
     margin-top: -180px;
-    right: 210px;
+    left: 540px;
 }
 
 #adbrite_left_banner {
     position: absolute;
-    left: 5px;
-    top: 90px;
+    left: 25px;
+    top: 120px;
 }
 
 .adbrite_bottom {

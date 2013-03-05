@@ -1,15 +1,25 @@
 {% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
+<!--[if !IE 7]>
+	<style type="text/css">
+		#wrap {display:table;height:100%}
+	</style>
+<![endif]-->
 <head>
   <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js'></script>
+<script type='text/javascript' src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/1WcJXnCtTQ/portfolio/static/js/jquery.tipsy.js"></script>
+  <script type='text/javascript' src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/3q6VI-R5vD/portfolio/static/js/jquery.hotkeys.js"></script>
+  <script type='text/javascript' src='https://dl.dropbox.com/sh/631wm7d11mdr3mj/UGS0OL7cnq/portfolio/static/js/jquery.corner.js'></script>
+  <script type='text/javascript' src='https://dl.dropbox.com/sh/631wm7d11mdr3mj/n2MsWmma9t/portfolio/static/js/main_style.js'></script>
   {% block scripts %}{% endblock %}
-  <link rel="stylesheet" href="https://dl.dropbox.com/sh/631wm7d11mdr3mj/AO7KBzIFLj/portfolio/static/css/main_style.css" type='text/css' />
+  <link rel="stylesheet" href="https://dl.dropbox.com/u/80197158/portfolio/static/css/main_style.css" type='text/css' />
   {% block head %}{% endblock %}
   <title>{% block title %}Sam Pullman's Portfolio{% endblock %}</title>
 </head>
 
 <body>
+  <div id="wrap">
   <div id="container">
     <div id="header">
       <h1>Sam Pullman</h1>
@@ -19,11 +29,8 @@
 	{% block nav_portfolio %}<a class="navlink" href="/portfolio/">PORTFOLIO</a>{% endblock %}
 	{% block nav_games %}<a class="navlink" href="/games/">GAMES</a>{% endblock %}
 	{% block nav_resume %}<a class="navlink" href="/resume/">RESUME</a>{% endblock %}
-	{% block nav_contact %}<a class="navlink" href="/contact/">CONTACT</a>{% endblock %}
       </span>
     </div>
-    <hr noshade class="divider">
-
     {% block content %}{% endblock %}
     <!--
     <div id="footer">
@@ -31,6 +38,31 @@
     </div>
     -->
   </div>
-{% block left_banner %}{% endblock %}
+  {% block left_banner %}{% endblock %}
+  </div>
+  <div id="footer">
+    <div id="footer_text">
+      &copy;Sam Pullman, 2012
+    </div>
+    <div id="footer_icons">
+      <div class="footer_icon_holder">
+        <a class="footer_icon_link" id="Email contact" target="_blank" href="mailto:sampullman@gmail.com">
+          <img class="footer_icon"
+               src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/AmtFnAUKi2/portfolio/static/images/gmail_icon.png" />
+        </a>
+      </div>
+      <div class="footer_icon_holder">
+        <a class="footer_icon_link" id="Github" target="_blank" href="https://github.com/sampullman">
+          <img class="footer_icon"
+               src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/gV55mTiD5N/portfolio/static/images/github_icon.png" /></a></div>
+      <div class="footer_icon_holder">
+        <a class="footer_icon_link" id="Android app listing" target="_blank"
+           href="https://play.google.com/store/search?q=threeDBJ&c=apps">
+          <img class="footer_icon"
+               src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/dEMe7uVstK/portfolio/static/images/android_icon.png" />
+        </a>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

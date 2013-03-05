@@ -4,24 +4,32 @@
 {% block scripts %}
 <script type='text/javascript' src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/DSVCcqaluk/portfolio/static/js/portfolio.js"></script>
 {% endblock %}
-{% block head %}<link rel="stylesheet" href="https://dl.dropbox.com/sh/631wm7d11mdr3mj/kN61EThEns/portfolio/static/css/portfolio_style.css" type='text/css' />{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://dl.dropbox.com/u/80197158/portfolio/static/css/portfolio_style.css" type='text/css' />
+<link rel="stylesheet" href="https://dl.dropbox.com/sh/631wm7d11mdr3mj/T7_N-4hh8p/portfolio/static/css/tipsy.css" />
+{% endblock %}
 
 {% block nav_portfolio %}<span id="navcur"><a class="navlink" href="/portfolio/">PORTFOLIO</a></span>{% endblock %}
 
 {% block content %}
 <div id="content">
-  <span class="portfolio_title">Android Applications</span>
-  <span id="android_selector">
-  </span>
-  <span id="img_viewer">
+  <div id="app_selector">
+    <div class="app_icon_holder"><a class="app_icon_link" id="SciGraph_Calculator" href="#nothing"><img class="app_icon" src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/FTQwavQAQL/portfolio/static/images/app_icons/scigraph_calc.png" /></a></div>
+    <div class="app_icon_holder"><a class="app_icon_link" id="Molecular_Mass_Calculator" href="#nothing"><img class="app_icon" src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/gruXDpML5w/portfolio/static/images/app_icons/molecular_mass.png" /></a></div>
+    <div class="app_icon_holder"><a class="app_icon_link" id="Cube_Droid" href="#nothing"><img class="app_icon" src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/tQhSkYZ_t6/portfolio/static/images/app_icons/cube_droid.png" /></a></div>
+    <div class="app_icon_holder"><a class="app_icon_link" id="Quiz_Droid" href="#nothing"><img class="app_icon" src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/8E3AJh4lOt/portfolio/static/images/app_icons/quiz_droid.png" /></a></div>
+    <div class="app_icon_holder"><a class="app_icon_link" id="Web_Comic_Reader" href="#nothing"><img class="app_icon" src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/SJfb4r-QQo/portfolio/static/images/app_icons/comic_reader.png" /></a></div>
+    <div class="app_icon_holder"><a class="app_icon_link" id="Number_Slide" href="#nothing"><img class="app_icon" src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/Ceg1PeNLrH/portfolio/static/images/app_icons/number_slide.png" /></a></div>
+  </div>
+  <div id="android_portfolio_subtitle" class="portfolio_subtitle"></div>
+  <p id="android_portfolio_text" class="portfolio_text"></p>
+  <div id="img_viewer">
     <img class="img_nav" id="img_nav_left"  src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/zXoFz1gIIO/portfolio/static/images/left_btn.png" />
     <span class="screenshot_holder">
       <img class="screenshot" />
     </span>
     <img class="img_nav" id="img_nav_right"  src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/OAjEfNhU4k/portfolio/static/images/right_btn.png" />
-  </span>
-  <p id="android_portfolio_subtitle" class="portfolio_subtitle"></p>
-  <p id="android_portfolio_text" class="portfolio_text"></p>
+  </div>
   <div class="hidden_portfolio_text" id="SciGraph_Calculator">
     <span class="indent">
       <a href="https://github.com/sampullman/android--Scientific-Graphing-Calculator">SciGraph Calculator</a>

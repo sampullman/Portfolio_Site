@@ -4,6 +4,12 @@ Number.prototype.clamp = function(min, max) {
     return Math.min(Math.max(this, min), max);
 };
 
+function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+};
+
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -58,6 +64,7 @@ String.prototype.size = function(font) {
 
 $(function() {
     window.keydown = {};
+    window.keydownFns = {};
 
     function keyName(event) {
 	return jQuery.hotkeys.specialKeys[event.which] ||
@@ -67,6 +74,7 @@ $(function() {
     $(document).bind("keydown", function(event) {
 	var key = keyName(event);
 	keydown[key] = true;
+	if(keydownFns[key]) keydownFns[key]();
 	if(!keysEnabled && (keydown.left || keydown.right || keydown.up || keydown.down || keydown.space)) {
 	    event.preventDefault();
 	    return false;

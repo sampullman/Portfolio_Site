@@ -1,3 +1,13 @@
+body {
+    background-color: #000000;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#000000), to(#202020)); /* Chrome, Safari 4+ */
+    background-image: -webkit-linear-gradient(top, #000000, #202020); /* Chrome 10+, iOS 5+, Safari 5.1+ */
+    background-image:    -moz-linear-gradient(top, #000000, #202020); /* Firefox 3.6-15 */
+    background-image:      -o-linear-gradient(top, #000000, #202020); /* Opera 11.10-12.00 */
+    background-image:         linear-gradient(to bottom, #000000, #202020); /* Firefox 16+, IE 10+, Opera 12.50+ */
+    font-family: 'Arial', sans-serif;
+    color: #999999;
+}
 
 #resume_title {
     text-align: center;
@@ -24,19 +34,24 @@
 }
 
 .resume_section_text {
-    font-family: 'RobotoRegular', sans-serif;
+    font-family: 'Arial', sans-serif;
+    color: #BBBBBB;
     line-height: 140%;
     margin: 5px 20% 0 auto;
-    font-size: 14px;
+    font-size: 15px;
     width: 100%;
 }
 
 .job_title {
-    font-size: 16px;
+    font-family: 'Arial', sans-serif;
+    color: #BBBBBB;
+    font-size: 17px;
     font-weight: bold;
 }
 
 .course_title {
+    font-family: 'Arial', sans-serif;
+    color: #BBBBBB;
     font-weight: bold;
 }
 

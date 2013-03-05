@@ -42,7 +42,12 @@ var number_slide = [
 
 var screenshots = [scigraph, mmc, cube, quiz, comics, number_slide];
 
+var appNames = ['SciGraph_Calculator', 'Molecular_Mass_Calculator', 'Cube_Droid', 'Quiz_Droid',
+		'Web_Comic_Reader', 'Number_Slide'];
+
 $(document).ready(function(){
+    loadMainStyles();
+    loadPortfolioStyles();
     var urlParams = {};
     (function () {
 	var match,
@@ -54,9 +59,6 @@ $(document).ready(function(){
 	while (match = search.exec(query))
 	    urlParams[decode(match[1])] = decode(match[2]);
     })();
-
-    var appNames = ['SciGraph_Calculator', 'Molecular_Mass_Calculator', 'Cube_Droid', 'Quiz_Droid',
-		    'Web_Comic_Reader', 'Number_Slide'];
     var numImgs = [7, 3, 3, 4, 3, 4];
     var imgInd = 0;
     var curApp = 0;
@@ -65,10 +67,6 @@ $(document).ready(function(){
 	return appNames[ind].replace(/_/g, ' ');
     }
 
-    for(var i=0;i<appNames.length;i+=1) {
-	$('#android_selector').append('<span class="android_selector_item" id="android_app_'+
-				      i.toString()+'"><a href="#nothing" >'+getAppTitle(i)+'</a></span>');
-    }
     $("#android_app_0").css('background-color', '#32B4E6');
     $("#android_app_0").css('border-top-style', 'solid');
 
@@ -93,12 +91,9 @@ $(document).ready(function(){
 	    .fadeIn(400);
     }
 
-    $(".android_selector_item").click(function(e) {
-	var idArr = $(this).attr('id').split("_");
-	var newApp = parseInt(idArr[idArr.length-1]);
+    $(".app_icon_link").click(function(e) {
+	var newApp = appNames.indexOf($(this).attr('id'));
 	if(newApp != curApp) {
-	    $("#android_app_"+curApp.toString()).css('background-color', 'transparent');
-	    $("#android_app_"+newApp.toString()).css('background-color', '#32B4E6');
 	    curApp = newApp;
 	    imgInd = 0;
 	    setImg();
@@ -138,4 +133,10 @@ $(document).ready(function(){
     }).mouseout(function(e) {
 	$(this).attr('src', left_btn);
     });
+
+    function loadPortfolioStyles() {
+	$("#android_portfolio_subtitle").corner("top 15px");
+	$(".portfolio_text").corner("20px");
+	$(".app_icon_holder").tipsy({title: function() { return $(this).find("a").attr('id').replace(/_/g, ' ');}, fade: true, gravity: 's' });
+    }
 });

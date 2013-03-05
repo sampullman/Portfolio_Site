@@ -3,9 +3,9 @@
 }
 
 .portfolio_title {
-    font-family: 'RobotoItalic', sans-serif;
+    font-family: 'Arial', sans-serif;
     position: absolute;
-    left: -27%;
+    left: -210px;
     top: 20px;
     font-size: 20px;
     font-weight: bold;
@@ -13,35 +13,28 @@
     padding: 0;
 }
 
-#android_selector {
-    font-family: 'RobotoLightItalic', sans-serif;
-    position: absolute;
-    margin: 0;
-    left: -28%;
-    top: 50px;
+#app_selector {
+    position: relative;
+    left: 40px;
 }
 
-.android_selector_item {
-    line-height: 150%;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-bottom: 3px;
-    padding-top: 5px;
-    display: block;
+.app_icon_holder {
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    margin: 5px 15px 20px 15px;
+}
+
+.app_icon {
     width: 100%;
-    border-style: none solid solid solid;
-    border-width: 1px;
-    text-align: right;
+    height: 100%;
 }
-
-.android_selector_item a:link {text-decoration: none; color: black;}
-.android_selector_item a:visited {text-decoration: none; color: black;}
-.android_selector_item a:active {text-decoration: none; color: black;}
-.android_selector_item a:hover {text-decoration: none; color: black;}
 
 #img_viewer {
     position: relative;
-    float: right;
+    float: left;
+    top: -70px;
+    padding-left: 30px;
 }
 
 .img_nav {
@@ -77,27 +70,31 @@
 }
 
 .portfolio_subtitle {
-    font-family: 'RobotoMedium', sans-serif;
+    display: inline-block;
+    font-family: 'Arial', sans-serif;
     font-size: 26px;
     text-decoration: underline;
-    margin-bottom: 5px;
-    margin-left: -10px;
+    margin-bottom: 0px;
+    margin-left: 15%;
     margin-top: 0;
+    padding: 5px 12px 5px 12px;
     text-align: center;
+    color: #BBBBBB;
+    text-shadow: 1px 1px 2px #000;
 }
 
 .portfolio_text {
+    float: left;
     line-height: 140%;
     font-size: 15px;
-    font-family: 'RobotoRegular', sans-serif;
+    font-family: 'Arial', sans-serif;
     width: 450px;
     margin: 0px;
-    margin-left: -5px;
+    margin-left: 5%;
+    padding: 10px 10px 8px 10px;
+    color: #DDDDDD;
+    text-shadow: 1px 1px 2px #000;
 }
-.portfolio_text a:link {text-decoration: none; }
-.portfolio_text a:visited {text-decoration: none; }
-.portfolio_text a:active {text-decoration: none; }
-.portfolio_text a:hover {text-decoration: none; }
 
 .portfolio_text ul {
     margin-left: -10px;

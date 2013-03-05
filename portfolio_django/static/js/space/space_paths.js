@@ -53,7 +53,7 @@ function FollowPlayer(E, duration) {
 	    return new Point(0, 8);
 	}
 	var projX = ((player.x+5*player.xVel) - this.E.x) + (player.x - this.E.x)/1.5;
-	var projY = (player.y) - this.E.y;
+	var projY = player.y - this.E.y;
 	var dist = Math.sqrt(projX*projX + projY*projY);
 	var xVel = 9*projX / dist;
 	var yVel = 6*projY / dist;
@@ -77,7 +77,7 @@ function AvoidPlayer(E, duration) {
 	var projX = ((player.x+10*player.xVel) - this.E.x) + (player.x - this.E.x)/1.5;
 	var projY = (player.y+3*player.yVel) - this.E.y;
 	var dist = Math.sqrt(projX*projX + projY*projY);
-	var xVel = -10*projX / dist;;
+	var xVel = -10*projX / dist;
 	if((this.E.x < this.E.width && xVel < 0) ||
 	   (this.E.x > C_WIDTH-2*this.E.width && xVel > 0) ||
 	   Math.abs(projX) > C_WIDTH/2) {

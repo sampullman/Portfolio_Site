@@ -20,7 +20,7 @@ var playerShots=[], enemyShots=[];
 var shotTimer=0, attackTimer, numAttacks=0, numMissiles=2;
 var worldInd=0, levelInd=0, score=0;
 var level, world;
-var explosionSprites=[], mineSprites=[];
+var explosionSprites=[], mineSprites=[], starSprite, starCollection;
 var explosions=[], powerupObs=[], powerups=[];
 
 var buttons = [];
@@ -28,6 +28,15 @@ var pauseSprite, playSprite, soundOnSprite, soundOffSprite;
 
 var enemies=[], mines=[], activeEnemies, initEnemyCount=0, loadedEnemies=0;;
 var xWander=0, xWanderMin=-10, xWanderMax=10, xWanderSpeed=0.2;
+
+GameMode = {
+    MENU: 0,
+    SINGLE: 1,
+    MULTI: 2,
+    EDIT: 3
+}
+
+var gameMode;
 
 function loadSprites() {
     var w=player.width, h=player.height;
@@ -49,8 +58,8 @@ function loadSprites() {
     explosionSprites.push(Sprite("631wm7d11mdr3mj/NnRsbw5M8i/portfolio/static/images/space_sprites/explosion2.png", e_w, e_h));
     explosionSprites.push(Sprite("631wm7d11mdr3mj/PXxwqQ73xF/portfolio/static/images/space_sprites/explosion3.png", e_w, e_h));
     explosionSprites.push(Sprite("631wm7d11mdr3mj/_LJddbHSXL/portfolio/static/images/space_sprites/explosion4.png", e_w, e_h));
-    pauseSprite = Sprite("631wm7d11mdr3mj/PjnX4rAH7y/portfolio/static/images/space_sprites/pause.png", 32, 32);
-    playSprite = Sprite("631wm7d11mdr3mj/cc7mbxDjlT/portfolio/static/images/space_sprites/play.png", 32, 32);
+    pauseSprite = Sprite("631wm7d11mdr3mj/PjnX4rAH7y/portfolio/static/images/space_sprites/pause.png", 32, 32, drawButtons);
+    playSprite = Sprite("631wm7d11mdr3mj/cc7mbxDjlT/portfolio/static/images/space_sprites/play.png", 32, 32, drawButtons);
     soundOnSprite = Sprite("631wm7d11mdr3mj/RaJHuLjaHG/portfolio/static/images/space_sprites/sound_on.png", 32, 32, drawButtons);
     soundOffSprite = Sprite("631wm7d11mdr3mj/Ih0P0EL4Id/portfolio/static/images/space_sprites/sound_off.png", 32, 32, drawButtons);
     shieldSprite = Sprite("631wm7d11mdr3mj/UslOP-1wz2/portfolio/static/images/space_sprites/shield.png", w+12, h+5);
@@ -59,6 +68,7 @@ function loadSprites() {
     mineSprites.push(Sprite("631wm7d11mdr3mj/6rCVFvacpH/portfolio/static/images/space_sprites/mine1.png", 28, 28));
     mineSprites.push(Sprite("631wm7d11mdr3mj/HYtZLisfJZ/portfolio/static/images/space_sprites/mine2.png", 28, 28));
     enemy9Obj.sprite = Sprite("631wm7d11mdr3mj/Hjk8fwkK-A/portfolio/static/images/space_sprites/enemy9.png", e_w*3, e_h*3);
+    starSprite = Sprite("631wm7d11mdr3mj/4uGpI1uGwu/portfolio/static/images/space_sprites/star.png", 16, 16, initStars);
     shotSound = new buzz.sound([
 	"https://dl.dropbox.com/sh/631wm7d11mdr3mj/exIW7e0MTO/portfolio/static/sounds/shot.mp3",
 	"https://dl.dropbox.com/sh/631wm7d11mdr3mj/E-xBn5g2zL/portfolio/static/sounds/shot.ogg"
@@ -80,6 +90,14 @@ function loadSprites() {
 	"https://dl.dropbox.com/sh/631wm7d11mdr3mj/j0yUd4ncdf/portfolio/static/sounds/laser.ogg"]);
 }
 
+function initStars() {
+    starCollection = new Stars(starSprite, 5, 18, 0.2, 0.7, 50);
+    for(var i=0;i<30;i+=1) {
+	starCollection.add(Math.random()*C_WIDTH, Math.random()*C_HEIGHT);
+    }
+    drawEnemyScores();
+}
+
 function playSound(sound) {
     if(soundOn) {
 	sound.stop();
@@ -87,56 +105,20 @@ function playSound(sound) {
     }
 }
 
-function fillHighScores(response) {
-    var data = "";
-    var names = response.names;
-    var scores = response.scores;
-    var rank = hsRank;
-    if(response.ind) {
-	rank = parseInt(response.ind);
-	hsRank = rank;
-    }
-    for(var i=0;i<names.length;i+=1) {
-	data += "<tr><td>"+(rank+i)+".</td><td>"+names[i]+"</td><td>"+scores[i]+"</td></tr>";
-    }
-    $('#scores').html(data);
-    end = names.length < 10;
-}
-
-var hsRank;
-var end = false;
-
-function getHighScores(rank) {
-    if(rank <= -9 || (rank > hsRank && end)) return;
-    if(rank < 1) rank = 1;
-    end = false;
-    hsRank = rank;
-    $.post("/portfolio/query/",
-	   { "query": "get_highscores", "rank": rank},
-	   fillHighScores,
-	   "json"
-	  );
-}
-
 var chrome=false;
 
 $(document).ready(function(){
+    levels.init();
     chrome = $.browser.chrome;
     var canvas = $("#canvas");
     c = $("#canvas")[0].getContext("2d");
     canvas.mousemove(mouseMove);
+    canvas.mousedown(mouseDown);
+    canvas.mouseup(mouseUp);
     canvas.click(mouseClick);
     csrftoken = $.cookies.get('csrftoken');
-    //alert(csrftoken);
     setupAjax();
-    getHighScores(1);
-    $("#highscore_button").click(submitHighscore);
-    $("#hs_left").click(function(e){getHighScores(hsRank-10);});
-    $("#hs_right").click(function(e){getHighScores(hsRank+10);});
-    $("#hs_goto_button").click(function(e){getHighScores(parseInt($("#hs_goto").val()));});
-    $("#feedback_button").click(function(e){submitFeedback()});
-    $("#feedback_input").focusin(function(){ keysEnabled = true; });
-    $("#feedback_input").focusout(function(){ keysEnabled = false; });
+    initHighScores();
     saved = $.cookies.get("saved");
     loadSprites();
     canvas.focus();
@@ -222,6 +204,14 @@ function continueGame() {
     startGame();
 }
 
+function levelEditor() {
+    isGameOver = false;
+    clearEntities();
+    player.visible = false;
+    buttons = buttons.filter(function(b) {return b.active;});
+    setupEditor();
+}
+
 function nextLevel() {
     clearEntities();
     setupGame();
@@ -244,7 +234,7 @@ function startGame() {
     }
 }
 
-// TODO -- combine update/draw for efficiency
+// TODO -- combine update/draw for efficiency?
 function update() {
     player.update();
     // TODO -- combine shot iterations
@@ -292,6 +282,7 @@ function update() {
 	exp.update();
 	return exp.active;
     });
+    starCollection.update();
     if(attackTimer <= 0 && activeEnemies.length > 0) {
 	var e = activeEnemies[Math.floor(Math.random()*activeEnemies.length)];
 	e.attack();
@@ -303,9 +294,7 @@ function update() {
 	levelWon();
 	return;
     }
-    //error = playerLives.length.toString();
-    //error = enemies.length+" "+activeEnemies.length;
-    //if(enemies.length > 0) error = enemies[0].y.toString();
+    error = activeEnemies.length;
     shotTimer += 1;
     attackTimer -= 1;
     draw();
@@ -313,6 +302,7 @@ function update() {
 
 function draw() {
     c.clearRect(0, 0, C_WIDTH, C_HEIGHT);
+    starCollection.draw();
     drawButtons();
     player.draw();
     c.beginPath();
@@ -363,38 +353,54 @@ function showStart() {
     c.fillStyle = "#000";
     c.font = "56px Verdana";
     var s = "Xenophobia".size(c.font);
-    c.fillText("Xenophobia", C_WIDTH/2 - s[0]/2, C_HEIGHT/5);
+    c.fillText("Xenophobia", C_WIDTH/2 - s[0]/2, C_HEIGHT/6);
     c.font = "28px Arial";
     var s1 = "Destroy the aliens, because".size(c.font);
-    c.fillText("Destroy the aliens, because", C_WIDTH / 2 - s1[0]/2, C_HEIGHT / 3);
+    c.fillText("Destroy the aliens, because", C_WIDTH / 2 - s1[0]/2, C_HEIGHT / 4);
     var s2 = "they are different from you.".size(c.font);
-    c.fillText("they are different from you.", C_WIDTH / 2 - s2[0]/2, C_HEIGHT / 3 + s1[1]);
+    c.fillText("they are different from you.", C_WIDTH / 2 - s2[0]/2, C_HEIGHT / 4 + s1[1]);
     c.font = "20px Arial Black";
     s1 = "NEW GAME".size(c.font);
     var b1, b2;
     if(saved) {
-	b1 = new Button("NEW GAME", C_WIDTH/2 - (s1[0]+15), C_HEIGHT/2, s1, c.font);
+	b1 = new Button("NEW GAME", C_WIDTH/2 - (s1[0]+15), C_HEIGHT/3, s1, c.font);
 	s2 = "CONTINUE".size(c.font);
-	b2 = new Button("CONTINUE", C_WIDTH/2 + 15, C_HEIGHT/2, s2, c.font);
+	b2 = new Button("CONTINUE", C_WIDTH/2 + 15, C_HEIGHT/3, s2, c.font);
 	b2.setClickListener(function() {
 	    if(chrome) setInterval(function(){playSound(ambientSound);}, 4000);
+	    gameMode = GameMode.SINGLE;
 	    continueGame();
-	    this.active = false; b1.active = false;
+	    this.active = false; b1.active = false, b3.active = false;
 	});
 	buttons.push(b2);
     } else {
-	b1 = new Button("NEW GAME", C_WIDTH/2 - s1[0]/2, C_HEIGHT/2, s1, c.font);
+	b1 = new Button("NEW GAME", C_WIDTH/2 - s1[0]/2, C_HEIGHT/3, s1, c.font);
     }
     buttons.push(b1);
     b1.setClickListener(function() {
 	if(chrome) setInterval(function(){playSound(ambientSound);}, 4000);
 	if(b2) b2.active = false;
+	b3.active = false;
 	this.active = false;
+	gameMode = GameMode.SINGLE;
 	restartGame();
     });
+    s2 = "LEVEL EDITOR".size(c.font);
+    var b3 = new Button("LEVEL EDITOR", C_WIDTH/2 - s2[0]/2, C_HEIGHT/3+s1[1]+25, s2, c.font);
+    buttons.push(b3);
+    b3.setClickListener(function() {
+	if(chrome) setInterval(function(){playSound(ambientSound);}, 4000);
+	b1.active = false;
+	if(b2) b2.active = false;
+	this.active = false;
+	gameMode = GameMode.EDIT;
+	levelEditor();
+    });
+    drawEnemyScores();
 }
 
 function drawEnemyScores() {
+    if(starCollection) starCollection.draw();
     loadedEnemies += 1;
     var curY = C_HEIGHT/2 + 60, curX = 50;
     c.clearRect(0, curY-20, C_WIDTH, C_HEIGHT-(curY-20));
@@ -405,9 +411,11 @@ function drawEnemyScores() {
 	    curX += C_WIDTH/2;
 	    curY = C_HEIGHT/2 + 60;
 	}
-	e.sprite.draw(c, curX, curY);
-	var h = e.sprite.height;
-	c.fillText(" = "+enemyObjList[i].score, curX+e.sprite.width+5, curY+(h+20)/2);
+	if(e) {
+	    e.sprite.draw(c, curX, curY);
+	    var h = e.sprite.height;
+	    c.fillText(" = "+enemyObjList[i].score, curX+e.sprite.width+5, curY+(h+20)/2);
+	}
 	curY += h + 20;
     }
     if(loadedEnemies >= enemyObjList.length) drawButtons();
@@ -423,48 +431,12 @@ function resume() {
     startGame();
 }
 
-function highScorePosted(response) {
-    if(response.refresh == "1") {
-	fillHighScores(response);
-    }
-    var rankText = "Rank: "+response.rank
-    var s = rankText.size(c.font)
-    c.fillText(rankText, C_WIDTH / 2 - s[0]/2, C_HEIGHT / 2 + 160);
-    $('#submit_highscore').hide();
-}
-
-function submitHighscore() {
-    var name = $("#highscore_name").val();
-    if(name.length < 2 || name.length > 20) {
-	alert("Name must be between 2 and 20 characters (inclusive).");
-	return;
-    }
-    $.post("/portfolio/query/",
-	   { "query": "set_highscore",
-	     "name": name,
-	     "val": score.toString() },
-	   highScorePosted,
-	   "json"
-	  );
-}
-
-function feedbackPosted(request) {
-    alert("Your feedback has been recorded. Thanks a bunch!");
-}
-
-function submitFeedback() {
-    var text = $("#feedback_input").val();
-    if(text.length > 500) text = text.substring(0, 499);
-     $.post("/portfolio/query/",
-	   { "query": "submit_feedback",
-	     "text": text },
-	   feedbackPosted,
-	    "json"
-	   );
-}
-
 function gameOver(won) {
     clearInterval(gameEventId);
+    if(gameMode == GameMode.EDIT) {
+	stopCustom();
+	return;
+    }
     c.fillStyle = "#000";
     c.font = "30px Arial Black";
     var s1;
@@ -496,6 +468,10 @@ function gameOver(won) {
 
 function levelWon() {
     clearInterval(gameEventId);
+    if(gameMode == GameMode.EDIT) {
+	stopCustom();
+	return;
+    }
     levelInd += 1;
     if(levelInd >= world.length) {
 	worldInd += 1;
@@ -509,6 +485,21 @@ function levelWon() {
     save();
 }
 
+function mouseDown(e) {
+    var canvasPos = findPos(this);
+    var x = e.pageX - canvasPos.x;
+    var y = e.pageY - canvasPos.y;
+    if(gameMode == GameMode.EDIT) editMouseDown(x, y);
+
+}
+
+function mouseUp(e) {
+    var canvasPos = findPos(this);
+    var x = e.pageX - canvasPos.x;
+    var y = e.pageY - canvasPos.y;
+    if(gameMode == GameMode.EDIT) editMouseUp(x, y);
+}
+
 function mouseMove(e) {
     var canvasPos = findPos(this);
     var x = e.pageX - canvasPos.x;
@@ -519,6 +510,7 @@ function mouseMove(e) {
 	b.draw();
 	return true;
     });
+    if(gameMode == GameMode.EDIT) editMouseMove(x, y);
 }
 
 function mouseClick(e) {
@@ -531,6 +523,7 @@ function mouseClick(e) {
     buttons = buttons.filter(function(b) {
 	return b.active;
     });
+    if(gameMode == GameMode.EDIT) editMouseClick(x, y);
 }
 
 function debug(msg) {
@@ -545,9 +538,13 @@ function replaceActiveEnemy(E) {
 	activeEnemies.splice(ind, 1);
 	ind = activeEnemies.indexOf(E);
     }
+    var seen = [];
     while(true) {
 	if(E) {
-	    if(!E.active || activeEnemies.indexOf(E) != -1) {
+	    if(seen.indexOf(E) != -1) {
+		return;
+	    } else if(!E.active || activeEnemies.indexOf(E) != -1) {
+		seen.push(E);
 		E = E.parent;
 	    } else {
 		break

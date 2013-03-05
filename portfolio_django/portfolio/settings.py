@@ -91,6 +91,8 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+AUTH_PROFILE_MODULE = 'cashground.UserProfile'
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -111,7 +113,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     '/home/sam/Desktop/git/web/portfolio_site/portfolio_templates',
-    '/home/sampullm/django_templates'
+    '/home/sampullm/django_templates/portfolio'
 )
 
 INSTALLED_APPS = (
@@ -125,7 +127,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'text_view'
+    'text_view',
+    'cashground'
 )
 
 # A sample logging configuration. The only tangible logging

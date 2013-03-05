@@ -1,5 +1,5 @@
 #!/bin/bash
-for x in js/*_test* css/*_test*
+for x in js/*_test* js/space/*_test* css/*_test*
 do
     cp "$x" "${x/_test/}"
 done

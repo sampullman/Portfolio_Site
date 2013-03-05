@@ -51,6 +51,7 @@ GameMode = {
 var mode = GameMode.INIT;
 
 $(document).ready(function(){
+    loadIndexStyles();
     loadSprites();
     c = $("#canvas")[0].getContext("2d");
     setupGame();
