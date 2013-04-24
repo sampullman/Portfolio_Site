@@ -1,0 +1,8 @@
+
+.instructions {
+    font-family: 'Arial', sans-serif;
+    width: 500px;
+    text-align: center;
+    color: #EEEEEE;
+    text-shadow: 1px 1px 1px #000;
+}

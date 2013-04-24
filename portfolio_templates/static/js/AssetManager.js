@@ -1,0 +1,6 @@
+
+var AssetManager = {
+    loadSprite: function() {
+
+    }
+}

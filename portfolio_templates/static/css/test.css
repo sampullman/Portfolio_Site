@@ -1,0 +1,19 @@
+
+#test_content {
+    padding-top: 15px;
+    padding-left: 20px;
+    position: relative;
+    font-family: 'Arial', sans-serif;
+}
+
+#canvas1 {
+    position: relative;
+    float: left;
+    background-color: #777;
+    border: 1px;
+}
+
+.test_input {
+    width: 40px;
+    margin-left: 10px;
+}

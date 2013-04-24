@@ -1,0 +1,33 @@
+
+var Sandbox = {
+    initialize: function() {
+        $("#circle_rad").val('20');
+        $("#circle_add").click(function() {
+            var rad = parseInt($("#circle_rad").val()) || 20;
+            var circ = Base.makeCircle(collisionSystem, 200, 50, rad);
+            circ.add(new Base.PhysicsComponent(physics), 0);
+            circ.add(new Collision.CollisionResponse(collisionSystem, circ));
+            entityManager.add(circ);
+        });
+        $("#rect_width").val('40');
+        $("#rect_height").val('40');
+        $("#rect_add").click(function() {
+            var w = parseInt($("#rect_width").val()) || 20;
+            var h = parseInt($("#rect_height").val()) || 20;
+            var rect = Base.makeRectangle(collisionSystem, 250, 50, w, h);
+            rect.add(new Base.PhysicsComponent(physics), 0);
+            rect.add(new Collision.CollisionResponse(collisionSystem, rect));
+            entityManager.add(rect);
+        });
+        var c1 = Base.makeCircle(collisionSystem, 200, 300, 30);
+        c1.add(new Base.PhysicsComponent(physics), 0);
+        c1.add(new Collision.CollisionResponse(collisionSystem, c1));
+        entityManager.add(c1);
+
+        var switcher = new BaseObject();
+        switcher.add(new Base.InputKeyComponent({'space': switchActive() }));
+        entityManager.add(switcher);
+
+        entityManager.add(Base.makeCage(collisionSystem, 0, 0, C_WIDTH, C_HEIGHT));
+    }
+};
