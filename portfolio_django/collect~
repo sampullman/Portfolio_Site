@@ -1,2 +1,0 @@
-python manage.py collectstatic < mypipe &
-echo "yes\n" > mypipe
