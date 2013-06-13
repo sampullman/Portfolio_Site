@@ -1,11 +1,18 @@
 
 .instructions {
     font-family: 'Arial', sans-serif;
-    width: 550px;
+    width: 530px;
     text-align: center;
-    color: #EEEEEE;
-    text-shadow: 1px 1px 1px #000;
     margin-left: -30px;
+	margin-bottom: 20px;
+}
+
+#game {
+	border: none;
+}
+
+#games_content {
+	padding-top: 20px;
 }
 
 #feedback_input {

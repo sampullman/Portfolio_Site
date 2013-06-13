@@ -1,13 +1,3 @@
-body {
-    background-color: #000000;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#000000), to(#202020)); /* Chrome, Safari 4+ */
-    background-image: -webkit-linear-gradient(top, #000000, #202020); /* Chrome 10+, iOS 5+, Safari 5.1+ */
-    background-image:    -moz-linear-gradient(top, #000000, #202020); /* Firefox 3.6-15 */
-    background-image:      -o-linear-gradient(top, #000000, #202020); /* Opera 11.10-12.00 */
-    background-image:         linear-gradient(to bottom, #000000, #202020); /* Firefox 16+, IE 10+, Opera 12.50+ */
-    font-family: 'Arial', sans-serif;
-    color: #999999;
-}
 
 #resume_title {
     text-align: center;
@@ -25,9 +15,7 @@ body {
 }
 
 .resume_header {
-    text-align: center;
-    margin: 15px auto 0 auto;
-    width: 50%;
+	padding-left: 55px;
     font-weight: bold;
     text-decoration: underline;
     font-size: 22px;
@@ -35,24 +23,50 @@ body {
 
 .resume_section_text {
     font-family: 'Arial', sans-serif;
-    color: #BBBBBB;
     line-height: 140%;
-    margin: 5px 20% 0 auto;
     font-size: 15px;
-    width: 100%;
+	margin-bottom: 18px;
 }
 
-.job_title {
+.resume_left {
+	float: left;
+	width: 46%;
+}
+
+.resume_right {
+	position: absolute;
+	left: 48%;
+	width: 50%;
+}
+
+.resume_text_title {
     font-family: 'Arial', sans-serif;
-    color: #BBBBBB;
     font-size: 17px;
     font-weight: bold;
 }
 
+.resume_text_subtitle {
+	padding-left: 30px;
+	font-size; 16px;
+	font-weight: bold;
+	color: #444444;
+	text-shadow: 0px 1px 0px #e5e5ee;
+}
+
 .course_title {
     font-family: 'Arial', sans-serif;
-    color: #BBBBBB;
     font-weight: bold;
+	cursor: pointer;
+	line-height: 1.8;
+}
+
+.course_text {
+	display: none;
+}
+
+.course_symbol {
+	width: 14px;
+	float: left;
 }
 
 .resume_list {

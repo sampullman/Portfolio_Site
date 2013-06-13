@@ -18,60 +18,8 @@ def crsf_render_string(request, url):
     c.update(csrf(request))
     return render_to_string(url, c)
 
-def lbl_display(request):
-    response = crsf_render_string(request, 'lbl_display.html')
-    data = LBL_Entry.objects.all()
-    s = ""
-    for entry in data:
-        s += entry.render()
-    return HttpResponse(response.replace('*inject*', s))
-
-@csrf_exempt
-def lbl_app(request):
-    raw = request.POST.keys()[0]
-    request = None
-    query = None
-    error = None
-    points = None
-    try:
-        request = json.loads(raw)
-        query = request['query'];
-        if(query == 'save_points'):
-            count = 0
-            fields = 0
-            values = 0
-            locs = 0
-            points = request['points']
-            for point in points:
-                count += 1
-                values += len(point['values'])
-                fields += len(point['fields'])
-                if point['loc_type'] != 'none':
-                    locs += 1
-            store = LBL_Entry(text=raw)
-            store.save();
-            return HttpResponse(json.dumps({'success': count,
-                                            'fields': fields,
-                                            'values': values,
-                                            'locs': locs}))
-    except Exception as e:
-        error = e.message
-    return HttpResponse(json.dumps({'success': -1,
-                                    'error': error if error else 'none',
-                                    'query': query if query else 'none',
-                                    'count': count}))
-
-def index(request):
-    return crsf_render(request, 'index.html');
-
-def portfolio(request):
-    return crsf_render(request, 'portfolio.html');
-
-def resume(request):
-    return crsf_render(request, 'resume.html');
-
-def contact(request):
-    return crsf_render(request, 'contact.html');
+def base(request):
+    return crsf_render(request, 'base.html');
 
 @ensure_csrf_cookie
 def games(request):

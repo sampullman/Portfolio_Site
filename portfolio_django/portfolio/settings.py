@@ -1,4 +1,7 @@
+from os.path import dirname, join
 # Django settings for portfolio project.
+
+SITE_DIR = dirname(__file__)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -12,7 +15,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/home/sampullm/django_site/portfolio/info.db',
+        'NAME': join(SITE_DIR, 'info.db'),
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -59,7 +62,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = '/home/sam/Desktop/git/web/portfolio_site/portfolio_django/static/'
+STATIC_ROOT = '/Users/sampullman/git/Portfolio_Site/portfolio_django/static/'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -67,7 +70,7 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    '/home/sam/Desktop/git/web/portfolio_site/portfolio_templates/static',
+    '/Users/sampullman/git/Portfolio_Site/portfolio_templates/static',
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -91,7 +94,7 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-AUTH_PROFILE_MODULE = 'cashground.UserProfile'
+#AUTH_PROFILE_MODULE = 'text_view.UserProfile'
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -112,8 +115,8 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/sam/Desktop/git/web/portfolio_site/portfolio_templates',
-    '/home/sampullm/django_templates/portfolio'
+    '/home/sampullm/django_templates/portfolio',
+    '/Users/sampullman/git/Portfolio_Site/portfolio_templates',
 )
 
 INSTALLED_APPS = (
@@ -128,7 +131,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'text_view',
-    'cashground'
 )
 
 # A sample logging configuration. The only tangible logging

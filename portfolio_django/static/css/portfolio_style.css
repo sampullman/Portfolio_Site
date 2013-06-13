@@ -2,6 +2,12 @@
 .description_paragraph {
 }
 
+#app_left {
+	position:relative;
+	float: left;
+	width: 60%;
+}
+
 .portfolio_title {
     font-family: 'Arial', sans-serif;
     position: absolute;
@@ -13,16 +19,22 @@
     padding: 0;
 }
 
-#app_selector {
+.app_selector {
     position: relative;
     left: 40px;
+}
+
+#app_arrow {
+	position: relative;
+	width: 20px;
+	height: 20px;
 }
 
 .app_icon_holder {
     display: inline-block;
     width: 48px;
     height: 48px;
-    margin: 5px 15px 20px 15px;
+    margin: 5px 15px 8px 15px;
 }
 
 .app_icon {
@@ -30,11 +42,8 @@
     height: 100%;
 }
 
-#img_viewer {
+#app_viewer {
     position: relative;
-    float: left;
-    top: -70px;
-    padding-left: 30px;
 }
 
 .img_nav {
@@ -73,14 +82,14 @@
     display: inline-block;
     font-family: 'Arial', sans-serif;
     font-size: 26px;
-    text-decoration: underline;
     margin-bottom: 0px;
     margin-left: 15%;
     margin-top: 0;
     padding: 5px 12px 5px 12px;
     text-align: center;
-    color: #BBBBBB;
-    text-shadow: 1px 1px 2px #000;
+    color: #556699;
+	font-weight: bold;
+    /*text-shadow: 1px 1px 2px #444;*/
 }
 
 .portfolio_text {
@@ -88,12 +97,11 @@
     line-height: 140%;
     font-size: 15px;
     font-family: 'Arial', sans-serif;
-    width: 450px;
+    width: 80%;
     margin: 0px;
     margin-left: 5%;
     padding: 10px 10px 8px 10px;
-    color: #DDDDDD;
-    text-shadow: 1px 1px 2px #000;
+    /*text-shadow: 1px 1px 2px #000;*/
 }
 
 .portfolio_text ul {

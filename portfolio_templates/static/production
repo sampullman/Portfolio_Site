@@ -1,5 +1,7 @@
 #!/bin/bash
-for x in js/*_test* js/space/*_test* css/*_test*
-do
-    cp "$x" "${x/_test/}"
-done
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/"
+CSS="$DIR""css/"
+TEMP="$DIR""temp.css"
+cat "$CSS""main_style.css" "$CSS""home_style.css" "$CSS""portfolio_style.css" "$CSS""games_style.css" "$CSS""resume_style.css" "$CSS""tipsy.css" > "$TEMP"
+java -jar /Users/sampullman/Applications/yuicompressor/build/yuicompressor-2.4.7.jar "$TEMP" -o "$CSS""style-min.css"
+rm "$TEMP"

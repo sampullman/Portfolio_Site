@@ -1,7 +1,0 @@
-var AssetManager = new AssetLoader();
-
-function AssetLoader() {
-    this.loadSprite = function() {
-
-    };
-}

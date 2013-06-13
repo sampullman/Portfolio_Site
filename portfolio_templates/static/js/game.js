@@ -50,14 +50,21 @@ GameMode = {
 
 var mode = GameMode.INIT;
 
-$(document).ready(function(){
-    loadIndexStyles();
-    loadSprites();
+function loadHome() {
     c = $("#canvas")[0].getContext("2d");
-    setupGame();
-    showStart();
-    //setInterval(countFrames, 1000);
-});
+	if(mode == GameMode.INIT) {
+    	loadSprites();
+    	setupGame();
+    	showStart();
+	} else if(mode == GameMode.PAUSED) {
+		mode = GameMode.ON;
+		pauseGame();
+	} else if(mode == GameMode.WIN) {
+		gameWon();
+	} else if(mode == GameMode.LOSE) {
+		gameOver();
+	}
+}
 
 function countFrames() {
     error = frameCount.toString();
@@ -82,7 +89,7 @@ function setupGame() {
 
 function startGame() {
     $("#canvas").unbind('click');
-    $("#canvas").focusout(pause);
+    $("#canvas").focusout(pauseGame);
     mode = GameMode.ON;
     drawEnabled = true;
     gameEventId = setInterval(function() {
@@ -263,13 +270,15 @@ function debug(msg) {
     c.fillText(msg, 0, C_HEIGHT / 1.5);
 }
 
-function pause() {
-    drawEnabled = false;
-    mode = GameMode.PAUSED;
-    clearInterval(gameEventId);
-    $("#canvas").unbind('focusout');
-    $("#canvas").click(startGame);
-    c.fillStyle = "#000";
-    c.font = "28px RobotoBlack";
-    c.fillText("Paused: Click to Resume", C_WIDTH / 5, C_HEIGHT / 2);
+function pauseGame() {
+	if(mode == GameMode.ON || mode == GameMode.BOSS) {
+	    drawEnabled = false;
+	    mode = GameMode.PAUSED;
+	    clearInterval(gameEventId);
+	    $("#canvas").unbind('focusout');
+	    $("#canvas").click(startGame);
+	    c.fillStyle = "#000";
+	    c.font = "28px RobotoBlack";
+	    c.fillText("Paused: Click to Resume", C_WIDTH / 5, C_HEIGHT / 2);
+	}
 }

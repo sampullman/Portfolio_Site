@@ -1,0 +1,35 @@
+<div id="header">
+	<div id="header_text">
+ 	   <h1>Sam Pullman</h1>
+	   <div id="sub_header">Developer</div>
+   </div>
+   <div id="contact_icons">
+     <div class="contact_icon_holder">
+       <a class="contact_icon_link" id="Email" target="_blank" href="mailto:sampullman@gmail.com">
+         <img class="contact_icon"
+              src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/AmtFnAUKi2/portfolio/static/images/gmail_icon.png" />
+       </a>
+     </div>
+     <div class="contact_icon_holder">
+       <a class="contact_icon_link" id="Github" target="_blank" href="https://github.com/sampullman">
+         <img class="contact_icon"
+              src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/gV55mTiD5N/portfolio/static/images/github_icon.png" /></a></div>
+     <div class="contact_icon_holder">
+       <a class="contact_icon_link" id="Android apps" target="_blank"
+          href="https://play.google.com/store/search?q=threeDBJ&c=apps">
+         <img class="contact_icon"
+              src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/dEMe7uVstK/portfolio/static/images/android_icon.png" />
+       </a>
+     </div>
+  </div>
+</div>
+<div id="navlinks">
+	<div><img id="nav_arrow" src="static/images/nav_arrow.png" /></div>
+	<ul>
+    <li ng-repeat="label in ['HOME', 'PORTFOLIO', 'GAMES', 'RESUME']" class="navlink"
+	 	  active-link="navcur" id="{{label | lowercase}}" href="#" ng-click="changeView(label)">
+  		  {{ label }}
+ 	</li>
+	</ul>
+</div>
+<hr>
