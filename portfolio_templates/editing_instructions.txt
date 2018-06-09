@@ -1,8 +1,0 @@
-The production script in static/ will replace all files with their *_test* equivalent. THERE ARE NO BACKUPS, ALWAYS
-MAKE SURE TEST FILES ARE NEWER THAN PRODUCTION.
-     TODO - have script save production snapshot
-
-Files named *_test.html in this folder are for experimentation, and should not be used to replace production files.
-Their production equivalents will point to the production equivalent of any static files used. At the moment, changes
-in the html must be reflected in both files.
-     TODO - figure out a better way to manage this.

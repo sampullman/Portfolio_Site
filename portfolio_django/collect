@@ -1,2 +1,0 @@
-../portfolio_templates/static/production
-echo "yes" | python manage.py collectstatic
