@@ -121,43 +121,43 @@
     <div class="resume_right">
         <div class="resume_header">Experience</div>
         <div class="resume_section_text section">
-        <span class="resume_text_title">Independent Android Developer</span><br />
-        <span class="resume_text_subtitle">(2010 - 2012)</span>
-        <ul class="resume_list">
-            <li>Developed 6 applications covering a variety of styles.</li>
-            <li>Tens of thousands of downloads.</li>
-            <li>App list: <a href="https://play.google.com/store/search?q=3dbj&c=apps">https://play.google.com/store/search?q=3dbj&c=apps</a></li>
-        </ul>
-        <span class="resume_text_title">Undergraduate Student Instructor (UGSI)</span><br />
-        <span class="resume_text_subtitle">UC Berkeley, CS61A (Jan. 2012 - May 2012)</span>
-        <ul class="resume_list">
-            <li>Worked for one semester as a UGSI in an introductory computer science course at UC Berkeley.</li>
-            <li>Taught three hours of discussion section and three hours of lab per week.</li>
-            <li>Assisted with writing labs, discussion notes, and exam questions; grading; held office hour sessions twice a week.</li>
-        </ul>
-        <span class="resume_text_title">Programmer and Web Developer</span><br />
-        <span class="resume_text_subtitle">Lawrence Berkeley National Lab (June 2010 to Jan. 2011)</span>
-        <ul class="resume_list">
-            <li>Assisted in the development of a web based interface for a self teaching expert system (SeTES).</li>
-            <li>Project that will significantly improve the effectiveness and efficiency of analyzing, predicting, and designing
-        natural gas production from extremely tight unconventional gas reservoirs.</li>
-        </ul>
-        <span class="resume_text_title">SULI (Science Undergraduate Laboratory Internships)</span><br />
-        <span class="resume_text_subtitle">Summer 2009</span>
-        <ul class="resume_list">
-            <li>U.S. Department of Energy Berkeley, CA 2009</li>
-            <li>Worked with LBNL researcher Dr. Jinsong Chen writing code to statistically analyze inverted geological data and developed a web based interface for Dr. Chen's stochastic inversion codes</li>
-            <li>Abstract: <a href="http://adsabs.harvard.edu/abs/2009AGUFMNS31B1168C">adsabs.harvard.edu/abs/2009AGUFMNS31B1168C</a></li>
-        </ul>
+            <div class="resume_text_title">Independent Android Developer</div>
+            <span class="resume_text_subtitle">(2010 - 2012)</span>
+            <ul class="resume_list">
+                <li>Developed 6 applications covering a variety of styles.</li>
+                <li>Tens of thousands of downloads.</li>
+                <li>App list: <a href="https://play.google.com/store/search?q=3dbj&c=apps">https://play.google.com/store/search?q=3dbj&c=apps</a></li>
+            </ul>
+            <div class="resume_text_title">Undergraduate Student Instructor (UGSI)</div>
+            <span class="resume_text_subtitle">UC Berkeley, CS61A (Jan. 2012 - May 2012)</span>
+            <ul class="resume_list">
+                <li>Worked for one semester as a UGSI in an introductory computer science course at UC Berkeley.</li>
+                <li>Taught three hours of discussion section and three hours of lab per week.</li>
+                <li>Assisted with writing labs, discussion notes, and exam questions; grading; held office hour sessions twice a week.</li>
+            </ul>
+            <div class="resume_text_title">Programmer and Web Developer</div>
+            <span class="resume_text_subtitle">Lawrence Berkeley National Lab (June 2010 to Jan. 2011)</span>
+            <ul class="resume_list">
+                <li>Assisted in the development of a web based interface for a self teaching expert system (SeTES).</li>
+                <li>Project that will significantly improve the effectiveness and efficiency of analyzing, predicting, and designing
+            natural gas production from extremely tight unconventional gas reservoirs.</li>
+            </ul>
+            <div class="resume_text_title">SULI (Science Undergraduate Laboratory Internships)</div>
+            <span class="resume_text_subtitle">Summer 2009</span>
+            <ul class="resume_list">
+                <li>U.S. Department of Energy Berkeley, CA 2009</li>
+                <li>Worked with LBNL researcher Dr. Jinsong Chen writing code to statistically analyze inverted geological data and developed a web based interface for Dr. Chen's stochastic inversion codes</li>
+                <li>Abstract: <a href="http://adsabs.harvard.edu/abs/2009AGUFMNS31B1168C">adsabs.harvard.edu/abs/2009AGUFMNS31B1168C</a></li>
+            </ul>
         </div>
         <div class="resume_header">Other Experience</div>
-        <div class="resume_section_text section">
-        <ul class="resume_list">
-            <li>Lab Assistant - Computer Science 3L (Spring 2009)</li>
-            <li>Lab Assistant - Computer Science 61BL (Summer 2010)</li>
-            <li>Treasurer for the California chapter of Delta Upsilon (2010)</li>
-            <li>Webmaster for Delta Upsilon (Fall 2009)</li>
-        </ul>
+            <div class="resume_section_text section">
+            <ul class="resume_list">
+                <li>Lab Assistant - Computer Science 3L (Spring 2009)</li>
+                <li>Lab Assistant - Computer Science 61BL (Summer 2010)</li>
+                <li>Treasurer for the California chapter of Delta Upsilon (2010)</li>
+                <li>Webmaster for Delta Upsilon (Fall 2009)</li>
+            </ul>
         </div>
     </div>
 </div>
@@ -171,11 +171,15 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/scss/colors.scss';
+
+#content {
+    color: #DDDDDD;
+}
 
 #resume_title {
     text-align: center;
     margin: 0 auto;
-    width: 50%;
     font-weight: bold;
     font-size: 35px;
 }
@@ -190,37 +194,43 @@ export default {
 .resume_header {
     padding-left: 55px;
     font-weight: bold;
-    text-decoration: underline;
-    font-size: 22px;
+    font-size: 20px;
 }
 
 .resume_section_text {
     font-family: 'Arial', sans-serif;
     line-height: 140%;
-    font-size: 15px;
+    font-size: 14px;
     margin-bottom: 18px;
 }
 
 .resume_left {
+    position: relative;
     float: left;
-    width: 46%;
+    width: 40%;
+    left: 3%;
 }
 
 .resume_right {
-    position: absolute;
-    left: 48%;
-    width: 50%;
+    position: relative;
+    float: left;
+    left: 6%;
+    width: 51%;
+}
+
+.resume_text_title:not(:first-child) {
+    margin-top: 12px;
 }
 
 .resume_text_title {
     font-family: 'Arial', sans-serif;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: bold;
 }
 
 .resume_text_subtitle {
     padding-left: 30px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
     color: #444444;
     text-shadow: 0px 1px 0px #e5e5ee;
@@ -238,17 +248,22 @@ export default {
 }
 
 .course_symbol {
-    width: 14px;
+    width: 13px;
     float: left;
 }
 
 .resume_list {
     margin: 4px 0 4px 25px;
     padding: 0;
+    font-size: 14px;
 }
 
 .right_aligned {
     position: relative;
     float: right;
+}
+
+@media (min-width: 1200px) {
+
 }
 </style>

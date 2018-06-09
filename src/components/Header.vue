@@ -49,13 +49,16 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@/assets/scss/colors.scss';
+
+#contact_icons {
+    margin: 32px 0;
+}
 
 .contact_icon_holder {
     display: inline-block;
     padding: 0 15px 0 15px;
-    margin: 16px 0;
 
     .svg-icon {
         fill: $text-color;
@@ -105,6 +108,10 @@ hr {
 .navlink {
     padding: 0 15px;
     display: inline;
+}
+
+.navlink > a {
+    color: $text-color;
 }
 
 .navlink.active > a {

@@ -2,10 +2,10 @@
 <div id="home_content">
     <div id="inner">
         <div id="home_text" class="section">
-            <span class="indent"></span>Hi, I'm Sam Pullman, and I like to write <a  href="https://github.com/sampullman">code</a>. I
-            have experience with the Android platform, and my <router-link to="/portfolio"><a>portfolio</a></router-link> describes some of the applications I've
-            worked on.  I'm also familiar with several web technologies; this website was built using Django, AngularJS, and jQuery.
-            I'm also interested in distributed systems, augmented reality, and game design.
+            <span class="indent"></span>
+                Hi, I'm Sam Pullman, and this is my home page.
+                I've been the CTO of <a href="https://podolabs.com">Podo Labs</a> since 2013,
+                and right now we're working on a crowdfunding platform called <a href="https://pledgecamp.com">Pledgecamp</a>.
             <br />
             <br />
             <span class="indent"></span>If you'd like to request a cover letter, commission an android application, or collaborate on a
