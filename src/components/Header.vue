@@ -12,10 +12,10 @@
             </a>
         </div>
     </div>
-    <div id="navlinks">
+    <div id="navlinks" @mouseover="notHover = false" @mouseleave="notHover = true">
         <ul>
         <li v-for="link in $options.links" class="navlink" :key="link.label"
-            :class="{active:link.route === $route.path}" :id="link.label | lowercase">
+            :class="{active:(notHover && (link.route === $route.path))}" :id="link.label | lowercase">
             <router-link :to="link.route">{{ link.label }}</router-link>
         </li>
         </ul>
@@ -30,7 +30,7 @@ export default {
     name: 'Header',
     data() {
         return {
-            msg: 'Welcome to Your Vue.js App'
+            notHover: true
         }
     },
     created() {
@@ -53,7 +53,7 @@ export default {
 @import '@/assets/scss/colors.scss';
 
 #contact_icons {
-    margin: 32px 0;
+    margin: 48px 0;
 }
 
 .contact_icon_holder {
@@ -103,6 +103,7 @@ hr {
 #navlinks ul {
     list-style-type: none;
     padding: 0;
+    margin-bottom: 4px;
 }
 
 .navlink {
@@ -114,7 +115,7 @@ hr {
     color: $text-color;
 }
 
-.navlink.active > a {
+.navlink.active > a,.navlink > a:hover {
     color: #DDD;
 }
 
