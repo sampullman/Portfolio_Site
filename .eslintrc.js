@@ -22,6 +22,15 @@ module.exports = {
   // add your custom rules here
   rules: {
     "indent": ["error", 4],
+    "semi": ["error", "always", { "omitLastInOneLineBlock": true}],
+    "keyword-spacing": ["error", { "after": false, "overrides": {
+      "return": { "after": true },
+      "else": { "after": true },
+      "do": { "after": true },
+      "from": { "after": true },
+      "import": { "after": true },
+      "export": { "after": true }
+    }}],
     // allow async-await
     'generator-star-spacing': 'off',
     'space-before-function-paren': 'off',

@@ -25,13 +25,13 @@
 </template>
 
 <script>
-import '@/icons'
+import '@/icons';
 export default {
     name: 'Header',
     data() {
         return {
             notHover: true
-        }
+        };
     },
     created() {
         this.$options.links = [
@@ -39,14 +39,14 @@ export default {
             { label: 'PORTFOLIO', route: '/portfolio' },
             { label: 'GAMES', route: '/games' },
             { label: 'RESUME', route: '/resume' }
-        ]
+        ];
         this.$options.social = [
             { icon: 'envelope', href: 'mailto:sampullman@gmail.com' },
             { icon: 'github', href: 'https://github.com/sampullman' },
             { icon: 'android', href: 'https://play.google.com/store/search?q=threeDBJ&c=apps' }
-        ]
+        ];
     }
-}
+};
 </script>
 
 <style lang="scss" scoped>

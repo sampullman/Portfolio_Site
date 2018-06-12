@@ -119,9 +119,9 @@ export default {
     name: 'Portfolio',
     data() {
         return {
-        }
+        };
     }
-}
+};
 </script>
 
 <style lang="scss">

@@ -28,7 +28,7 @@
 <script>
 export default {
     name: 'Games'
-}
+};
 </script>
 
 <style lang="scss">

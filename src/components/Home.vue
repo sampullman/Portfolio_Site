@@ -27,14 +27,24 @@
 </template>
 
 <script>
+import { loadGame, pauseGame } from '@/assets/js/home/home_game.js';
 export default {
     name: 'Home',
     data() {
         return {
-            msg: 'Welcome to Your Vue.js App'
-        }
+        };
+    },
+    mounted: function () {
+        console.log('Starting the game');
+        this.$nextTick(function () {
+            loadGame();
+        });
+    },
+    beforeDestroy: function () {
+        console.log('Ending the game');
+        pauseGame();
     }
-}
+};
 </script>
 
 <style lang="scss">
