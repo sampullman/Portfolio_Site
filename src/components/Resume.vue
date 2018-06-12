@@ -25,96 +25,96 @@
         </ul>
         </div>
         <div class="resume_header">Relevant Coursework</div>
-        <div class="resume_section_text section">
-        <span course-control="#162" class="course_title">
-            <span class="course_symbol">+</span>Operating Systems and Systems Programming
-        </span><br />
-        <div id="162" class="course_text">
-            <span class="resume_text_subtitle">CS 162</span>
-            <ul class="resume_list">
-                <li>Introduction and applications to processes, interprocess communication, and synchronization.</li>
-                <li>Techniques for resource allocation, scheduling, performance evaluation, along with file systems, memory allocation, and security.</li>
-            </ul>
+        <div v-courses id="course_work" class="resume_section_text section">
+        <div class="course">
+            <span><span class="course_symbol">+</span>Operating Systems and Systems Programming</span>
+            <div id="162" class="course_text">
+                <span class="resume_text_subtitle">CS 162</span>
+                <ul class="resume_list">
+                    <li>Introduction and applications to processes, interprocess communication, and synchronization.</li>
+                    <li>Techniques for resource allocation, scheduling, performance evaluation, along with file systems, memory allocation, and security.</li>
+                </ul>
+            </div>
         </div>
-        <span course-control="#164" class="course_title">
-            <span class="course_symbol">+</span>Programming Languages and Compilers
-        </span><br />
-        <div id="164" class="course_text">
-            <span class="resume_text_subtitle">CS 164</span>
-            <ul class="resume_list">
-                <li>The design of modern programming languages.</li>
-                <li>Principles and techniques of scanning, parsing, semantic analysis, and code generation. Implementation of compilers, interpreters, and assemblers. Overview of run-time organization and error handling.</li>
-            </ul>
+        <div class="course">
+            <span><span class="course_symbol">+</span>Programming Languages and Compilers</span>
+            <div id="164" class="course_text">
+                <span class="resume_text_subtitle">CS 164</span>
+                <ul class="resume_list">
+                    <li>The design of modern programming languages.</li>
+                    <li>Principles and techniques of scanning, parsing, semantic analysis, and code generation. Implementation of compilers, interpreters, and assemblers. Overview of run-time organization and error handling.</li>
+                </ul>
+            </div>
         </div>
-        <span course-control="#170" class="course_title">
-            <span class="course_symbol">+</span>Efficient Algorithms and Intractable Problems
-        </span><br />
-        <div id="170" class="course_text">
-            <span class="resume_text_subtitle">CS 170</span>
-            <ul class="resume_list">
-                <li>Concept and basic techniques in the design and analysis of algorithms; models of computation; lower bounds.</li>
-                <li>Turing machines, how to count steps, deterministic and nondeterministic Turing machines, NP-completeness.</li>
-            </ul>
+        <div class="course">
+            <span><span class="course_symbol">+</span>Efficient Algorithms and Intractable Problems</span>
+            <div id="170" class="course_text">
+                <span class="resume_text_subtitle">CS 170</span>
+                <ul class="resume_list">
+                    <li>Concept and basic techniques in the design and analysis of algorithms; models of computation; lower bounds.</li>
+                    <li>Turing machines, how to count steps, deterministic and nondeterministic Turing machines, NP-completeness.</li>
+                </ul>
+            </div>
         </div>
-        <span course-control="#186" class="course_title">
-            <span class="course_symbol">+</span>Introduction to Database Systems
-        </span><br />
-        <div id="186" class="course_text">
-            <span class="resume_text_subtitle">CS 186</span>
-            <ul class="resume_list">
-                <li>Hierarchical, network, relational, and object-oriented data models.</li>
-                <li>High-level interfaces including application generators, browsers, and report writers.</li>
-            </ul>
+        <div class="course">
+            <span><span class="course_symbol">+</span>Introduction to Database Systems</span>
+            <div id="186" class="course_text">
+                <span class="resume_text_subtitle">CS 186</span>
+                <ul class="resume_list">
+                    <li>Hierarchical, network, relational, and object-oriented data models.</li>
+                    <li>High-level interfaces including application generators, browsers, and report writers.</li>
+                </ul>
+            </div>
         </div>
-        <span course-control="#188" class="course_title">
-            <span class="course_symbol">+</span>Introduction to Artificial Intelligence
-        </span><br />
-        <div id="188" class="course_text">
-            <span class="resume_text_subtitle">CS 188</span>
-            <ul class="resume_list">
-                <li>Basic ideas and techniques underlying the design of intelligent computer systems</li>
-                <li>Class projects based in python language, extensive knowledge gained of the language through consistent use.</li>
-            </ul>
+        <div class="course">
+            <span><span class="course_symbol">+</span>Introduction to Artificial Intelligence</span>
+            <div id="188" class="course_text">
+                <span class="resume_text_subtitle">CS 188</span>
+                <ul class="resume_list">
+                    <li>Basic ideas and techniques underlying the design of intelligent computer systems</li>
+                    <li>Class projects based in python language, extensive knowledge gained of the language through consistent use.</li>
+                </ul>
+            </div>
         </div>
-        <span course-control="#184" class="course_title">
-            <span class="course_symbol">+</span>Computer Graphics
-        </span><br />
-        <div id="184" class="course_text">
-            <span class="resume_text_subtitle">CS 184</span>
-            <ul class="resume_list">
-                <li>Techniques of modeling objects for the purpose of computer rendering: boundary representations, constructive solids geometry, hierarchical scene descriptions.</li>
-                <li>Algorithms for clipping, hidden surface removal, and anti-aliasing, along with scan-line and ray-based rendering algorithms.</li>
-            </ul>
+        <div class="course">
+            <span><span class="course_symbol">+</span>Computer Graphics</span>
+            <div id="184" class="course_text">
+                <span class="resume_text_subtitle">CS 184</span>
+                <ul class="resume_list">
+                    <li>Techniques of modeling objects for the purpose of computer rendering: boundary representations, constructive solids geometry, hierarchical scene descriptions.</li>
+                    <li>Algorithms for clipping, hidden surface removal, and anti-aliasing, along with scan-line and ray-based rendering algorithms.</li>
+                </ul>
+            </div>
         </div>
-        <span course-control="#161" class="course_title">
-            <span class="course_symbol">+</span>Computer Security
-        </span><br />
-        <div id="161" class="course_text">
-            <span class="resume_text_subtitle">CS 161</span>
-            <ul class="resume_list">
-                <li>Cryptography, including encryption, authentication, hash functions, cryptographic protocols, and applications.</li>
-                <li>Operating system security, access control, with case studies from real-world systems.</li>
-            </ul>
+        <div class="course">
+            <span><span class="course_symbol">+</span>Computer Security</span>
+            <div id="161" class="course_text">
+                <span class="resume_text_subtitle">CS 161</span>
+                <ul class="resume_list">
+                    <li>Cryptography, including encryption, authentication, hash functions, cryptographic protocols, and applications.</li>
+                    <li>Operating system security, access control, with case studies from real-world systems.</li>
+                </ul>
+            </div>
         </div>
-        <span course-control="#122" class="course_title">
-            <span class="course_symbol">+</span>Introduction to Communication Networks
-        </span><br />
-        <div id="122" class="course_text">
-            <span class="resume_text_subtitle">EE 122</span>
-            <ul class="resume_list">
-                <li>Introduction to the design and implementation of computer networks, focusing on the concepts and fundamental design principles that have contributed to the Internet's scalability and robustness.</li>
-                <li>Topics include layering, congestion/flow/error control, routing, addressing, multicast, packet scheduling, switching, internetworking, network security, and networking/programming interfaces.</li>
-            </ul>
+        <div class="course">
+            <span><span class="course_symbol">+</span>Introduction to Communication Networks</span>
+            <div id="122" class="course_text">
+                <span class="resume_text_subtitle">EE 122</span>
+                <ul class="resume_list">
+                    <li>Introduction to the design and implementation of computer networks, focusing on the concepts and fundamental design principles that have contributed to the Internet's scalability and robustness.</li>
+                    <li>Topics include layering, congestion/flow/error control, routing, addressing, multicast, packet scheduling, switching, internetworking, network security, and networking/programming interfaces.</li>
+                </ul>
+            </div>
         </div>
-        <span course-control="#120" class="course_title">
-            <span class="course_symbol">+</span>Signals and Systems
-        </span><br />
-        <div id="120" class="course_text">
-            <span class="resume_text_subtitle">EE 120</span>
-            <ul class="resume_list">
-                <li>Continuous and discrete-time transform analysis techniques. Fourier series, Fourier transform, Laplace and Z-transforms, Sampling and reconstruction.</li>
-                <li>Solution of differential and difference equations using transforms.</li>
-            </ul>
+        <div class="course">
+            <span><span class="course_symbol">+</span>Signals and Systems</span>
+            <div id="120" class="course_text">
+                <span class="resume_text_subtitle">EE 120</span>
+                <ul class="resume_list">
+                    <li>Continuous and discrete-time transform analysis techniques. Fourier series, Fourier transform, Laplace and Z-transforms, Sampling and reconstruction.</li>
+                    <li>Solution of differential and difference equations using transforms.</li>
+                </ul>
+            </div>
         </div>
         </div>
     </div>
@@ -166,8 +166,40 @@
 
 <script>
 export default {
-    name: 'Resume'
+    name: 'Resume',
+    directives: {
+        'courses': {
+            bind(el, binding) {
+                function hide(item) {
+                    item.children[1].style.display = 'none';
+                    item.children[0].children[0].textContent = '+';
+                }
+                function hideAll() {
+                    for(var i = 0; i < el.children.length; i++) {
+                        hide(el.children[i]);
+                    }
+                }
+                function listener(section) {
+                    return function() {
+                        if(section.children[1].style.display === 'block') {
+                            hide(section);
+                        } else {
+                            hideAll();
+                            section.children[1].style.display = 'block';
+                            section.children[0].children[0].textContent = '-';
+                        }
+                    };
+                }
+
+                for(var i = 0; i < el.children.length; i++) {
+                    var section = el.children[i];
+                    section.children[0].addEventListener('click', listener(section));
+                }
+            }
+        }
+    }
 };
+
 </script>
 
 <style lang="scss">
@@ -229,14 +261,14 @@ export default {
 }
 
 .resume_text_subtitle {
-    padding-left: 30px;
+    padding-left: 14px;
     font-size: 15px;
     font-weight: bold;
     color: #444444;
     text-shadow: 0px 1px 0px #e5e5ee;
 }
 
-.course_title {
+.course {
     font-family: 'Arial', sans-serif;
     font-weight: bold;
     cursor: pointer;
@@ -245,6 +277,7 @@ export default {
 
 .course_text {
     display: none;
+    margin-bottom: 12px;
 }
 
 .course_symbol {
@@ -253,9 +286,11 @@ export default {
 }
 
 .resume_list {
-    margin: 4px 0 4px 25px;
+    margin: 4px 0 4px 30px;
     padding: 0;
     font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5em;
 }
 
 .right_aligned {
