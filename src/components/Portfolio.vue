@@ -3,13 +3,11 @@
 <div id="content">
     <div id="app_left">
         <div class="app_selector">
-        <!--
-        <div app-tip="{{id}}" ng-repeat="(id, image) in apps" class="app_icon_holder">
-            <a app-nav="{{id}}" class="app_icon_link" id="{{id}}" href="#/portfolio/?app={{id}}">
-                <img class="app_icon" ng-src={{image}} />
-            </a>
-        </div>
-        -->
+            <div v-for="(image, id) in $options.apps" :key="id" class="app_icon_holder">
+                <a class="app_icon_link" :id="id">
+                    <img class="app_icon" :src="image" />
+                </a>
+            </div>
         </div>
         <div class="app_selector"><img id="app_arrow" src="/static/img/portfolio/app_arrow.png" /></div>
         <div id="android_portfolio_subtitle" class="portfolio_subtitle"></div>
@@ -119,6 +117,16 @@ export default {
     name: 'Portfolio',
     data() {
         return {
+        };
+    },
+    created() {
+        this.$options.apps = {
+            'SciGraph_Calculator': '/static/img/app_icons/scigraph_calc.png',
+            'Molecular_Mass_Calculator': '/static/img/app_icons/molecular_mass.png',
+            'Cube_Droid': '/static/img/app_icons/cube_droid.png',
+            'Quiz_Droid': '/static/img/app_icons/quiz_droid.png',
+            'Web_Comic_Reader': '/static/img/app_icons/comic_reader.png',
+            'Number_Slide': '/static/img/app_icons/number_slide.png'
         };
     }
 };
