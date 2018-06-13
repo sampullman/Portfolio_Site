@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import anime from 'animejs';
 export default {
     name: 'Portfolio',
     data() {
@@ -59,6 +60,13 @@ export default {
     watch: {
         app_index: function (newIndex, oldIndex) {
             this.$router.replace('/portfolio/' + this.$options.app_icons[this.app_index][0]);
+            let pos = 29 + (newIndex * 78);
+            console.log(pos);
+            anime({
+                targets: '#app_arrow',
+                left: pos + 'px',
+                elasticity: 400
+            });
         }
     },
     created() {
@@ -196,6 +204,7 @@ export default {
     position: relative;
     width: 20px;
     height: 20px;
+    left: 29px;
 }
 
 .app_icon_holder {
