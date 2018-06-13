@@ -3,17 +3,13 @@
 <div id="content">
     <div id="resume_title">Resume</div>
     <div id="resume_pdf_link">
-        <a href="https://dl.dropbox.com/sh/631wm7d11mdr3mj/61U407i7QT/portfolio/static/resume.pdf">(PDF Version)</a>
+        <a href="/static/resume.pdf">(PDF Version)</a>
     </div>
     <div class="resume_left">
         <div class="resume_header">Education</div>
         <div class="resume_section_text section">
-            University of California, Berkeley<br />
-            Berkeley, CA, Degree received May 2012<br />
-            B.S. in Electrical Engineering and Computer Science
-            <ul class="resume_list">
-                <li>Overall GPA: 3.4</li>
-            </ul>
+            B.S. in Electrical Engineering and Computer Science<br />
+            University of California, Berkeley, May 2012
         </div>
         <div class="resume_header">Qualifications</div>
         <div class="resume_section_text section">
@@ -211,15 +207,13 @@ export default {
 
 #resume_title {
     text-align: center;
-    margin: 0 auto;
     font-weight: bold;
     font-size: 35px;
 }
 
 #resume_pdf_link {
     text-align: center;
-    margin: 0 auto;
-    width: 50%;
+    margin-bottom: 20px;
     font-size: 16px;
 }
 
@@ -236,16 +230,18 @@ export default {
     margin-bottom: 18px;
 }
 
-.resume_left {
+.resume_left,.resume_right {
+    margin-bottom: 48px;
     position: relative;
     float: left;
+}
+
+.resume_left {
     width: 40%;
     left: 3%;
 }
 
 .resume_right {
-    position: relative;
-    float: left;
     left: 6%;
     width: 51%;
 }
