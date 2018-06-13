@@ -3,111 +3,39 @@
 <div id="content">
     <div id="app_left">
         <div class="app_selector">
-            <div v-for="(image, id) in $options.apps" :key="id" class="app_icon_holder">
-                <a class="app_icon_link" :id="id">
-                    <img class="app_icon" :src="image" />
-                </a>
+            <div v-for="(icon, index) in $options.app_icons" :key="icon[0]" class="app_icon_holder">
+                <img @click="app_index = index" class="app_icon" :src="icon[1]" />
             </div>
         </div>
         <div class="app_selector"><img id="app_arrow" src="/static/img/portfolio/app_arrow.png" /></div>
-        <div id="android_portfolio_subtitle" class="portfolio_subtitle"></div>
-        <p id="android_portfolio_text" class="portfolio_text section"></p>
+        <transition-group class='carousel' tag="div">
+            <div
+                v-for="(app, id, index) in $options.apps"
+                class='app'
+                :key="id">
+                <div v-if="app_index == index" class="app_content">
+                    <div class="app_subtitle">{{ app.name }}</div>
+                    <p class="app_text section">
+                        <span class="indent">
+                            <a v-if="app.link" :href="app.link" target="_blank">
+                                {{ app.name }}
+                            </a>
+                            {{ app.description }}
+                        </span>
+                        <ul v-if="app.features">
+                            <li v-for="(feature, index) in app.features" :key="index">{{ feature }}</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </transition-group>
     </div>
     <div id="app_viewer">
-        <img class="img_nav" id="img_nav_left"  src="/static/img/portfolio/left_btn.png" />
+        <img id="img_nav_left" @click="screenshot_prev" src="/static/img/portfolio/left_btn.png" />
         <span class="screenshot_holder">
             <img class="screenshot" />
         </span>
-        <img class="img_nav" id="img_nav_right"  src="/static/img/portfolio/right_btn.png" />
-    </div>
-
-    <div class="hidden_portfolio_text" id="SciGraph_Calculator">
-        <span class="indent">
-            <a href="https://github.com/sampullman/android--Scientific-Graphing-Calculator">SciGraph Calculator</a>
-            is a powerful calculator app for Android. Some of its capabilities are highlighted below.
-        </span>
-        <ul>
-            <li>Standard calculator funtionality</li>
-            <li>Updates result on the fly as the user enters commands</li>
-            <li>Stores previous inputs and results, and keeps the last three visible</li>
-            <li>Complex number expressions and trigonometric functions</li>
-            <li>Copy/paste between main, conversion, and function entry</li>
-            <li>Simultaneously graph up to 3 functions</li>
-            <li>Trace mode prints out function values while sliding across X axis</li>
-            <li>Calculate all zeros visible on the graph</li>
-            <li>Optimized for portrait and widescreen modes</li>
-            <li>Minimal, intuitive interface</li>
-        </ul>
-    </div>
-    <div class="hidden_portfolio_text" id="Web_Comic_Reader">
-        <span class="indent">
-            <a href="https://github.com/sampullman/android--Web-Comic-Reader">Web Comic Reader</a>
-            is an android app with a simple interface for reading some of the most popular comics
-            on the web.
-        </span>
-        <ul>
-            <li>12 different comics currently available</li>
-            <li>Pre-caches previous and next comics for a smooth experience</li>
-            <li>Swipe between comics</li>
-            <li>Jump to random comics</li>
-            <li>Displays alt text/images when available</li>
-            <li>Save comics to SD card</li>
-            <li>Offline comic browser for saved comics</li>
-            <li>Direct link to the author's merchandise store</li>
-        </ul>
-    </div>
-    <div class="hidden_portfolio_text" id="Cube_Droid">
-        <span class="indent">
-            <a href="https://github.com/sampullman/android--Puzzle-Droid">Cube Droid</a> is a Rubik's
-            Cube implementation for Android. It was a first attempt at using OpenGL ES to create
-            something interesting in a 3d environment.
-        </span>
-        <ul>
-            <li>Rotating the cube is easy and intuitive</li>
-            <li>A slider toggles the cube dimensions from 2x2 to 8x8</li>
-            <li>Timer that can be shown, hidden, and reset</li>
-            <li>Buttons to scramble and reset the cube</li>
-            <li>Smooth animations for both the cube and menu</li>
-            <li>Displays alt text/images when available</li>
-            <li>The cube is saved and restored between sessions</li>
-        </ul>
-    </div>
-    <div class="hidden_portfolio_text" id="Quiz_Droid">
-        <span class="indent">
-        Quiz Droid is a fun little app that provides quizzes in a variety of topics including
-        geography, history, science, and vocabulary. There are currently 8 quizzes totalling
-        hundreds of questions, and the content expands with every update.
-        </span>
-        <ul>
-            <li>Difficulty ratings for each question</li>
-            <li>Scoring system that takes into account streaks</li>
-            <li>Maintains stats on correct/total answered, streaks, and scores</li>
-            <li>Casual, timerless mode that doesn't record scores</li>
-            <li>Questions/Answers are reversible</li>
-        </ul>
-    </div>
-    <div class="hidden_portfolio_text" id="Molecular_Mass_Calculator">
-        <span class="indent">
-        <a href="https://github.com/sampullman/android--Molecular-Mass-Calculator">Molecular Mass Calculator</a>
-        is an application for calculating the molecular mass of any chemical formula. The percentages
-        for each mass in the formula are displayed, and the formula is checked against a government database.
-        The name of the formula is printed if a match is found. The interface is optimized for portrait and
-        landscape modes, resulting in a simple but pleasing app.
-        </span>
-    </div>
-    <div class="hidden_portfolio_text" id="Number_Slide">
-        <span class="indent">
-        <a href="https://github.com/sampullman/android--Number-Slider">Number Slide</a> is an
-        implementation of the 8-puzzle and 15-puzzle for android. The app was written as a
-        demonstration for a few of android's backwards compatibilty libraries. It contains
-        several unique features, which are listed below.
-        </span>
-        <ul>
-            <li>Displays the optimal number of moves in 8-puzzle mode</li>
-            <li>The built in automated solver animates the solution when activated</li>
-            <li>Several pre-loaded images are available to use in place of the basic background</li>
-            <li>A file browser is included to select any image as the background</li>
-        </ul>
+        <img id="img_nav_right" @click="screenshot_next" src="/static/img/portfolio/right_btn.png" />
     </div>
 </div>
 </template>
@@ -117,16 +45,124 @@ export default {
     name: 'Portfolio',
     data() {
         return {
+            app_index: 0
         };
     },
+    methods: {
+        screenshot_prev: function() {
+
+        },
+        screenshot_next: function() {
+
+        }
+    },
+    watch: {
+        app_index: function (newIndex, oldIndex) {
+            this.$router.replace('/portfolio/' + this.$options.app_icons[this.app_index][0]);
+        }
+    },
     created() {
+        this.$options.app_icons = [
+            ['SciGraph_Calculator', '/static/img/app_icons/scigraph_calc.png'],
+            ['Molecular_Mass_Calculator', '/static/img/app_icons/molecular_mass.png'],
+            ['Cube_Droid', '/static/img/app_icons/cube_droid.png'],
+            ['Quiz_Droid', '/static/img/app_icons/quiz_droid.png'],
+            ['Web_Comic_Reader', '/static/img/app_icons/comic_reader.png'],
+            ['Number_Slide', '/static/img/app_icons/number_slide.png']
+        ];
+        if(this.$route.params.app) {
+            for(var i = 0; i < this.$options.app_icons.length; i++) {
+                if(this.$route.params.app === this.$options.app_icons[i][0]) {
+                    this.app_index = i;
+                }
+            }
+        }
         this.$options.apps = {
-            'SciGraph_Calculator': '/static/img/app_icons/scigraph_calc.png',
-            'Molecular_Mass_Calculator': '/static/img/app_icons/molecular_mass.png',
-            'Cube_Droid': '/static/img/app_icons/cube_droid.png',
-            'Quiz_Droid': '/static/img/app_icons/quiz_droid.png',
-            'Web_Comic_Reader': '/static/img/app_icons/comic_reader.png',
-            'Number_Slide': '/static/img/app_icons/number_slide.png'
+            'SciGraph_Calculator': {
+                'name': 'SciGraph Calculator',
+                'link': 'https://github.com/sampullman/android--Scientific-Graphing-Calculator',
+                'description': ' is a powerful calculator app for Android. Some of its capabilities are highlighted below.',
+                'features': [
+                    'Standard calculator funtionality',
+                    'Updates result on the fly as the user enters commands',
+                    'Stores previous inputs and results, and keeps the last three visible',
+                    'Complex number expressions and trigonometric functions',
+                    'Copy/paste between main, conversion, and function entry',
+                    'Simultaneously graph up to 3 functions',
+                    'Trace mode prints out function values while sliding across X axis',
+                    'Calculate all zeros visible on the graph',
+                    'Optimized for portrait and widescreen modes',
+                    'Minimal, intuitive interface'
+                ]
+            },
+            'Molecular_Mass_Calculator': {
+                'name': 'Molecular Mass Calculator',
+                'link': 'https://github.com/sampullman/android--Molecular-Mass-Calculator',
+                'description': ' is an application for calculating the molecular mass of any chemical formula. The percentages ' +
+                    'for each mass in the formula are displayed, and the formula is checked against a government database. ' +
+                    'The name of the formula is printed if a match is found. The interface is optimized for portrait and ' +
+                    'landscape modes, resulting in a simple but pleasing app.',
+                'features': []
+            },
+            'Cube_Droid': {
+                'name': 'Cube Droid',
+                'link': 'https://github.com/sampullman/android--Puzzle-Droid',
+                'description': ' is a Rubik\'s ' +
+                    'Cube implementation for Android. It was a first attempt at using OpenGL ES to create ' +
+                    'something interesting in a 3d environment.',
+                'features': [
+                    'Rotating the cube is easy and intuitive',
+                    'A slider toggles the cube dimensions from 2x2 to 8x8',
+                    'Timer that can be shown, hidden, and reset',
+                    'Buttons to scramble and reset the cube',
+                    'Smooth animations for both the cube and menu',
+                    'Displays alt text/images when available',
+                    'The cube is saved and restored between sessions'
+                ]
+            },
+            'Quiz_Droid': {
+                'name': 'Quiz Droid',
+                'link': '',
+                'description': 'Quiz Droid is a fun little app that provides quizzes in a variety of topics including ' +
+                    'geography, history, science, and vocabulary. There are currently 8 quizzes totalling ' +
+                    'hundreds of questions, and the content expands with every update.',
+                'features': [
+                    'Difficulty ratings for each question',
+                    'Scoring system that takes into account streaks',
+                    'Maintains stats on correct/total answered, streaks, and scores',
+                    'Casual, timerless mode that doesn\'t record scores',
+                    'Questions/Answers are reversible'
+                ]
+            },
+            'Web_Comic_Reader': {
+                'name': 'Web Comic Reader',
+                'link': 'https://github.com/sampullman/android--Web-Comic-Reader',
+                'description': ' is an android app with a simple interface for reading some of the most popular comics on the web.',
+                'features': [
+                    '12 different comics currently available',
+                    'Pre-caches previous and next comics for a smooth experience',
+                    'Swipe between comics',
+                    'Jump to random comics',
+                    'Displays alt text/images when available',
+                    'Save comics to SD card',
+                    'Offline comic browser for saved comics',
+                    'Direct link to the author\'s merchandise store'
+                ]
+            },
+            'Number_Slide': {
+                'name': 'Number Slide',
+                'link': 'https://github.com/sampullman/android--Number-Slider',
+                'description': ' is an ' +
+                    'implementation of the 8-puzzle and 15-puzzle for android. The app was written as a ' +
+                    'demonstration for a few of android\'s backwards compatibilty libraries. It contains ' +
+                    'several unique features, which are listed below.',
+                'features': [
+                    'Displays the optimal number of moves in 8-puzzle mode',
+                    'The built in automated solver animates the solution when activated',
+                    'Several pre-loaded images are available to use in place of the basic background',
+                    'A file browser is included to select any image as the background'
+                ]
+            }
         };
     }
 };
@@ -172,19 +208,23 @@ export default {
 .app_icon {
     width: 100%;
     height: 100%;
+    cursor: pointer;
 }
 
 #app_viewer {
     position: relative;
-}
 
-.img_nav {
-    position: relative;
-    float: left;
-    top: 180px;
-    padding: 5px;
-    width: auto;
-    height: 60px;
+    > img {
+        position: relative;
+        float: left;
+        top: 180px;
+        padding: 5px;
+        width: auto;
+        height: 60px;
+    }
+    .app {
+        transition: transform 0.3s ease-in-out;
+    }
 }
 
 #img_nav_left {
@@ -210,22 +250,17 @@ export default {
     height: 63.4%;
 }
 
-.portfolio_subtitle {
+.app_subtitle {
     display: inline-block;
     font-family: 'Arial', sans-serif;
     font-size: 26px;
-    margin-bottom: 0px;
-    margin-left: 15%;
-    margin-top: 0;
-    padding: 5px 12px 5px 12px;
+    padding: 5px 12px 5px 16%;
     text-align: center;
     color: #556699;
     font-weight: bold;
-    /*text-shadow: 1px 1px 2px #444;*/
 }
 
-.portfolio_text {
-    float: left;
+.app_text {
     line-height: 140%;
     font-size: 15px;
     font-family: 'Arial', sans-serif;
@@ -233,15 +268,14 @@ export default {
     margin: 0px;
     margin-left: 5%;
     padding: 10px 10px 8px 10px;
-    /*text-shadow: 1px 1px 2px #000;*/
 }
 
-.portfolio_text ul {
+.app_text ul {
     margin-left: -10px;
     margin-top: 5px;
 }
 
-.hidden_portfolio_text {
+.hidden_app_text {
     display: none;
 }
 </style>
