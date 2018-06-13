@@ -4,6 +4,7 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 import * as svgicon from 'vue-svgicon';
+import VTooltip from 'v-tooltip';
 
 Vue.config.productionTip = false;
 
@@ -16,6 +17,8 @@ Vue.filter('lowercase', function (value) {
 Vue.use(svgicon, {
     tagName: 'svgicon'
 });
+
+Vue.use(VTooltip);
 
 /* eslint-disable no-new */
 new Vue({

@@ -11,16 +11,16 @@
         </div>
         -->
         </div>
-        <div class="app_selector"><img id="app_arrow" src="static/images/app_arrow.png" /></div>
+        <div class="app_selector"><img id="app_arrow" src="/static/img/portfolio/app_arrow.png" /></div>
         <div id="android_portfolio_subtitle" class="portfolio_subtitle"></div>
         <p id="android_portfolio_text" class="portfolio_text section"></p>
     </div>
     <div id="app_viewer">
-        <img class="img_nav" id="img_nav_left"  src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/zXoFz1gIIO/portfolio/static/images/left_btn.png" />
+        <img class="img_nav" id="img_nav_left"  src="/static/img/portfolio/left_btn.png" />
         <span class="screenshot_holder">
             <img class="screenshot" />
         </span>
-        <img class="img_nav" id="img_nav_right"  src="https://dl.dropbox.com/sh/631wm7d11mdr3mj/OAjEfNhU4k/portfolio/static/images/right_btn.png" />
+        <img class="img_nav" id="img_nav_right"  src="/static/img/portfolio/right_btn.png" />
     </div>
 
     <div class="hidden_portfolio_text" id="SciGraph_Calculator">
@@ -188,7 +188,7 @@ export default {
     float: left;
     height: 460px;
     width: 170px;
-    background-image: url("https://dl.dropbox.com/sh/631wm7d11mdr3mj/kaVVT2CgsM/portfolio/static/images/phone.png");
+    background-image: url("/static/img/portfolio/phone.png");
     background-repeat: no-repeat;
     background-size: contain;
     padding: 40px;
