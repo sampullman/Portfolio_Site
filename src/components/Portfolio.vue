@@ -2,12 +2,14 @@
 
 <div id="content">
     <div id="app_left">
-        <div class="app_selector">
-            <div v-for="(icon, index) in $options.app_icons" :key="icon[0]" class="app_icon_holder">
-                <img @click="app_index = index" class="app_icon" :src="icon[1]" />
+        <div id="app_selector">
+            <div>
+                <div v-for="(icon, index) in $options.app_icons" :key="icon[0]" class="app_icon_holder">
+                    <img @click="app_index = index" class="app_icon" :src="icon[1]" />
+                </div>
             </div>
+            <div><img id="app_arrow" src="/static/img/portfolio/app_arrow.png" /></div>
         </div>
-        <div class="app_selector"><img id="app_arrow" src="/static/img/portfolio/app_arrow.png" /></div>
         <transition-group class='carousel' tag="div">
             <div
                 v-for="(app, id, index) in $options.apps"
@@ -195,9 +197,9 @@ export default {
     padding: 0;
 }
 
-.app_selector {
-    position: relative;
-    left: 40px;
+#app_selector {
+    width: fit-content;
+    margin: 0 auto;
 }
 
 #app_arrow {
@@ -218,6 +220,36 @@ export default {
     width: 100%;
     height: 100%;
     cursor: pointer;
+}
+
+.carousel {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 8% 0 15%;
+}
+
+.app_subtitle {
+    display: inline-block;
+    font-family: 'Arial', sans-serif;
+    font-size: 26px;
+    padding: 5px 12px 5px 16%;
+    text-align: center;
+    color: #556699;
+    font-weight: bold;
+}
+
+.app_text {
+    line-height: 140%;
+    font-size: 15px;
+    font-family: 'Arial', sans-serif;
+    width: 100%;
+    margin: 0px;
+    padding: 10px 10px 8px 10px;
+}
+
+.app_text ul {
+    margin-left: -10px;
+    margin-top: 5px;
 }
 
 #app_viewer {
@@ -257,34 +289,5 @@ export default {
     left: 10%;
     width: 82%;
     height: 63.4%;
-}
-
-.app_subtitle {
-    display: inline-block;
-    font-family: 'Arial', sans-serif;
-    font-size: 26px;
-    padding: 5px 12px 5px 16%;
-    text-align: center;
-    color: #556699;
-    font-weight: bold;
-}
-
-.app_text {
-    line-height: 140%;
-    font-size: 15px;
-    font-family: 'Arial', sans-serif;
-    width: 80%;
-    margin: 0px;
-    margin-left: 5%;
-    padding: 10px 10px 8px 10px;
-}
-
-.app_text ul {
-    margin-left: -10px;
-    margin-top: 5px;
-}
-
-.hidden_app_text {
-    display: none;
 }
 </style>
