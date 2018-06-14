@@ -4,18 +4,15 @@
     <div id="app_left">
         <div id="app_selector">
             <div>
-                <div v-for="(icon, index) in $options.app_icons" :key="icon[0]" class="app_icon_holder">
-                    <img @click="app_index = index" class="app_icon" :src="icon[1]" />
+                <div v-for="(app, index) in $options.apps" :key="app.id" class="app_icon_holder">
+                    <img @click="app_index = index" class="app_icon" :src="app.icon" />
                 </div>
             </div>
             <div><img id="app_arrow" src="/static/img/portfolio/app_arrow.png" /></div>
         </div>
-        <transition-group class='carousel' tag="div">
-            <div
-                v-for="(app, id, index) in $options.apps"
-                class='app'
-                :key="id">
-                <div v-if="app_index == index" class="app_content">
+        <div class="carousel">
+            <div class='app' v-for="n in [app_index]" :key='n'>
+                <div class="app_content">
                     <div class="app_subtitle">{{ app.name }}</div>
                     <p class="app_text section">
                         <span class="indent">
@@ -30,14 +27,17 @@
                     </p>
                 </div>
             </div>
-        </transition-group>
+        </div>
     </div>
     <div id="app_viewer">
-        <img id="img_nav_left" @click="screenshot_prev" src="/static/img/portfolio/left_btn.png" />
-        <span class="screenshot_holder">
-            <img class="screenshot" />
-        </span>
-        <img id="img_nav_right" @click="screenshot_next" src="/static/img/portfolio/right_btn.png" />
+        <div class="nav" id="img_nav_left" @click="screenshot_prev"></div>
+        <div id="screenshot_holder">
+            <transition-group :name="screenshotDir" tag='div'>
+                <img :src="app.screenshots[screenshot]"
+                     v-for="n in [(screenshot + ' ' + app_index)]" :key='n'> />
+            </transition-group>
+        </div>
+        <div class="nav" id="img_nav_right" @click="screenshot_next"></div>
     </div>
 </div>
 </template>
@@ -49,20 +49,27 @@ export default {
     data() {
         return {
             app_index: 0,
-            screenshot: 0
+            app: null,
+            screenshot: 0,
+            screenshotDir: 'left'
         };
     },
     methods: {
         screenshot_prev: function() {
-
+            this.screenshotDir = 'left';
+            let count = this.app.screenshots.length;
+            this.screenshot = (count + this.screenshot - 1) % count;
         },
         screenshot_next: function() {
-
+            this.screenshotDir = 'right';
+            let count = this.app.screenshots.length;
+            this.screenshot = (this.screenshot + 1) % count;
         }
     },
     watch: {
         app_index: function (newIndex, oldIndex) {
-            this.$router.replace('/portfolio/' + this.$options.app_icons[this.app_index][0]);
+            this.app = this.$options.apps[newIndex];
+            this.$router.replace('/portfolio/' + this.app.id);
             let pos = 29 + (newIndex * 78);
             console.log(pos);
             anime({
@@ -70,27 +77,16 @@ export default {
                 left: pos + 'px',
                 elasticity: 400
             });
+            this.screenshot = 0;
+            this.screenshotDir = 'none';
         }
     },
     created() {
-        this.$options.app_icons = [
-            ['SciGraph_Calculator', '/static/img/app_icons/scigraph_calc.png'],
-            ['Molecular_Mass_Calculator', '/static/img/app_icons/molecular_mass.png'],
-            ['Cube_Droid', '/static/img/app_icons/cube_droid.png'],
-            ['Quiz_Droid', '/static/img/app_icons/quiz_droid.png'],
-            ['Web_Comic_Reader', '/static/img/app_icons/comic_reader.png'],
-            ['Number_Slide', '/static/img/app_icons/number_slide.png']
-        ];
-        if(this.$route.params.app) {
-            for(var i = 0; i < this.$options.app_icons.length; i++) {
-                if(this.$route.params.app === this.$options.app_icons[i][0]) {
-                    this.app_index = i;
-                }
-            }
-        }
-        this.$options.apps = {
-            SciGraph_Calculator: {
+        this.$options.apps = [
+            {
+                id: 'SciGraph_Calculator',
                 name: 'SciGraph Calculator',
+                icon: '/static/img/app_icons/scigraph_calc.png',
                 link: 'https://github.com/sampullman/android--Scientific-Graphing-Calculator',
                 description: ' is a powerful calculator app for Android. Some of its capabilities are highlighted below.',
                 features: [
@@ -104,19 +100,37 @@ export default {
                     'Calculate all zeros visible on the graph',
                     'Optimized for portrait and widescreen modes',
                     'Minimal, intuitive interface'
+                ],
+                screenshots: [
+                    'static/img/SciGraph_Calculator/screenshot0.png',
+                    'static/img/SciGraph_Calculator/screenshot1.png',
+                    'static/img/SciGraph_Calculator/screenshot2.png',
+                    'static/img/SciGraph_Calculator/screenshot3.png',
+                    'static/img/SciGraph_Calculator/screenshot4.png',
+                    'static/img/SciGraph_Calculator/screenshot5.png',
+                    'static/img/SciGraph_Calculator/screenshot6.png'
                 ]
             },
-            Molecular_Mass_Calculator: {
+            {
+                id: 'Molecular_Mass_Calculator',
                 name: 'Molecular Mass Calculator',
+                icon: '/static/img/app_icons/molecular_mass.png',
                 link: 'https://github.com/sampullman/android--Molecular-Mass-Calculator',
                 description: ' is an application for calculating the molecular mass of any chemical formula. The percentages ' +
                     'for each mass in the formula are displayed, and the formula is checked against a government database. ' +
                     'The name of the formula is printed if a match is found. The interface is optimized for portrait and ' +
                     'landscape modes, resulting in a simple but pleasing app.',
-                features: []
+                features: [],
+                screenshots: [
+                    'static/img/Molecular_Mass_Calculator/screenshot0.png',
+                    'static/img/Molecular_Mass_Calculator/screenshot1.png',
+                    'static/img/Molecular_Mass_Calculator/screenshot2.png'
+                ]
             },
-            Cube_Droid: {
+            {
+                id: 'Cube_Droid',
                 name: 'Cube Droid',
+                icon: '/static/img/app_icons/cube_droid.png',
                 link: 'https://github.com/sampullman/android--Puzzle-Droid',
                 description: ' is a Rubik\'s ' +
                     'Cube implementation for Android. It was a first attempt at using OpenGL ES to create ' +
@@ -129,10 +143,17 @@ export default {
                     'Smooth animations for both the cube and menu',
                     'Displays alt text/images when available',
                     'The cube is saved and restored between sessions'
+                ],
+                screenshots: [
+                    'static/img/Cube_Droid/screenshot0.png',
+                    'static/img/Cube_Droid/screenshot1.png',
+                    'static/img/Cube_Droid/screenshot2.png'
                 ]
             },
-            Quiz_Droid: {
+            {
+                id: 'Quiz_Droid',
                 name: 'Quiz Droid',
+                icon: '/static/img/app_icons/quiz_droid.png',
                 link: '',
                 description: 'Quiz Droid is a fun little app that provides quizzes in a variety of topics including ' +
                     'geography, history, science, and vocabulary. There are currently 8 quizzes totalling ' +
@@ -143,10 +164,18 @@ export default {
                     'Maintains stats on correct/total answered, streaks, and scores',
                     'Casual, timerless mode that doesn\'t record scores',
                     'Questions/Answers are reversible'
+                ],
+                screenshots: [
+                    'static/img/Quiz_Droid/screenshot0.png',
+                    'static/img/Quiz_Droid/screenshot1.png',
+                    'static/img/Quiz_Droid/screenshot2.png',
+                    'static/img/Quiz_Droid/screenshot3.png'
                 ]
             },
-            Web_Comic_Reader: {
+            {
+                id: 'Web_Comic_Reader',
                 name: 'Web Comic Reader',
+                icon: '/static/img/app_icons/comic_reader.png',
                 link: 'https://github.com/sampullman/android--Web-Comic-Reader',
                 description: ' is an android app with a simple interface for reading some of the most popular comics on the web.',
                 features: [
@@ -158,10 +187,17 @@ export default {
                     'Save comics to SD card',
                     'Offline comic browser for saved comics',
                     'Direct link to the author\'s merchandise store'
+                ],
+                screenshots: [
+                    'static/img/Web_Comic_Reader/screenshot0.png',
+                    'static/img/Web_Comic_Reader/screenshot1.png',
+                    'static/img/Web_Comic_Reader/screenshot2.png'
                 ]
             },
-            Number_Slide: {
+            {
+                id: 'Number_Slide',
                 name: 'Number Slide',
+                icon: '/static/img/app_icons/number_slide.png',
                 link: 'https://github.com/sampullman/android--Number-Slider',
                 description: ' is an ' +
                     'implementation of the 8-puzzle and 15-puzzle for android. The app was written as a ' +
@@ -172,14 +208,33 @@ export default {
                     'The built in automated solver animates the solution when activated',
                     'Several pre-loaded images are available to use in place of the basic background',
                     'A file browser is included to select any image as the background'
+                ],
+                screenshots: [
+                    'static/img/Number_Slide/screenshot0.png',
+                    'static/img/Number_Slide/screenshot1.png',
+                    'static/img/Number_Slide/screenshot2.png',
+                    'static/img/Number_Slide/screenshot3.png'
                 ]
             }
-        };
+        ];
+        if(this.$route.params.app) {
+            for(var i = 0; i < this.$options.apps.length; i++) {
+                if(this.$route.params.app === this.$options.apps[i]) {
+                    this.app_index = i;
+                }
+            }
+        }
+        this.app = this.$options.apps[this.app_index];
     }
 };
 </script>
 
 <style lang="scss">
+
+#content:after {
+    display: none;
+    content: url('/static/img/portfolio/right_btn_pressed.png') url('/static/img/portfolio/left_btn_pressed.png');
+}
 
 #app_left {
     position:relative;
@@ -236,21 +291,33 @@ export default {
 #app_viewer {
     position: relative;
 
-    > img {
+    > .nav {
         position: relative;
         float: left;
         top: 180px;
         padding: 5px;
-        width: auto;
-        height: 60px;
+        width: 32px;
+        height: 72px;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+    #img_nav_left {
+        background-image: url("/static/img/portfolio/left_btn.png");
+
+        &:hover {
+            background-image: url("/static/img/portfolio/left_btn_pressed.png");
+        }
+    }
+    #img_nav_right {
+        background-image: url("/static/img/portfolio/right_btn.png");
+
+        &:hover {
+            background-image: url("/static/img/portfolio/right_btn_pressed.png");
+        }
     }
 }
 
-#img_nav_left {
-    visibility: hidden;
-}
-
-.screenshot_holder {
+#screenshot_holder {
     position: relative;
     float: left;
     height: 460px;
@@ -259,13 +326,44 @@ export default {
     background-repeat: no-repeat;
     background-size: contain;
     padding: 40px;
+
+    > div {
+        position: absolute;
+        top: 13.6%;
+        left: 10%;
+        width: 205px;
+        height: 63.4%;
+        overflow: hidden;
+    }
+
+    img {
+        width: 100%;
+        height: 100%;
+        user-select: none;
+     }
 }
 
-.screenshot {
+.left-enter-active, .left-leave-active, .right-enter-active, .right-leave-active {
+    transition: all 0.6s ease;
+    overflow: hidden;
+    visibility: visible;
+    opacity: 1;
     position: absolute;
-    top: 13.6%;
-    left: 10%;
-    width: 82%;
-    height: 63.4%;
+}
+.left-enter {
+    transform: translateX(205px);
+}
+.left-leave-active {
+    transform: translateX(-205px);
+}
+.right-enter {
+    transform: translateX(-205px);
+}
+.right-leave-active {
+    transform: translateX(205px);
+}
+.left-enter, .left-leave-to, .right-enter, .right-leave-to {
+    opacity: 0;
+    visibility: hidden;
 }
 </style>
