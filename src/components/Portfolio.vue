@@ -48,7 +48,8 @@ export default {
     name: 'Portfolio',
     data() {
         return {
-            app_index: 0
+            app_index: 0,
+            screenshot: 0
         };
     },
     methods: {
@@ -88,11 +89,11 @@ export default {
             }
         }
         this.$options.apps = {
-            'SciGraph_Calculator': {
-                'name': 'SciGraph Calculator',
-                'link': 'https://github.com/sampullman/android--Scientific-Graphing-Calculator',
-                'description': ' is a powerful calculator app for Android. Some of its capabilities are highlighted below.',
-                'features': [
+            SciGraph_Calculator: {
+                name: 'SciGraph Calculator',
+                link: 'https://github.com/sampullman/android--Scientific-Graphing-Calculator',
+                description: ' is a powerful calculator app for Android. Some of its capabilities are highlighted below.',
+                features: [
                     'Standard calculator funtionality',
                     'Updates result on the fly as the user enters commands',
                     'Stores previous inputs and results, and keeps the last three visible',
@@ -105,22 +106,22 @@ export default {
                     'Minimal, intuitive interface'
                 ]
             },
-            'Molecular_Mass_Calculator': {
-                'name': 'Molecular Mass Calculator',
-                'link': 'https://github.com/sampullman/android--Molecular-Mass-Calculator',
-                'description': ' is an application for calculating the molecular mass of any chemical formula. The percentages ' +
+            Molecular_Mass_Calculator: {
+                name: 'Molecular Mass Calculator',
+                link: 'https://github.com/sampullman/android--Molecular-Mass-Calculator',
+                description: ' is an application for calculating the molecular mass of any chemical formula. The percentages ' +
                     'for each mass in the formula are displayed, and the formula is checked against a government database. ' +
                     'The name of the formula is printed if a match is found. The interface is optimized for portrait and ' +
                     'landscape modes, resulting in a simple but pleasing app.',
-                'features': []
+                features: []
             },
-            'Cube_Droid': {
-                'name': 'Cube Droid',
-                'link': 'https://github.com/sampullman/android--Puzzle-Droid',
-                'description': ' is a Rubik\'s ' +
+            Cube_Droid: {
+                name: 'Cube Droid',
+                link: 'https://github.com/sampullman/android--Puzzle-Droid',
+                description: ' is a Rubik\'s ' +
                     'Cube implementation for Android. It was a first attempt at using OpenGL ES to create ' +
                     'something interesting in a 3d environment.',
-                'features': [
+                features: [
                     'Rotating the cube is easy and intuitive',
                     'A slider toggles the cube dimensions from 2x2 to 8x8',
                     'Timer that can be shown, hidden, and reset',
@@ -130,13 +131,13 @@ export default {
                     'The cube is saved and restored between sessions'
                 ]
             },
-            'Quiz_Droid': {
-                'name': 'Quiz Droid',
-                'link': '',
-                'description': 'Quiz Droid is a fun little app that provides quizzes in a variety of topics including ' +
+            Quiz_Droid: {
+                name: 'Quiz Droid',
+                link: '',
+                description: 'Quiz Droid is a fun little app that provides quizzes in a variety of topics including ' +
                     'geography, history, science, and vocabulary. There are currently 8 quizzes totalling ' +
                     'hundreds of questions, and the content expands with every update.',
-                'features': [
+                features: [
                     'Difficulty ratings for each question',
                     'Scoring system that takes into account streaks',
                     'Maintains stats on correct/total answered, streaks, and scores',
@@ -144,11 +145,11 @@ export default {
                     'Questions/Answers are reversible'
                 ]
             },
-            'Web_Comic_Reader': {
-                'name': 'Web Comic Reader',
-                'link': 'https://github.com/sampullman/android--Web-Comic-Reader',
-                'description': ' is an android app with a simple interface for reading some of the most popular comics on the web.',
-                'features': [
+            Web_Comic_Reader: {
+                name: 'Web Comic Reader',
+                link: 'https://github.com/sampullman/android--Web-Comic-Reader',
+                description: ' is an android app with a simple interface for reading some of the most popular comics on the web.',
+                features: [
                     '12 different comics currently available',
                     'Pre-caches previous and next comics for a smooth experience',
                     'Swipe between comics',
@@ -159,14 +160,14 @@ export default {
                     'Direct link to the author\'s merchandise store'
                 ]
             },
-            'Number_Slide': {
-                'name': 'Number Slide',
-                'link': 'https://github.com/sampullman/android--Number-Slider',
-                'description': ' is an ' +
+            Number_Slide: {
+                name: 'Number Slide',
+                link: 'https://github.com/sampullman/android--Number-Slider',
+                description: ' is an ' +
                     'implementation of the 8-puzzle and 15-puzzle for android. The app was written as a ' +
                     'demonstration for a few of android\'s backwards compatibilty libraries. It contains ' +
                     'several unique features, which are listed below.',
-                'features': [
+                features: [
                     'Displays the optimal number of moves in 8-puzzle mode',
                     'The built in automated solver animates the solution when activated',
                     'Several pre-loaded images are available to use in place of the basic background',
@@ -184,17 +185,6 @@ export default {
     position:relative;
     float: left;
     width: 60%;
-}
-
-.portfolio_title {
-    font-family: 'Arial', sans-serif;
-    position: absolute;
-    left: -210px;
-    top: 20px;
-    font-size: 20px;
-    font-weight: bold;
-    margin: 0;
-    padding: 0;
 }
 
 #app_selector {
@@ -229,11 +219,9 @@ export default {
 }
 
 .app_subtitle {
-    display: inline-block;
     font-family: 'Arial', sans-serif;
     font-size: 26px;
     padding: 5px 12px 5px 16%;
-    text-align: center;
     color: #556699;
     font-weight: bold;
 }
@@ -241,15 +229,8 @@ export default {
 .app_text {
     line-height: 140%;
     font-size: 15px;
-    font-family: 'Arial', sans-serif;
-    width: 100%;
     margin: 0px;
     padding: 10px 10px 8px 10px;
-}
-
-.app_text ul {
-    margin-left: -10px;
-    margin-top: 5px;
 }
 
 #app_viewer {
@@ -262,9 +243,6 @@ export default {
         padding: 5px;
         width: auto;
         height: 60px;
-    }
-    .app {
-        transition: transform 0.3s ease-in-out;
     }
 }
 
