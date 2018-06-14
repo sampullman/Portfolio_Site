@@ -1,7 +1,6 @@
 <template>
 
 <div id="wrap">
-    <link rel="canonical" href="http://www.sampullman.com/games" />
     <div id="games_content">
         <!--
         <iframe id="game" width="980" height="565" style="visibility:hidden;" onload="this.style.visibility = 'visible';"

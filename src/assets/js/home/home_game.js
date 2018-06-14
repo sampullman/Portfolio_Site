@@ -1,7 +1,7 @@
 /* Good day to you, sir. C stands for Canvas. */
 
 import {player, Powerups, Ball, Block, SuperBlock} from './objects.js';
-import { Sprite } from './sprite.js';
+import { Sprite } from '../game/sprite.js';
 import { clamp, keyhandler } from '../util.js';
 
 export { loadGame, pauseGame };

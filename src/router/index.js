@@ -4,6 +4,7 @@ import Home from '@/components/Home';
 import Portfolio from '@/components/Portfolio';
 import Resume from '@/components/Resume';
 import Games from '@/components/Games';
+import SpaceGame from '@/games/SpaceGame';
 
 Vue.use(Router);
 
@@ -27,7 +28,14 @@ export default new Router({
         {
             path: '/games',
             name: 'Games',
-            component: Games
+            component: Games,
+            children: [
+                {
+                    path: 'space',
+                    name: 'SpaceGame',
+                    component: SpaceGame
+                }
+            ]
         }
     ]
 });

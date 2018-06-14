@@ -27,7 +27,7 @@ var keyhandler = {
     }
 };
 
-export { clamp, keyhandler };
+export { clamp, keyhandler, findPos, withId };
 
 function clamp(n, min, max) {
     return Math.min(Math.max(n, min), max);
@@ -74,7 +74,6 @@ function arrayRand(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
-/* eslint-disable no-unused-vars */
 function findPos(obj) {
     var curleft = 0;
     var curtop = 0;
@@ -87,4 +86,8 @@ function findPos(obj) {
         return { x: curleft, y: curtop };
     }
     return undefined;
+}
+
+function withId(id) {
+    return document.getElementById(id);
 }
