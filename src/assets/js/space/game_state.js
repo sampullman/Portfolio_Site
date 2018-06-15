@@ -13,8 +13,10 @@ let gameState = {
     soundOn: false,
     isOver: false,
     eventId: 0,
-    level: null,
-    attackTimer: 0
+    shotTimer: 0,
+    gameOverTimer: 0,
+    attackTimer: 0,
+    level: null
 };
 
 export { gameState, GameMode };

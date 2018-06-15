@@ -27,7 +27,7 @@ var keyhandler = {
     }
 };
 
-export { clamp, escapeHtml, keyhandler, findPos, withId };
+export { arrayRand, removeSquare, clamp, escapeHtml, keyhandler, findPos, withId, post };
 
 function clamp(n, min, max) {
     return Math.min(Math.max(n, min), max);
@@ -39,6 +39,7 @@ function escapeHtml(str) {
     return div.innerHTML;
 };
 
+/* eslint-disable no-unused-vars */
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -57,7 +58,18 @@ function setupAjax() {
 }
 */
 
-/* eslint-disable no-unused-vars */
+function post(url, data, callback) {
+    var http = new XMLHttpRequest();
+    http.open('POST', url, true);
+    http.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    http.onreadystatechange = function() {
+        if(http.readyState === 4 && callback !== null) {
+            callback(http);
+        }
+    };
+    http.send(JSON.stringify(data));
+}
+
 function removeSquare(arr, stride, x, y, w, h) {
     for(var i = y; i < y + h; i += 1) {
         for(var j = x; j < x + w; j += 1) {
@@ -68,7 +80,6 @@ function removeSquare(arr, stride, x, y, w, h) {
     }
 }
 
-/* eslint-disable no-unused-vars */
 function arrayRand(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }

@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { loadGame, startGame } from '@/assets/js/space/space_game.js';
+import { loadGame, startGame, pause } from '@/assets/js/space/space_game.js';
 export default {
     name: 'SpaceGame',
     mounted: function () {
@@ -18,7 +18,7 @@ export default {
     },
     beforeDestroy: function () {
         console.log('Ending the game');
-        pauseGame();
+        pause();
     },
     methods: {
         startGame: startGame

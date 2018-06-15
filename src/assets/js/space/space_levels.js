@@ -1,23 +1,28 @@
 
-import { enemyData, enemy1Obj, enemy2Obj,
-    enemy3Obj, enemy4Obj,enemy5Obj, enemy6Obj, enemy7Obj, enemy8Obj } from './space_enemies.js';
-import { randomInit } from './space_paths.js';
+import { enemyData, enemies, setEnemies, enemy1Obj, enemy2Obj,
+    enemy3Obj, enemy4Obj, enemy5Obj, enemy6Obj, enemy7Obj, enemy8Obj, enemy9Obj } from './space_enemies.js';
+import { randomInit, randomVerticalInit, randomHorizontalInit } from './space_paths.js';
+import { removeSquare } from '../util.js';
 
 var activeEnemies = [];
+var editorActiveEnemies = [];
 
-levels = {
-    init: function() {
+function setEditorActiveEnemies(enemies) {
+    editorActiveEnemies = enemies;
+}
+
+let levels = {
+    init: function(c) {
         this.eCols = 8;
         this.yDiff = enemyData.height * 1.6;
         this.xDiff = (c.width - enemyData.width) / this.eCols;
-
     },
     loadEnemies: function(enemyObjs, shotFreqs, initX, initY, xDiff, yDiff, initPathFn, speeds) {
         for(var i = 0; i < enemyObjs.length; i++) {
             var x = initX;
             for(var j = 0; j < levels.eCols; j++) {
-                var parent=null;
-                if(i != 0) {
+                var parent = null;
+                if(i !== 0) {
                     parent = enemies[(i - 1) * levels.eCols + j];
                 }
                 enemies.push(enemyObjs[i].instantiate(x, initY, enemyData.width, enemyData.height,
@@ -28,29 +33,31 @@ levels = {
         }
     },
     setupEnemies: function(extras, active) {
-        enemies = extras.concat(enemies);
+        setEnemies(extras.concat(enemies));
         enemies.forEach(function(e) { e.initPath.init() });
         activeEnemies = active;
     },
     level1: {
-        attack_freq: function() {return 60 + enemies.length;},
-        load: function() {
-            enemyObjs = [enemy3Obj, enemy2Obj, enemy2Obj, enemy1Obj, enemy1Obj];
-            speeds = [1, 1, 1, 1, 1];
-            shotFreqs = [20, 50, 50, 0, 0];
-            var initX = enemyData.width / 1.5, initY = 40 + levels.yDiff;
+        attack_freq: function() { return 60 + enemies.length },
+        load: function(c) {
+            var enemyObjs = [enemy3Obj, enemy2Obj, enemy2Obj, enemy1Obj, enemy1Obj];
+            var speeds = [1, 1, 1, 1, 1];
+            var shotFreqs = [20, 50, 50, 0, 0];
+            var initX = enemyData.width / 1.5;
+            var initY = 40 + levels.yDiff;
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY, levels.xDiff, levels.yDiff, randomVerticalInit, speeds);
             var h = enemy4Obj.instantiate(initX + (levels.xDiff * 3), initY - levels.yDiff, enemyData.width, enemyData.height, 30, randomVerticalInit, null, enemies[3]);
             levels.setupEnemies([h], enemies.slice(enemies.length - levels.eCols, enemies.length));
         }
     },
     level2: {
-        attack_freq: function() {return 40 + enemies.length;},
-        load: function() {
-            enemyObjs = [enemy3Obj, enemy3Obj, enemy2Obj, enemy2Obj, enemy1Obj];
-            speeds = [1, 1, 1, 1, 1];
-            shotFreqs = [20, 20, 40, 50, 0];
-            var initX = enemyData.width / 1.5, initY = 40 + levels.yDiff;
+        attack_freq: function() { return 40 + enemies.length },
+        load: function(c) {
+            var enemyObjs = [enemy3Obj, enemy3Obj, enemy2Obj, enemy2Obj, enemy1Obj];
+            var speeds = [1, 1, 1, 1, 1];
+            var shotFreqs = [20, 20, 40, 50, 0];
+            var initX = enemyData.width / 1.5;
+            var initY = 40 + levels.yDiff;
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY, levels.xDiff, levels.yDiff, randomVerticalInit, speeds);
             var h1 = enemy4Obj.instantiate(initX + levels.xDiff, initY - levels.yDiff, enemyData.width, enemyData.height, 30, randomVerticalInit, null, enemies[1]);
             var h2 = enemy4Obj.instantiate(initX + (levels.xDiff * 6), initY - levels.yDiff, enemyData.width, enemyData.height, 30, randomVerticalInit, null, enemies[6]);
@@ -61,11 +68,12 @@ levels = {
         attack_freq: function() {
             return enemies.length * 2;
         },
-        load: function() {
-            enemyObjs = [enemy3Obj, enemy3Obj, enemy3Obj, enemy2Obj, enemy1Obj];
-            shotFreqs = [15, 20, 20, 40, 0];
-            speeds = [1, 1, 1, 1, 1];
-            var initX = enemyData.width / 1.5, initY = 40 + levels.yDiff;
+        load: function(c) {
+            var enemyObjs = [enemy3Obj, enemy3Obj, enemy3Obj, enemy2Obj, enemy1Obj];
+            var shotFreqs = [15, 20, 20, 40, 0];
+            var speeds = [1, 1, 1, 1, 1];
+            var initX = enemyData.width / 1.5;
+            var initY = 40 + levels.yDiff;
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY, levels.xDiff, levels.yDiff, randomVerticalInit, speeds);
             var h1 = enemy4Obj.instantiate(initX + levels.xDiff, initY - levels.yDiff, enemyData.width, enemyData.height, 30, randomVerticalInit, null, enemies[1]);
             var h2 = enemy4Obj.instantiate(initX + (levels.xDiff * 6), initY - levels.yDiff, enemyData.width, enemyData.height, 30, randomVerticalInit, null, enemies[6]);
@@ -73,86 +81,92 @@ levels = {
         }
     },
     level4: {
-        attack_freq: function(){return 35;},
-        load: function() {
-            enemyObjs = [enemy4Obj, enemy3Obj, enemy3Obj, enemy2Obj, enemy2Obj, enemy1Obj];
-            speeds = [1, 1, 1, 1, 1, 1];
-            shotFreqs = [30, 15, 20, 30, 40, 0];
-            var initX = enemyData.width / 1.5, initY = 40;
+        attack_freq: function() { return 35 },
+        load: function(c) {
+            var enemyObjs = [enemy4Obj, enemy3Obj, enemy3Obj, enemy2Obj, enemy2Obj, enemy1Obj];
+            var speeds = [1, 1, 1, 1, 1, 1];
+            var shotFreqs = [30, 15, 20, 30, 40, 0];
+            var initX = enemyData.width / 1.5;
+            var initY = 40;
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY, levels.xDiff, levels.yDiff, randomVerticalInit, speeds);
             levels.setupEnemies([], enemies.slice(levels.eCols, 2 * levels.eCols));
         }
     },
     level5: {
-        attack_freq: function(){return enemies.length;},
-        load: function() {
-            enemyObjs = [enemy4Obj, enemy3Obj, enemy2Obj, enemy1Obj, enemy1Obj, enemy1Obj];
-            shotFreqs = [30, 15, 30, 0, 0, 0];
-            speeds = [1, 1, 1, 2, 2, 2];
-            var initX = enemyData.width / 1.5, initY = 40;
+        attack_freq: function() { return enemies.length },
+        load: function(c) {
+            var enemyObjs = [enemy4Obj, enemy3Obj, enemy2Obj, enemy1Obj, enemy1Obj, enemy1Obj];
+            var shotFreqs = [30, 15, 30, 0, 0, 0];
+            var speeds = [1, 1, 1, 2, 2, 2];
+            var initX = enemyData.width / 1.5;
+            var initY = 40;
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY, levels.xDiff, levels.yDiff, randomVerticalInit, speeds);
             levels.setupEnemies([], enemies.slice(enemies.length - 3 * levels.eCols, enemies.length));
         }
     },
     level6: {
-        attack_freq: function(){return 40;},
-        load: function() {
-            var initX = enemyData.width / 1.5, initY = 40;
-            enemyObjs = [enemy3Obj, enemy3Obj, enemy2Obj,  enemy1Obj, enemy1Obj];
-            shotFreqs = [30, 15, 30, 0, 0, 0];
-            speeds = [1, 1, 1, 2, 2];
+        attack_freq: function() { return 40 },
+        load: function(c) {
+            var initX = enemyData.width / 1.5;
+            var initY = 40;
+            var enemyObjs = [enemy3Obj, enemy3Obj, enemy2Obj, enemy1Obj, enemy1Obj];
+            var shotFreqs = [30, 15, 30, 0, 0, 0];
+            var speeds = [1, 1, 1, 2, 2];
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY, levels.xDiff, levels.yDiff, randomInit, speeds);
             var b1 = enemy5Obj.instantiate(initX + levels.xDiff, initY, enemyData.width + levels.xDiff, enemyData.height + levels.yDiff, 20, randomVerticalInit,
-                        enemies.slice(levels.eCols * 2, levels.eCols * 2 + 4));
+                enemies.slice(levels.eCols * 2, levels.eCols * 2 + 4));
             var b2 = enemy5Obj.instantiate(initX + levels.xDiff * 5, initY, enemyData.width + levels.xDiff, enemyData.height + levels.yDiff,
-                        20, randomVerticalInit, enemies.slice(levels.eCols * 2 + 4, levels.eCols * 2 + 8));
+                20, randomVerticalInit, enemies.slice(levels.eCols * 2 + 4, levels.eCols * 2 + 8));
             removeSquare(enemies, levels.eCols, 1, 0, 2, 2);
             removeSquare(enemies, levels.eCols, 5, 0, 2, 2);
             levels.setupEnemies([b1, b2], [b1, b1, b2, b2].concat(enemies.slice(enemies.length - 2 * levels.eCols, enemies.length)));
         }
     },
     level7: {
-        attack_freq: function(){return 30;},
-        load: function() {
-            var initX = enemyData.width / 1.5, initY = 40;
-            enemyObjs = [enemy3Obj, enemy3Obj, enemy2Obj,  enemy1Obj, enemy1Obj];
-            shotFreqs = [30, 15, 30, 0, 0, 0];
-            speeds = [1, 1, 1, 2, 2];
+        attack_freq: function() { return 30 },
+        load: function(c) {
+            var initX = enemyData.width / 1.5;
+            var initY = 40;
+            var enemyObjs = [enemy3Obj, enemy3Obj, enemy2Obj, enemy1Obj, enemy1Obj];
+            var shotFreqs = [30, 15, 30, 0, 0, 0];
+            var speeds = [1, 1, 1, 2, 2];
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY, levels.xDiff, levels.yDiff, randomInit, speeds);
             var escorts = [enemies[2], enemies[5], enemies[levels.eCols + 2], enemies[levels.eCols + 5]]
-            .concat(enemies.slice(levels.eCols * 2 + 2, levels.eCols * 2 + 6))
-            .concat(enemies.slice(levels.eCols * 3 + 2, levels.eCols * 3 + 6));
+                .concat(enemies.slice(levels.eCols * 2 + 2, levels.eCols * 2 + 6))
+                .concat(enemies.slice(levels.eCols * 3 + 2, levels.eCols * 3 + 6));
             var b = enemy5Obj.instantiate(initX + levels.xDiff * 3, initY, enemyData.width + levels.xDiff, enemyData.height + levels.yDiff, 20, randomVerticalInit, escorts);
             removeSquare(enemies, levels.eCols, 3, 0, 2, 2);
             levels.setupEnemies([b], [b, b, b, b].concat(enemies.slice(enemies.length - levels.eCols, enemies.length)));
         }
     },
     level8: {
-        attack_freq: function(){return 50;},
-        load: function() {
-            var initX = enemyData.width / 1.5, initY = 40 + 2 * levels.yDiff;
-            var enemyObjs = [enemy3Obj, enemy3Obj, enemy2Obj,  enemy1Obj];
+        attack_freq: function() { return 50 },
+        load: function(c) {
+            var initX = enemyData.width / 1.5;
+            var initY = 40 + 2 * levels.yDiff;
+            var enemyObjs = [enemy3Obj, enemy3Obj, enemy2Obj, enemy1Obj];
             var shotFreqs = [30, 15, 30, 0];
             var speeds = [1, 1, 2, 2];
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY, levels.xDiff, levels.yDiff, randomInit, speeds);
             initY = 40;
             var b1 = enemy5Obj.instantiate(initX, initY, enemyData.width + levels.xDiff, enemyData.height + levels.yDiff, 20,
-                        randomVerticalInit, [enemies[0], enemies[1]]);
+                randomVerticalInit, [enemies[0], enemies[1]]);
             var b2 = enemy5Obj.instantiate(initX + 2 * levels.xDiff, initY, enemyData.width + levels.xDiff, enemyData.height + levels.yDiff, 20,
-                        randomVerticalInit, [enemies[2], enemies[3]]);
+                randomVerticalInit, [enemies[2], enemies[3]]);
             var b3 = enemy5Obj.instantiate(initX + 4 * levels.xDiff, initY, enemyData.width + levels.xDiff, enemyData.height + levels.yDiff, 20,
-                        randomVerticalInit, [enemies[4], enemies[5]]);
+                randomVerticalInit, [enemies[4], enemies[5]]);
             var b4 = enemy5Obj.instantiate(initX + 6 * levels.xDiff, initY, enemyData.width + levels.xDiff, enemyData.height + levels.yDiff, 20,
-                        randomVerticalInit, [enemies[6], enemies[7]]);
+                randomVerticalInit, [enemies[6], enemies[7]]);
             levels.setupEnemies([b1, b2, b3, b4], [b1, b1, b1, b2, b2, b2, b3, b3, b3, b4, b4, b4].concat(enemies.slice(enemies.length - levels.eCols, enemies.length)));
         }
     },
     level9: {
-        attack_freq: function(){return 50;},
-        load: function() {
-            var initX = enemyData.width / 1.5, initY = 40 + levels.yDiff;
+        attack_freq: function() { return 50 },
+        load: function(c) {
+            var initX = enemyData.width / 1.5;
+            var initY = 40 + levels.yDiff;
             var b = enemy6Obj.instantiate(c.width / 2, initY - levels.yDiff, enemyData.width, enemyData.height, 60, randomInit);
-            var enemyObjs = [enemy4Obj, enemy3Obj, enemy2Obj,  enemy1Obj,  enemy1Obj,  enemy1Obj];
+            var enemyObjs = [enemy4Obj, enemy3Obj, enemy2Obj, enemy1Obj, enemy1Obj, enemy1Obj];
             var shotFreqs = [30, 15, 30, 0, 0, 0];
             var speeds = [1, 1, 1, 2, 2, 2];
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY, levels.xDiff, levels.yDiff, randomInit, speeds);
@@ -160,10 +174,11 @@ levels = {
         }
     },
     level10: {
-        attack_freq: function(){return 30;},
-        load: function() {
-            var initX = enemyData.width / 1.5, initY = 40;
-            var enemyObjs = [enemy4Obj, enemy3Obj, enemy2Obj,  enemy1Obj,  enemy1Obj,  enemy1Obj];
+        attack_freq: function() { return 30 },
+        load: function(c) {
+            var initX = enemyData.width / 1.5;
+            var initY = 40;
+            var enemyObjs = [enemy4Obj, enemy3Obj, enemy2Obj, enemy1Obj, enemy1Obj, enemy1Obj];
             var shotFreqs = [30, 15, 30, 0, 0, 0];
             var speeds = [1, 1, 1, 2, 2, 2];
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY + levels.yDiff, levels.xDiff, levels.yDiff, randomInit, speeds);
@@ -175,10 +190,11 @@ levels = {
         }
     },
     level11: {
-        attack_freq: function(){return 25;},
-        load: function() {
-            var initX = enemyData.width / 1.5, initY = 40;
-            var enemyObjs = [enemy4Obj, enemy3Obj, enemy2Obj,  enemy2Obj,  enemy1Obj,  enemy1Obj];
+        attack_freq: function() { return 25 },
+        load: function(c) {
+            var initX = enemyData.width / 1.5;
+            var initY = 40;
+            var enemyObjs = [enemy4Obj, enemy3Obj, enemy2Obj, enemy2Obj, enemy1Obj, enemy1Obj];
             var shotFreqs = [30, 15, 20, 30, 0, 0];
             var speeds = [1, 1, 1, 2, 2, 2];
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY + levels.yDiff, levels.xDiff, levels.yDiff, randomInit, speeds);
@@ -193,10 +209,11 @@ levels = {
         }
     },
     level12: {
-        attack_freq: function(){return 25;},
-        load: function() {
-            var initX = enemyData.width / 1.5, initY = 40;
-            var enemyObjs = [enemy4Obj, enemy3Obj, enemy2Obj,  enemy2Obj,  enemy1Obj,  enemy1Obj];
+        attack_freq: function() { return 25 },
+        load: function(c) {
+            var initX = enemyData.width / 1.5;
+            var initY = 40;
+            var enemyObjs = [enemy4Obj, enemy3Obj, enemy2Obj, enemy2Obj, enemy1Obj, enemy1Obj];
             var shotFreqs = [30, 15, 20, 30, 0, 0];
             var speeds = [1, 1, 1, 2, 2, 2];
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY + levels.yDiff, levels.xDiff, levels.yDiff, randomInit, speeds);
@@ -209,10 +226,11 @@ levels = {
         }
     },
     level13: {
-        attack_freq: function(){return 20;},
-        load: function() {
-            var initX = enemyData.width / 1.5, initY = 40;
-            var enemyObjs = [enemy7Obj, enemy7Obj, enemy1Obj,  enemy1Obj,  enemy1Obj,  enemy1Obj];
+        attack_freq: function() { return 20 },
+        load: function(c) {
+            var initX = enemyData.width / 1.5;
+            var initY = 40;
+            var enemyObjs = [enemy7Obj, enemy7Obj, enemy1Obj, enemy1Obj, enemy1Obj, enemy1Obj];
             var shotFreqs = [20, 20, 0, 0, 0, 0];
             var speeds = [1, 1, 2.5, 2, 2, 2];
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY + levels.yDiff, levels.xDiff, levels.yDiff, randomHorizontalInit, speeds);
@@ -221,10 +239,11 @@ levels = {
         }
     },
     level14: {
-        attack_freq: function(){return 30;},
-        load: function() {
-            var initX = enemyData.width / 1.5, initY = 40;
-            var enemyObjs = [enemy4Obj, enemy3Obj, enemy3Obj,  enemy2Obj,  enemy2Obj,  enemy1Obj];
+        attack_freq: function() { return 30 },
+        load: function(c) {
+            var initX = enemyData.width / 1.5;
+            var initY = 40;
+            var enemyObjs = [enemy4Obj, enemy3Obj, enemy3Obj, enemy2Obj, enemy2Obj, enemy1Obj];
             var shotFreqs = [20, 15, 20, 10, 30, 0];
             var speeds = [1, 1.5, 1, 1.5, 1, 2];
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY + levels.yDiff, levels.xDiff, levels.yDiff, randomHorizontalInit, speeds);
@@ -236,10 +255,11 @@ levels = {
         }
     },
     level15: {
-        attack_freq: function(){return 40;},
-        load: function() {
-            var initX = enemyData.width / 1.5, initY = 40;
-            var enemyObjs = [enemy4Obj, enemy3Obj, enemy2Obj,  enemy2Obj,  enemy1Obj];
+        attack_freq: function() { return 40 },
+        load: function(c) {
+            var initX = enemyData.width / 1.5;
+            var initY = 40;
+            var enemyObjs = [enemy4Obj, enemy3Obj, enemy2Obj, enemy2Obj, enemy1Obj];
             var shotFreqs = [25, 15, 10, 15, 0];
             var speeds = [1, 1.5, 1.7, 1.3, 2];
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY + levels.yDiff, levels.xDiff, levels.yDiff, randomHorizontalInit, speeds);
@@ -250,10 +270,11 @@ levels = {
         }
     },
     level16: {
-        attack_freq: function(){return 13;},
-        load: function() {
-            var initX = enemyData.width / 1.5, initY = 40;
-            var enemyObjs = [enemy4Obj, enemy3Obj,  enemy3Obj,  enemy2Obj,  enemy2Obj,  enemy1Obj,  enemy1Obj];
+        attack_freq: function() { return 13 },
+        load: function(c) {
+            var initX = enemyData.width / 1.5;
+            var initY = 40;
+            var enemyObjs = [enemy4Obj, enemy3Obj, enemy3Obj, enemy2Obj, enemy2Obj, enemy1Obj, enemy1Obj];
             var shotFreqs = [60, 30, 25, 25, 20, 0, 0];
             var speeds = [1, 1.5, 1.2, 1.5, 1.4, 1.8, 1.6];
             levels.loadEnemies(enemyObjs, shotFreqs, initX, initY + levels.yDiff, levels.xDiff, levels.yDiff, randomInit, speeds);
@@ -261,9 +282,10 @@ levels = {
         }
     },
     level17: {
-        attack_freq: function(){return 45;},
-        load: function() {
-            var initX = enemyData.width / 1.5, initY = 40;
+        attack_freq: function() { return 45 },
+        load: function(c) {
+            var initX = enemyData.width / 1.5;
+            var initY = 40;
             var enemyObjs = [enemy3Obj, enemy2Obj, enemy1Obj];
             var shotFreqs = [35, 20, 0];
             var speeds = [1.2, 1.2, 1.2];
@@ -279,15 +301,15 @@ levels = {
         }
     },
     custom: {
-        attack_freq: function() {return 50;},
-        load: function() {
+        attack_freq: function() { return 50 },
+        load: function(c) {
             activeEnemies = editorActiveEnemies.slice(0, editorActiveEnemies.length);
             activeEnemies = activeEnemies.filter(function(e) {
                 return e.attackPath;
             });
         }
     }
-}
+};
 
 var worlds = [
     [levels.level1, levels.level2, levels.level3, levels.level4],
@@ -297,4 +319,4 @@ var worlds = [
     [levels.level17]
 ];
 
-export { levels, worlds, activeEnemies };
+export { levels, worlds, activeEnemies, editorActiveEnemies, setEditorActiveEnemies };

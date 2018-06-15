@@ -5,7 +5,7 @@ import { keyhandler } from '../util.js';
 import { enemies, setEnemies, enemyObjList } from './space_enemies.js';
 import { randomVerticalInit } from './space_paths.js';
 import { gameState, GameMode } from './game_state.js';
-import { levels } from './space_levels.js';
+import { levels, editorActiveEnemies, setEditorActiveEnemies } from './space_levels.js';
 
 export { setupEditor, editMouseMove, editMouseClick, editMouseUp, editMouseDown, stopCustom };
 
@@ -13,7 +13,6 @@ var editorEnemies = [];
 var staticEnemies = [];
 var selectedEnemies = [];
 var sliders = [];
-var editorActiveEnemies = [];
 var editPlay = false;
 var showHelp = true;
 var showEnemyOptions = false;
@@ -127,7 +126,7 @@ function playCustom(c) {
         e.initPath.init();
         e.mode = EnemyMode.INIT;
     });
-    gameState.level.load();
+    gameState.level.load(c);
     player.visible = true;
     startGame();
 }
@@ -287,7 +286,7 @@ function activateEnemies(c) {
             e.editorActive = true;
         }
     });
-    editorActiveEnemies = editorActiveEnemies.filter(function(e) { return e.editorActive });
+    setEditorActiveEnemies(editorActiveEnemies.filter(function(e) { return e.editorActive }));
     editorDraw(c);
 }
 

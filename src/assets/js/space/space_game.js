@@ -1,15 +1,15 @@
 
-import { mines, setMines, enemyShots, setEnemyShots, enemies, setEnemies, enemyData, enemyObjList } from './space_enemies.js';
+import { mines, setMines, enemyShots, setEnemyShots, enemies, setEnemies, enemyData, enemyObjList, xWanderMax } from './space_enemies.js';
 
 import { setupEditor, editMouseMove, editMouseClick, editMouseUp, editMouseDown, stopCustom } from './space_editor.js';
-import { player, setExplosions, playSound, sounds, Button, ImageButton,
+import { player, setExplosions, powerups, setPowerups, playSound, Button, ImageButton,
     clearEntities, explosions } from './space_objects.js';
 
 import { gameState, GameMode } from './game_state.js';
 import { levels, worlds, activeEnemies } from './space_levels.js';
 import { findPos } from '../util.js';
 import { initHighScores } from './high_scores.js';
-import { sprites, loadSprites } from './sprites.js';
+import { sounds, sprites, loadSprites } from './sprites.js';
 
 export { loadGame, startGame, pause, resume };
 
@@ -26,40 +26,35 @@ var c;
 var saved = false;
 /* eslint-disable no-unused-vars */
 var cookieExpiry = new Date(2022, 1, 1);
-var gameOverTimer = 0;
 var paused = false;
 var error = '';
 
-/* eslint-disable no-unused-vars */
-var shotTimer = 0;
 var worldInd = 0;
 var levelInd = 0;
 var world;
 
-var powerups = [];
-
 var loadedEnemies = 0;
 var xWander = 0;
 var xWanderMin = -10;
-var xWanderMax = 10;
 var xWanderSpeed = 0.2;
 
 function loadGame() {
-    levels.init();
+    levels.init(c);
     var canvas = document.getElementById('canvas');
     c = canvas.getContext('2d');
     c.width = C_WIDTH;
     c.height = C_HEIGHT;
+    gameState.c = c;
     c.boundary = BOUNDARY;
     canvas.mousemove(mouseMove);
     canvas.mousedown(mouseDown);
     canvas.mouseup(mouseUp);
     canvas.click(mouseClick);
     csrftoken = getCookie('csrftoken');
-    setupAjax();
+    // setupAjax();
     initHighScores(highScorePosted);
     saved = getCookie('saved');
-    loadSprites(c, drawEnemyScores);
+    loadSprites(c, drawEnemyScores, drawButtons);
     canvas.focus();
     showStart();
     var userPause = new ImageButton(c, sprites.pause, sprites.play, C_WIDTH - 28, 4, 24, 24);
@@ -79,7 +74,7 @@ function loadGame() {
     gameState.buttons.push(toggleSound);
 }
 
-function highScorePosted() {
+function highScorePosted(response) {
     var rankText = 'Rank: ' + response.rank;
     var s = rankText.size(c.font);
     c.fillText(rankText, C_WIDTH / 2 - s[0] / 2, C_HEIGHT / 2 + 160);
@@ -151,7 +146,7 @@ function setupGame() {
     world = worlds[worldInd];
     gameState.level = world[levelInd];
     gameState.attackTimer = gameState.level.attack_freq(0);
-    gameState.level.load();
+    gameState.level.load(c);
 }
 
 function startGame() {
@@ -180,10 +175,10 @@ function update() {
     player.shots = player.shots.filter(function(shot) {
         return shot.active;
     });
-    powerups = powerups.filter(function(p) {
+    setPowerups(powerups.filter(function(p) {
         p.update();
         return p.active;
-    });
+    }));
     setEnemyShots(enemyShots.filter(function(shot) {
         shot.update();
         shot.hitEntity(player);
@@ -224,7 +219,7 @@ function update() {
         return;
     }
     error = activeEnemies.length;
-    shotTimer += 1;
+    gameState.shotTimer += 1;
     gameState.attackTimer -= 1;
     draw();
 }
@@ -268,8 +263,8 @@ function draw() {
     c.fillText('Score: ' + gameState.score, C_WIDTH / 1.7, 18);
     debug(error);
     if(gameState.isOver) {
-        gameOverTimer -= 1;
-        if(gameOverTimer <= 0) gameOver(false);
+        gameState.gameOverTimer -= 1;
+        if(gameState.gameOverTimer <= 0) gameOver(false);
     }
 }
 
@@ -474,30 +469,4 @@ function mouseClick(e) {
 function debug(msg) {
     c.font = '16px Arial';
     c.fillText(msg, 0, C_HEIGHT / 1.5);
-}
-
-/* eslint-disable no-unused-vars */
-function replaceActiveEnemy(E) {
-    var ind = activeEnemies.indexOf(E);
-    if(ind === -1) return;
-    while(ind !== -1) {
-        activeEnemies.splice(ind, 1);
-        ind = activeEnemies.indexOf(E);
-    }
-    var seen = [];
-    while(true) {
-        if(E) {
-            if(seen.indexOf(E) !== -1) {
-                return;
-            } else if(!E.active || activeEnemies.indexOf(E) !== -1) {
-                seen.push(E);
-                E = E.parent;
-            } else {
-                break;
-            }
-        } else {
-            return;
-        }
-    }
-    activeEnemies.push(E);
 }

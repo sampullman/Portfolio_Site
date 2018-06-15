@@ -1,4 +1,4 @@
-import { escapeHtml, keyhandler, withId } from '../util.js';
+import { escapeHtml, keyhandler, withId, post } from '../util.js';
 import { gameState } from './game_state.js';
 
 export { initHighScores };
@@ -25,7 +25,7 @@ function initHighScores(callback) {
     withId('feedback_input').onfocusout = keyhandler.stop;
 }
 
-function feedbackPosted(request) {
+function feedbackPosted(response) {
     alert('Your feedback has been recorded. Thanks a bunch!');
 }
 
@@ -34,13 +34,12 @@ function submitFeedback() {
     if(text.length > 500) {
         text = text.substring(0, 499);
     }
-    $.post('/portfolio/query/',
+    post('/portfolio/query/',
         {
             'query': 'submit_feedback',
             'text': text
         },
-        feedbackPosted,
-        'json'
+        feedbackPosted
     );
 }
 
@@ -60,14 +59,13 @@ function submitHighscore() {
         alert('Name must be between 2 and 20 characters (inclusive).');
         return;
     }
-    $.post('/portfolio/query/',
+    post('/portfolio/query/',
         {
             'query': 'set_highscore',
             'name': name,
             'val': gameState.score.toString()
         },
-        highScorePosted,
-        'json'
+        highScorePosted
     );
 }
 
@@ -92,9 +90,8 @@ function getHighScores(rank) {
     if(rank < 1) rank = 1;
     end = false;
     hsRank = rank;
-    $.post('/portfolio/query/',
+    post('/portfolio/query/',
         { 'query': 'get_highscores', 'rank': rank },
-        fillHighScores,
-        'json'
+        fillHighScores
     );
 }

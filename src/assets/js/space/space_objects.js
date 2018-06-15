@@ -1,26 +1,22 @@
 
-export {
-    player, explosions, setExplosions, Sound, Life, Mine, Laser, Missile, Shot, Enemy, EnemyMode, Explosion, Stars,
-    clearEntities, activeEnemies, sounds, playSound,
-    entityCollision,
-    Button, ImageButton, Slider,
-    MissilePowerup, ShieldPowerup, LifePowerup
-};
-
-import { enemies, enemyData, enemyShots } from './space_enemies.js';
+import { enemies, enemyData, enemyShots, mines } from './space_enemies.js';
 import { keyhandler } from '../util.js';
-import { gameState } from './game_state.js';
+import { gameState, GameMode } from './game_state.js';
 import { activeEnemies } from './space_levels.js';
-import { sprites, shotW, shotH } from './sprites.js';
+import { sounds, sprites, shotW, shotH } from './sprites.js';
 import { Point, PointPath } from './space_paths.js';
 
 var powerupObjs = [new MissilePowerup(), new ShieldPowerup(), new LifePowerup()];
 var explosions = [];
-var sounds = {};
+var powerups = [];
 var life;
 
 function setExplosions(newExplosions) {
     explosions = newExplosions;
+}
+
+function setPowerups(newPowerups) {
+    powerups = newPowerups;
 }
 
 function playSound(sound) {
@@ -31,18 +27,18 @@ function playSound(sound) {
 }
 
 function Sound(src) {
-    this.sound = document.createElement("audio");
+    this.sound = document.createElement('audio');
     this.sound.src = src;
-    this.sound.setAttribute("preload", "auto");
-    this.sound.setAttribute("controls", "none");
-    this.sound.style.display = "none";
+    this.sound.setAttribute('preload', 'auto');
+    this.sound.setAttribute('controls', 'none');
+    this.sound.style.display = 'none';
     document.body.appendChild(this.sound);
-    this.play = function(){
+    this.play = function() {
         this.sound.play();
-    }
-    this.stop = function(){
+    };
+    this.stop = function() {
         this.sound.pause();
-    }
+    };
 }
 
 function clearEntities() {
@@ -86,14 +82,14 @@ var PlayerState = {
     RIGHT: 2,
     DAMAGED: 3,
     DESTROYED: 4
-}
+};
 
 var player = {
     color: '#00A',
     width: 36,
     height: 36,
-    x: c.width / 2,
-    y: c.height - 36,
+    x: gameState.c.width / 2,
+    y: gameState.c.height - 36,
     sprites: [],
     xVel: 0,
     yVel: 0,
@@ -126,15 +122,15 @@ var player = {
         if(player.lives.length === 0) {
             this.state = PlayerState.DESTROYED;
             gameState.isOver = true;
-            gameOverTimer = 15;
+            gameState.gameOverTimer = 15;
         } else {
-            this.x = c.width / 2;
-            this.y = c.height - 36;
+            this.x = gameState.c.width / 2;
+            this.y = gameState.c.height - 36;
             this.blink(3);
         }
     },
     shield: function() {
-        if(this.shielded) score += 500;
+        if(this.shielded) gameState.score += 500;
         this.shielded = true;
     },
     blink: function(blinks) {
@@ -145,11 +141,11 @@ var player = {
         if(this.immobile > 0) {
             this.immobile -= 1;
         } else {
-            if (keyhandler.LeftArrow || keyhandler.a) {
+            if(keyhandler.LeftArrow || keyhandler.a) {
                 this.xVel = -8;
                 this.x -= 8;
                 this.switchState(PlayerState.LEFT);
-            } else if (keyhandler.RightArrow || keyhandler.d) {
+            } else if(keyhandler.RightArrow || keyhandler.d) {
                 this.xVel = 8;
                 this.x += 8;
                 this.switchState(PlayerState.RIGHT);
@@ -166,10 +162,10 @@ var player = {
             } else {
                 this.yVel = 0;
             }
-            if(shotTimer > 10) {
+            if(gameState.shotTimer > 10) {
                 if(keyhandler.Space) {
-                    playSound(enemyHeight);
-                    shotTimer = 0;
+                    playSound(sounds.shot);
+                    gameState.shotTimer = 0;
                     player.shots.push(Shot({
                         speed: -10,
                         x: this.x + (this.width / 2),
@@ -178,14 +174,14 @@ var player = {
                     }));
                 }
                 if(keyhandler.Shift && player.numMissiles > 0) {
-                    shotTimer = 0;
+                    gameState.shotTimer = 0;
                     player.shots.push(new Missile(this.x, this.y));
                     player.numMissiles -= 1;
                 }
             }
         }
-        this.x = this.x.clamp(0, c.width - this.width);
-        this.y = this.y.clamp(BOUNDARY, c.height - this.height);
+        this.x = this.x.clamp(0, gameState.c.width - this.width);
+        this.y = this.y.clamp(gameState.c.boundary, gameState.c.height - this.height);
         if(this.blinks > 0) {
             this.blinkNum += 1;
             if(this.blinkNum >= this.blinkDur) {
@@ -250,9 +246,9 @@ function Laser(L) {
     L.active = true;
     L.timer = L.timer || 15;
     L.width = L.width || 3;
-    L.height = c.height - L.y;
+    L.height = gameState.c.height - L.y;
     L.yDiff = L.height / L.timer;
-    L.draw = function() {
+    L.draw = function(c) {
         c.fillStyle = '#71CA35';
         c.fillRect(L.x, L.y, L.width, L.height);
     };
@@ -278,7 +274,7 @@ var ShotMode = {
     NORMAL: 0,
     EXPLODING: 1,
     GONE: 2
-}
+};
 
 function Missile(x, y, speed, w, h) {
     this.x = x;
@@ -289,8 +285,8 @@ function Missile(x, y, speed, w, h) {
     this.height = h || sprites.missile.height;
     this.explosionTimer = 0;
     this.inBounds = function() {
-        return this.x >= 0 && this.x <= c.width &&
-            this.y >= 0 && this.y <= c.height;
+        return this.x >= 0 && this.x <= gameState.c.width &&
+            this.y >= 0 && this.y <= gameState.c.height;
     };
     this.draw = function(c) {
         sprites.missile.draw(c, this.x, this.y);
@@ -307,7 +303,7 @@ function Missile(x, y, speed, w, h) {
     };
     this.update = function() {
         this.y += this.speed;
-        if(this.y < 0 || this.y > c.height) this.active = false;
+        if(this.y < 0 || this.y > gameState.c.height) this.active = false;
     };
     return this;
 }
@@ -320,8 +316,8 @@ function Shot(S) {
     S.explosionTimer = 0;
     S.sprite = S.sprites[S.mode];
     S.inBounds = function() {
-        return S.x >= 0 && S.x <= c.width &&
-            S.y >= 0 && S.y <= c.height;
+        return S.x >= 0 && S.x <= gameState.c.width &&
+            S.y >= 0 && S.y <= gameState.c.height;
     };
     S.draw = function(c) {
         this.sprite.draw(c, this.x, this.y);
@@ -349,11 +345,36 @@ function Shot(S) {
         switch(S.mode) {
         case ShotMode.NORMAL:
             S.y += S.speed;
-            if(S.y < 0 || S.y > c.height) S.active = false;
+            if(S.y < 0 || S.y > gameState.c.height) S.active = false;
             break;
         }
     };
     return S;
+}
+
+function replaceActiveEnemy(E) {
+    var ind = activeEnemies.indexOf(E);
+    if(ind === -1) return;
+    while(ind !== -1) {
+        activeEnemies.splice(ind, 1);
+        ind = activeEnemies.indexOf(E);
+    }
+    var seen = [];
+    while(true) {
+        if(E) {
+            if(seen.indexOf(E) !== -1) {
+                return;
+            } else if(!E.active || activeEnemies.indexOf(E) !== -1) {
+                seen.push(E);
+                E = E.parent;
+            } else {
+                break;
+            }
+        } else {
+            return;
+        }
+    }
+    activeEnemies.push(E);
 }
 
 var EnemyMode = {
@@ -368,16 +389,20 @@ function Enemy(E) {
     E.alwaysAttack = false;
     E.mode = E.mode || EnemyMode.INIT;
     E.speed = E.speed || 1;
-    E.notifyEscorts = E.notifyEscorts || function(){};
+    E.notifyEscorts = E.notifyEscorts || function() {};
     E.returnPath = function() {
         E.y = 0;
         return new PointPath([new Point(E.x, E.y), new Point(E.startX, E.startY)], [30], 1);
     };
     E.clone = function(x, y) {
         var e = Enemy({
-            sprite: E.sprite, x: x || E.x, y: y || E.y,
-            width: E.width, height: E.height,
-            score: E.score, health: E.health
+            sprite: E.sprite,
+            x: x || E.x,
+            y: y || E.y,
+            width: E.width,
+            height: E.height,
+            score: E.score,
+            health: E.health
         });
         e.speed = E.speed;
         e.shotFreq = E.shotFreq;
@@ -386,8 +411,8 @@ function Enemy(E) {
         e.shootFn = E.shootFn;
         e.wanderFn = E.wanderFn;
         e.hoverActionFn = E.hoverActionFn;
-        if(E.initPathFn) e.initPath = new E.initPathFn(e);
-        if(E.attackPathFn) e.attackPath = new E.attackPathFn(c, e);
+        if(E.initPathFn) e.initPath = E.initPathFn(e);
+        if(E.attackPathFn) e.attackPath = E.attackPathFn(gameState.c, e);
         e.shoot = E.shootFn(e, E.shotFreq);
         if(E.hoverActionFn) e.hoverAction = e.hoverActionFn(e, e.shotFreq);
         if(e.wanderFn) e.wander = e.wanderFn(e);
@@ -399,16 +424,16 @@ function Enemy(E) {
         } else {
             E.x += xWander;
         }
-    }
+    };
     E.attack = function(path) {
         if(E.mode === EnemyMode.ATTACK || E.mode === EnemyMode.INIT ||
-           E.x < 0 || E.x > c.width || E.attackPath === null) return;
+           E.x < 0 || E.x > gameState.c.width || E.attackPath === null) return;
         if(E.mode === EnemyMode.HOVER) {
             E.startX = E.x;
             E.startY = E.y;
         }
         E.mode = EnemyMode.ATTACK;
-        E.path = path ? path : E.attackPath.instantiate();
+        E.path = path || E.attackPath.instantiate();
         E.notifyEscorts();
     };
     E.update = function() {
@@ -459,7 +484,7 @@ function Enemy(E) {
     // TODO -- move this functionality to editor
     E.draw = function(c) {
         this.sprite.draw(c, this.x, this.y, this.width, this.height);
-        if(gameMode === GameMode.EDIT) {
+        if(gameState.mode === GameMode.EDIT) {
             if(this.squared) {
                 c.strokeStyle = '#DDD';
                 c.strokeRect(this.x, this.y, this.width, this.height);
@@ -475,8 +500,8 @@ function Enemy(E) {
             while(next) {
                 if(next.active) {
                     c.beginPath();
-                    c.moveTo(this.x+this.width/2, this.y+this.height/2);
-                    c.lineTo(next.x+next.width/2, next.y+next.height/2);
+                    c.moveTo(this.x + this.width / 2, this.y + this.height / 2);
+                    c.lineTo(next.x + next.width / 2, next.y + next.height / 2);
                     c.closePath();
                     c.stroke();
                     break;
@@ -547,7 +572,7 @@ function Powerup(sprite, x, y, w, h, hitCallback) {
     this.active = true;
     this.update = function() {
         this.y += 4;
-        if(this.y > c.height) {
+        if(this.y > gameState.c.height) {
             this.active = false;
         } else if(entityCollision(this, player)) {
             this.hitCallback();
@@ -557,7 +582,7 @@ function Powerup(sprite, x, y, w, h, hitCallback) {
     this.draw = function(c) {
         this.sprite.draw(c, this.x, this.y, this.width, this.height);
         c.beginPath();
-        c.arc(this.x+this.radius / 1.5, this.y + this.radius / 1.5, this.radius, 0, 2 * Math.PI);
+        c.arc(this.x + this.radius / 1.5, this.y + this.radius / 1.5, this.radius, 0, 2 * Math.PI);
         c.strokeStyle = '#DDD';
         c.stroke();
         c.closePath();
@@ -581,7 +606,7 @@ function addLife(x, y) {
     player.lives.push(life);
     var xMul = player.lives.length - 1;
     let lifeX = xMul * player.width / 2 + (xMul + 1) * 10;
-    var endP = new Point(lifeX, C_HEIGHT - (player.height / 2 + 5));
+    var endP = new Point(lifeX, gameState.c.height - (player.height / 2 + 5));
     life.path = new PointPath([new Point(x, y), endP], [15]);
 }
 
@@ -837,3 +862,12 @@ function Stars(c, sprite, minSize, maxSize, minSpeed, maxSpeed, freq) {
     };
     return this;
 }
+
+export {
+    player, explosions, setExplosions, powerups, setPowerups,
+    Sound, Life, Mine, Laser, Missile, Shot, Enemy, EnemyMode, Explosion, Stars,
+    clearEntities, activeEnemies, playSound,
+    entityCollision,
+    Button, ImageButton, Slider,
+    MissilePowerup, ShieldPowerup, LifePowerup
+};

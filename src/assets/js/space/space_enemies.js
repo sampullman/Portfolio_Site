@@ -1,15 +1,20 @@
-import { followPlayerPath } from './space_paths.js';
-import { Enemy, EnemyMode, sounds, playSounds } from './space_objects.js';
+import { followPlayerPath, avoidPlayerPath, standardAttackPath, sweepAttackPath } from './space_paths.js';
+import { Enemy, EnemyMode, playSound, Laser, Mine, Shot } from './space_objects.js';
+import { gameState } from './game_state.js';
+import { sounds, sprites } from './sprites.js';
+import { arrayRand } from '../util.js';
 
 var enemies = [];
 var mines = [];
 var enemyShots = [];
+var xWanderMax = 10;
+
 var enemyData = {
     width: 36,
     height: 24,
     numAttacks: 0,
     initEnemyCount: 0
-}
+};
 
 function setEnemies(newEnemies) {
     enemies = newEnemies;
@@ -24,7 +29,7 @@ function setEnemyShots(newShots) {
 }
 
 function initEnemy(sprite, x, y, w, h, score, health, initPathFn, attackPath,
-           shootFn, shotFreq, speed, parent) {
+    shootFn, shotFreq, speed, parent) {
     var enemy = Enemy({
         sprite: sprite,
         x: x,
@@ -53,17 +58,17 @@ var enemy1Obj = {
     },
     instantiate: function(x, y, w, h, shotFreq, initPathFn, speed, parent) {
         return initEnemy(enemy1Obj.sprite, x, y, w, h, enemy1Obj.score, enemy1Obj.health, initPathFn,
-             enemy1Obj.attackPath, enemy1Obj.shootFn, shotFreq, speed, parent);
+            enemy1Obj.attackPath, enemy1Obj.shootFn, shotFreq, speed, parent);
     },
     attackPath: standardAttackPath
-}
+};
 
 var enemy2Obj = {
     type: 2,
     score: 20,
     health: 1,
     shootFn: function(E, freq) {
-    var shotTimer = Math.random() * freq;
+        var shotTimer = Math.random() * freq;
         return function() {
             shotTimer -= 1;
             if(shotTimer <= 0) {
@@ -80,10 +85,10 @@ var enemy2Obj = {
     },
     instantiate: function(x, y, w, h, shotFreq, initPathFn, speed, parent) {
         return initEnemy(enemy2Obj.sprite, x, y, w, h, enemy2Obj.score, enemy2Obj.health, initPathFn,
-             enemy2Obj.attackPath, enemy2Obj.shootFn, shotFreq, speed, parent);
+            enemy2Obj.attackPath, enemy2Obj.shootFn, shotFreq, speed, parent);
     },
     attackPath: standardAttackPath
-}
+};
 
 var enemy3Obj = {
     type: 3,
@@ -95,30 +100,30 @@ var enemy3Obj = {
         return function() {
             shotTimer -= 1;
             if(shotTimer <= 0) {
-            enemyShots.push(Shot({
-                sprites: sprites.enemyShot,
-                x: E.x + E.width / (left ? 4 : 1.75),
-                y: E.y + E.height,
-                speed: 10
-            }));
-            left = !left;
-            shotTimer = freq / 2 + Math.random() * freq / 2;
-            playSound(sounds.enemyShot);
+                enemyShots.push(Shot({
+                    sprites: sprites.enemyShot,
+                    x: E.x + E.width / (left ? 4 : 1.75),
+                    y: E.y + E.height,
+                    speed: 10
+                }));
+                left = !left;
+                shotTimer = freq / 2 + Math.random() * freq / 2;
+                playSound(sounds.enemyShot);
             }
         };
     },
     instantiate: function(x, y, w, h, shotFreq, initPathFn, speed, parent) {
         return initEnemy(enemy3Obj.sprite, x, y, w, h, enemy3Obj.score, enemy3Obj.health, initPathFn,
-             enemy3Obj.attackPath, enemy3Obj.shootFn, shotFreq, speed, parent);
+            enemy3Obj.attackPath, enemy3Obj.shootFn, shotFreq, speed, parent);
     },
     attackPath: standardAttackPath
-}
+};
 
 var enemy4Obj = {
     type: 4,
     score: 100,
     health: 1,
-        shootFn: function(E, freq) {
+    shootFn: function(E, freq) {
         var shotTimer = Math.random() * freq;
         return function() {
             shotTimer -= 1;
@@ -142,13 +147,13 @@ var enemy4Obj = {
     },
     instantiate: function(x, y, w, h, shotFreq, initPathFn, parent, child) {
         var enemy = initEnemy(enemy4Obj.sprite, x, y, w, h, enemy4Obj.score, enemy4Obj.health, initPathFn,
-                enemy4Obj.attackPath, enemy4Obj.shootFn, shotFreq, 1, parent);
+            enemy4Obj.attackPath, enemy4Obj.shootFn, shotFreq, 1, parent);
 
         if(child) child.parent = enemy;
         return enemy;
     },
     attackPath: followPlayerPath
-}
+};
 
 var enemy5Obj = {
     type: 5,
@@ -174,20 +179,23 @@ var enemy5Obj = {
         });
         return function() {
             escorts = escorts.filter(function(escort) {
-            if(escort.active) {
-                escort.attack(E.attackPath.clone(escort));
-                escort.x = E.x + escort.relativeEscortX;
-                escort.y = E.y + escort.relativeEscortY;
-                return true;
-            }
-            return false;
+                if(escort.active) {
+                    escort.attack(E.attackPath.clone(escort));
+                    escort.x = E.x + escort.relativeEscortX;
+                    escort.y = E.y + escort.relativeEscortY;
+                    return true;
+                }
+                return false;
             });
         };
     },
     instantiate: function(x, y, w, h, shotFreq, initPathFn, escorts) {
         var enemy = Enemy({
             sprite: enemy5Obj.sprite,
-            x: x, y: y, width: w, height: h,
+            x: x,
+            y: y,
+            width: w,
+            height: h,
             score: enemy5Obj.score,
             health: enemy5Obj.health
         });
@@ -202,7 +210,7 @@ var enemy5Obj = {
         return enemy;
     },
     attackPath: sweepAttackPath
-}
+};
 
 var enemy6Obj = {
     type: 6,
@@ -223,9 +231,9 @@ var enemy6Obj = {
         return this.shootFn(E, freq);
     },
     wanderFn: function(E) {
-        var newXWanderSpeed = 0.5 * xWanderSpeed * (c.width / 2 - 20) / xWanderMax;
         return function(xWanderSpeed) {
-            if(E.x > c.width - E.width || E.x < 0) {
+            var newXWanderSpeed = 0.5 * xWanderSpeed * (gameState.c.width / 2 - 20) / xWanderMax;
+            if(E.x > gameState.c.width - E.width || E.x < 0) {
                 newXWanderSpeed *= -1;
             }
             E.x += newXWanderSpeed;
@@ -234,7 +242,10 @@ var enemy6Obj = {
     instantiate: function(x, y, w, h, shotFreq, initPathFn) {
         var enemy = Enemy({
             sprite: enemy6Obj.sprite,
-            x: x, y: y, width: w, height: h,
+            x: x,
+            y: y,
+            width: w,
+            height: h,
             score: enemy6Obj.score,
             health: enemy6Obj.health
         });
@@ -246,7 +257,7 @@ var enemy6Obj = {
         enemy.hoverAction = this.hoverActionFn(enemy, shotFreq);
         return enemy;
     }
-}
+};
 
 var enemy7Obj = {
     type: 7,
@@ -255,7 +266,7 @@ var enemy7Obj = {
     shootFn: function(E, freq) {
         var timer = Math.random() * freq;
         return function() {
-            if(E.y > BOUNDARY && E.x > 0 && E.x < c.width && !E.path.done) {
+            if(E.y > gameState.c.boundary && E.x > 0 && E.x < gameState.c.width && !E.path.done) {
                 timer -= 1;
                 if(timer <= 0) {
                     mines.push(Mine({x: E.x, y: E.y}));
@@ -267,10 +278,10 @@ var enemy7Obj = {
     },
     instantiate: function(x, y, w, h, shotFreq, initPathFn, speed, parent) {
         return initEnemy(enemy7Obj.sprite, x, y, w, h, enemy7Obj.score, enemy7Obj.health, initPathFn,
-             enemy7Obj.attackPath, enemy7Obj.shootFn, shotFreq, speed, parent);
+            enemy7Obj.attackPath, enemy7Obj.shootFn, shotFreq, speed, parent);
     },
     attackPath: avoidPlayerPath
-}
+};
 
 var enemy8Obj = {
     type: 8,
@@ -323,7 +334,7 @@ var enemy8Obj = {
         return enemy;
     },
     attackPath: standardAttackPath
-}
+};
 
 var enemy9Obj = {
     type: 9,
@@ -335,8 +346,9 @@ var enemy9Obj = {
         return function() {
             timer -= 1;
             if(timer <= 0) {
-                timer = freq / 2 +Math.random() * freq / 2;
-                var e1, e2, rand = Math.random();
+                timer = freq / 2 + Math.random() * freq / 2;
+                var e1, e2;
+                var rand = Math.random();
                 if(rand < 0.3) {
                     e1 = enemy4Obj.instantiate(E.x - enemyData.width, E.y + 10, enemyData.width, enemyData.height, 50, null, 1);
                     e2 = enemy4Obj.instantiate(E.x + E.width, E.y + 10, enemyData.width, enemyData.height, 50, null, 1);
@@ -379,5 +391,5 @@ var enemy9Obj = {
 
 var enemyObjList = [enemy1Obj, enemy2Obj, enemy3Obj, enemy4Obj, enemy5Obj, enemy6Obj, enemy7Obj, enemy8Obj];
 
-export { enemyObjList, enemy1Obj, enemy2Obj, enemy3Obj, enemy4Obj, enemy5Obj, enemy6Obj, enemy7Obj, enemy8Obj };
-export { mines, setMines, enemyShots, setEnemyShots, enemies, setEnemies, enemyData };
+export { enemyObjList, enemy1Obj, enemy2Obj, enemy3Obj, enemy4Obj, enemy5Obj, enemy6Obj, enemy7Obj, enemy8Obj, enemy9Obj };
+export { mines, setMines, enemyShots, setEnemyShots, enemies, setEnemies, enemyData, xWanderMax };
