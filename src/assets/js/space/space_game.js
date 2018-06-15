@@ -1,17 +1,15 @@
 
-import { mines, setMines, enemyShots, setEnemyShots, enemies, setEnemies, enemyData,
-    enemyObjList, enemy1Obj, enemy2Obj, enemy3Obj, enemy4Obj,enemy5Obj, enemy6Obj, enemy7Obj, enemy8Obj } from './space_enemies.js';
+import { mines, setMines, enemyShots, setEnemyShots, enemies, setEnemies, enemyData, enemyObjList } from './space_enemies.js';
 
 import { setupEditor, editMouseMove, editMouseClick, editMouseUp, editMouseDown, stopCustom } from './space_editor.js';
-import { player, setExplosions, Sound, playSound, Life, Button, Stars, ImageButton,
+import { player, setExplosions, playSound, sounds, Button, ImageButton,
     clearEntities, explosions } from './space_objects.js';
-import { Point, PointPath } from './space_paths.js';
 
 import { gameState, GameMode } from './game_state.js';
-import { worlds, activeEnemies } from './space_levels.js';
+import { levels, worlds, activeEnemies } from './space_levels.js';
 import { findPos } from '../util.js';
 import { initHighScores } from './high_scores.js';
-import { Sprite } from '../game/sprite.js';
+import { sprites, loadSprites } from './sprites.js';
 
 export { loadGame, startGame, pause, resume };
 
@@ -25,96 +23,26 @@ var BOUNDARY = C_HEIGHT - 200;
 
 var FPS = 30;
 var c;
-var saved=false;
+var saved = false;
 /* eslint-disable no-unused-vars */
 var cookieExpiry = new Date(2022, 1, 1);
 var gameOverTimer = 0;
 var paused = false;
 var error = '';
 
-var shotW = 5;
-var shotH = 15;
-var life, playerLife;
 /* eslint-disable no-unused-vars */
 var shotTimer = 0;
 var worldInd = 0;
 var levelInd = 0;
 var world;
-var explosionSprites = [];
-var mineSprites = [];
-var starSprite, starCollection;
-
-/* eslint-disable no-unused-vars */
-var playerShot, missile, shieldPowerupSprite, enemyShot;
 
 var powerups = [];
-
-var pauseSprite, playSprite, soundOnSprite, soundOffSprite;
 
 var loadedEnemies = 0;
 var xWander = 0;
 var xWanderMin = -10;
 var xWanderMax = 10;
 var xWanderSpeed = 0.2;
-
-function loadSprites() {
-    var w = player.width;
-    var h = player.height;
-    player.sprites = [Sprite('631wm7d11mdr3mj/2uVRXGxf7A/portfolio/static/images/space_sprites/player.png', w, h), Sprite('631wm7d11mdr3mj/CViMOtl02D/portfolio/static/images/space_sprites/playerLeft.png', w, h), Sprite('631wm7d11mdr3mj/MqXFAiIDw6/portfolio/static/images/space_sprites/playerRight.png', w, h)];
-    enemy1Obj.sprite = Sprite('631wm7d11mdr3mj/7oPa2yNaIB/portfolio/static/images/space_sprites/enemy1.png', enemyData.width, enemyData.height, drawEnemyScores);
-    enemy2Obj.sprite = Sprite('631wm7d11mdr3mj/nTAY8QygYM/portfolio/static/images/space_sprites/enemy2.png', enemyData.width, enemyData.height, drawEnemyScores);
-    enemy3Obj.sprite = Sprite('631wm7d11mdr3mj/ok-JoalkfC/portfolio/static/images/space_sprites/enemy3.png', enemyData.width, enemyData.height, drawEnemyScores);
-    enemy4Obj.sprite = Sprite('631wm7d11mdr3mj/xK3PxxAch8/portfolio/static/images/space_sprites/enemy4.png', enemyData.width, enemyData.height, drawEnemyScores);
-    enemy5Obj.sprite = Sprite('631wm7d11mdr3mj/qQ5Kzklhyy/portfolio/static/images/space_sprites/enemy5.png', enemyData.width * 2, enemyData.height * 2, drawEnemyScores);
-    enemy6Obj.sprite = Sprite('631wm7d11mdr3mj/6roKA0hqDT/portfolio/static/images/space_sprites/enemy6.png', enemyData.width, enemyData.height, drawEnemyScores);
-    enemy7Obj.sprite = Sprite('631wm7d11mdr3mj/8-8aF0Hgmf/portfolio/static/images/space_sprites/enemy7.png', enemyData.width, enemyData.height, drawEnemyScores);
-    enemy8Obj.sprite = Sprite('631wm7d11mdr3mj/sahm-t_RnK/portfolio/static/images/space_sprites/enemy8.png', enemyData.width * 3, enemyData.height, drawEnemyScores);
-    playerShot = [Sprite('631wm7d11mdr3mj/ikWk5YzfJd/portfolio/static/images/space_sprites/laserRed.png', shotW, shotH),
-        Sprite('631wm7d11mdr3mj/JU3cMwxn1o/portfolio/static/images/space_sprites/laserRedShot.png', 28, 28)];
-    enemyShot = [Sprite('631wm7d11mdr3mj/LX6Dm97mS3/portfolio/static/images/space_sprites/laserGreen.png', shotW, shotH),
-        Sprite('631wm7d11mdr3mj/r2rh_AfaRE/portfolio/static/images/space_sprites/laserGreenShot.png', 28, 28)];
-    playerLife = Sprite('631wm7d11mdr3mj/z3QpEUH-QA/portfolio/static/images/space_sprites/life.png', w / 2, h / 2);
-    explosionSprites.push(Sprite('631wm7d11mdr3mj/8HMg2jgeDZ/portfolio/static/images/space_sprites/explosion1.png', enemyData.width, enemyData.height));
-    explosionSprites.push(Sprite('631wm7d11mdr3mj/NnRsbw5M8i/portfolio/static/images/space_sprites/explosion2.png', enemyData.width, enemyData.height));
-    explosionSprites.push(Sprite('631wm7d11mdr3mj/PXxwqQ73xF/portfolio/static/images/space_sprites/explosion3.png', enemyData.width, enemyData.height));
-    explosionSprites.push(Sprite('631wm7d11mdr3mj/_LJddbHSXL/portfolio/static/images/space_sprites/explosion4.png', enemyData.width, enemyData.height));
-    pauseSprite = Sprite('631wm7d11mdr3mj/PjnX4rAH7y/portfolio/static/images/space_sprites/pause.png', 32, 32, drawButtons);
-    playSprite = Sprite('631wm7d11mdr3mj/cc7mbxDjlT/portfolio/static/images/space_sprites/play.png', 32, 32, drawButtons);
-    soundOnSprite = Sprite('631wm7d11mdr3mj/RaJHuLjaHG/portfolio/static/images/space_sprites/sound_on.png', 32, 32, drawButtons);
-    soundOffSprite = Sprite('631wm7d11mdr3mj/Ih0P0EL4Id/portfolio/static/images/space_sprites/sound_off.png', 32, 32, drawButtons);
-    shieldSprite = Sprite('631wm7d11mdr3mj/UslOP-1wz2/portfolio/static/images/space_sprites/shield.png', w + 12, h + 5);
-    shieldPowerupSprite = Sprite('631wm7d11mdr3mj/E46JLd7fY2/portfolio/static/images/space_sprites/shieldPowerup.png', 16, 16);
-    missile = Sprite('631wm7d11mdr3mj/eCvEneLNME/portfolio/static/images/space_sprites/missile.png', w / 1.25, h);
-    mineSprites.push(Sprite('631wm7d11mdr3mj/6rCVFvacpH/portfolio/static/images/space_sprites/mine1.png', 28, 28));
-    mineSprites.push(Sprite('631wm7d11mdr3mj/HYtZLisfJZ/portfolio/static/images/space_sprites/mine2.png', 28, 28));
-    enemy9Obj.sprite = Sprite('631wm7d11mdr3mj/Hjk8fwkK-A/portfolio/static/images/space_sprites/enemy9.png', enemyData.width * 3, enemyData.height * 3);
-    starSprite = Sprite('631wm7d11mdr3mj/4uGpI1uGwu/portfolio/static/images/space_sprites/star.png', 16, 16, initStars);
-    sounds.shot = Sound([
-        'https://dl.dropbox.com/sh/631wm7d11mdr3mj/exIW7e0MTO/portfolio/static/sounds/shot.mp3',
-        'https://dl.dropbox.com/sh/631wm7d11mdr3mj/E-xBn5g2zL/portfolio/static/sounds/shot.ogg'
-    ]);
-    sounds.enemyShot = Sound([
-        'https://dl.dropbox.com/sh/631wm7d11mdr3mj/kB9IQJutEx/portfolio/static/sounds/enemy_shot.mp3',
-        'https://dl.dropbox.com/sh/631wm7d11mdr3mj/_-RTp20zpM/portfolio/static/sounds/enemy_shot.ogg'
-    ]);
-    sounds.enemyExp = Sound([
-        'https://dl.dropbox.com/sh/631wm7d11mdr3mj/M2luGqD1KV/portfolio/static/sounds/enemy_exp.mp3',
-        'https://dl.dropbox.com/sh/631wm7d11mdr3mj/hnKY7lllql/portfolio/static/sounds/enemy_exp.ogg'
-    ]);
-    sounds.ambient = Sound([
-        'https://dl.dropbox.com/sh/631wm7d11mdr3mj/cJ5oM2HoIl/portfolio/static/sounds/ambience.mp3']);
-    sounds.laser = Sound([
-        'https://dl.dropbox.com/sh/631wm7d11mdr3mj/H__6HLAZu7/portfolio/static/sounds/laser.mp3',
-        'https://dl.dropbox.com/sh/631wm7d11mdr3mj/j0yUd4ncdf/portfolio/static/sounds/laser.ogg']);
-}
-
-function initStars() {
-    starCollection = new Stars(c, starSprite, 5, 18, 0.2, 0.7, 50);
-    for(var i = 0; i < 30; i++) {
-        starCollection.add(Math.random() * C_WIDTH, Math.random() * C_HEIGHT);
-    }
-    drawEnemyScores();
-}
 
 function loadGame() {
     levels.init();
@@ -131,15 +59,15 @@ function loadGame() {
     setupAjax();
     initHighScores(highScorePosted);
     saved = getCookie('saved');
-    loadSprites();
+    loadSprites(c, drawEnemyScores);
     canvas.focus();
     showStart();
-    var userPause = new ImageButton(c, pauseSprite, playSprite, C_WIDTH - 28, 4, 24, 24);
+    var userPause = new ImageButton(c, sprites.pause, sprites.play, C_WIDTH - 28, 4, 24, 24);
     userPause.setClickListener(function() {
         paused ? resume() : pause();
     });
     gameState.buttons.push(userPause);
-    var toggleSound = new ImageButton(c, soundOffSprite, soundOnSprite, C_WIDTH - 52, 6, 20, 20);
+    var toggleSound = new ImageButton(c, sprites.soundOff, sprites.soundOn, C_WIDTH - 52, 6, 20, 20);
     toggleSound.setClickListener(function() {
         gameState.soundOn = !gameState.soundOn;
         if(!gameState.soundOn) {
@@ -152,9 +80,9 @@ function loadGame() {
 }
 
 function highScorePosted() {
-    var rankText = 'Rank: ' + response.rank
-    var s = rankText.size(c.font)
-    c.fillText(rankText, C_WIDTH / 2 - s[0]/2, C_HEIGHT / 2 + 160);
+    var rankText = 'Rank: ' + response.rank;
+    var s = rankText.size(c.font);
+    c.fillText(rankText, C_WIDTH / 2 - s[0] / 2, C_HEIGHT / 2 + 160);
 }
 
 function setCookie(key, value, expire) {
@@ -183,16 +111,6 @@ function load() {
         var lives = getCookie('lives');
         player.setupLives(lives);
     }
-}
-
-/* eslint-disable no-unused-vars */
-function addLife(x, y) {
-    life = Life({sprite: playerLife, x: x, y: y});
-    player.lives.push(life);
-    var xMul = player.lives.length - 1;
-    let lifeX = xMul * player.width / 2 + (xMul + 1) * 10;
-    var endP = new Point(lifeX, C_HEIGHT - (player.height / 2 + 5));
-    life.path = new PointPath([new Point(x, y), endP], [15]);
 }
 
 function restartGame() {
@@ -293,12 +211,12 @@ function update() {
         exp.update();
         return exp.active;
     }));
-    starCollection.update(c);
+    sprites.stars.update(c);
     if(gameState.ttackTimer <= 0 && activeEnemies.length > 0) {
         var e = activeEnemies[Math.floor(Math.random() * activeEnemies.length)];
         e.attack();
         enemyData.numAttacks += 1;
-        var freq = level.attack_freq(enemyData.numAttacks);
+        var freq = gameState.level.attack_freq(enemyData.numAttacks);
         gameState.attackTimer = Math.random() * freq + freq / 8;
     }
     if(enemies.length === 0) {
@@ -313,7 +231,7 @@ function update() {
 
 function draw() {
     c.clearRect(0, 0, C_WIDTH, C_HEIGHT);
-    starCollection.draw(c);
+    sprites.stars.draw(c);
     drawButtons();
     player.draw(c);
     c.beginPath();
@@ -347,7 +265,7 @@ function draw() {
     c.fillStyle = '#000';
     c.fillText('Level ' + worldInd + '-' + levelInd, 10, 18);
     c.fillText('Missiles: ' + player.numMissiles, C_WIDTH / 3, 18);
-    c.fillText('Score: ' + score, C_WIDTH / 1.7, 18);
+    c.fillText('Score: ' + gameState.score, C_WIDTH / 1.7, 18);
     debug(error);
     if(gameState.isOver) {
         gameOverTimer -= 1;
@@ -413,8 +331,8 @@ function showStart() {
 }
 
 function drawEnemyScores() {
-    if(starCollection) {
-        starCollection.draw(c);
+    if(sprites.stars) {
+        sprites.stars.draw(c);
     }
     loadedEnemies += 1;
     var curY = C_HEIGHT / 2 + 60;
@@ -529,7 +447,7 @@ function mouseMove(e) {
     var canvasPos = findPos(this);
     var x = e.pageX - canvasPos.x;
     var y = e.pageY - canvasPos.y;
-    gameState.buttons = buttons.filter(function(b) {
+    gameState.buttons = gameState.buttons.filter(function(b) {
         if(!b.active) return false;
         b.hover(x, y);
         b.draw(c);

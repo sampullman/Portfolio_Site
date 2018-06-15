@@ -11,10 +11,13 @@ import { enemies, enemyData, enemyShots } from './space_enemies.js';
 import { keyhandler } from '../util.js';
 import { gameState } from './game_state.js';
 import { activeEnemies } from './space_levels.js';
+import { sprites, shotW, shotH } from './sprites.js';
+import { Point, PointPath } from './space_paths.js';
 
 var powerupObjs = [new MissilePowerup(), new ShieldPowerup(), new LifePowerup()];
 var explosions = [];
 var sounds = {};
+var life;
 
 function setExplosions(newExplosions) {
     explosions = newExplosions;
@@ -171,7 +174,7 @@ var player = {
                         speed: -10,
                         x: this.x + (this.width / 2),
                         y: this.y,
-                        sprites: playerShot
+                        sprites: sprites.playerShot
                     }));
                 }
                 if(keyhandler.Shift && player.numMissiles > 0) {
@@ -196,7 +199,7 @@ var player = {
         if(this.state !== PlayerState.DESTROYED && this.visible && !gameState.isOver) {
             this.sprites[this.state].draw(c, this.x, this.y);
             if(this.shielded) {
-                shieldSprite.draw(c, this.x - 6, this.y - 8);
+                sprites.shield.draw(c, this.x - 6, this.y - 8);
             }
         }
     },
@@ -204,7 +207,7 @@ var player = {
         this.blink(3);
         for(var i = 0; i < lives; i++) {
             this.lives.push(Life({
-                sprite: playerLife,
+                sprite: sprites.playerLife,
                 x: i * this.width / 2 + (i + 1) * 10,
                 y: c.height - (this.height / 2 + 5)
             }));
@@ -216,9 +219,9 @@ function Mine(M) {
     M.active = true;
     M.blinkTimer = 15;
     M.blink = true;
-    M.width = mineSprites[0].width;
-    M.height = mineSprites[0].height;
-    M.sprite = mineSprites[0];
+    M.width = sprites.mines[0].width;
+    M.height = sprites.mines[0].height;
+    M.sprite = sprites.mines[0];
     M.draw = function(c) {
         M.sprite.draw(c, M.x, M.y);
     };
@@ -235,7 +238,7 @@ function Mine(M) {
     M.update = function() {
         M.blinkTimer -= 1;
         if(M.blinkTimer <= 0) {
-            M.sprite = M.blink ? mineSprites[1] : mineSprites[0];
+            M.sprite = M.blink ? sprites.mines[1] : sprites.mines[0];
             M.blink = !M.blink;
             M.blinkTimer = 15;
         }
@@ -282,15 +285,15 @@ function Missile(x, y, speed, w, h) {
     this.y = y;
     this.speed = speed || -7;
     this.active = true;
-    this.width = w || missile.width;
-    this.height = h || missile.height;
+    this.width = w || sprites.missile.width;
+    this.height = h || sprites.missile.height;
     this.explosionTimer = 0;
     this.inBounds = function() {
         return this.x >= 0 && this.x <= c.width &&
             this.y >= 0 && this.y <= c.height;
     };
     this.draw = function(c) {
-        missile.draw(c, this.x, this.y);
+        sprites.missile.draw(c, this.x, this.y);
     };
     this.hitEntity = function(entity) {
         if(entityCollision(this, entity)) {
@@ -516,9 +519,9 @@ function Explosion(x, y, w, h) {
     this.spriteTime = 2;
     this.draw = function(c) {
         if(w && h) {
-            explosionSprites[this.ind].draw(c, this.x, this.y, w, h);
+            sprites.explosions[this.ind].draw(c, this.x, this.y, w, h);
         } else {
-            explosionSprites[this.ind].draw(c, this.x, this.y);
+            sprites.explosions[this.ind].draw(c, this.x, this.y);
         }
     };
     this.update = function() {
@@ -526,7 +529,7 @@ function Explosion(x, y, w, h) {
         if(this.time > this.spriteTime) {
             this.time = 0;
             this.ind += 1;
-            if(this.ind >= explosionSprites.length) {
+            if(this.ind >= sprites.explosions.length) {
                 this.active = false;
             }
         }
@@ -568,9 +571,18 @@ function MissilePowerup() {
         player.numMissiles += 1;
     };
     this.instantiate = function(x, y) {
-        return new Powerup(missile, x, y, this.width, this.height, this.hitCallback);
+        return new Powerup(sprites.missile, x, y, this.width, this.height, this.hitCallback);
     };
     return this;
+}
+
+function addLife(x, y) {
+    life = Life({sprite: sprites.playerLife, x: x, y: y});
+    player.lives.push(life);
+    var xMul = player.lives.length - 1;
+    let lifeX = xMul * player.width / 2 + (xMul + 1) * 10;
+    var endP = new Point(lifeX, C_HEIGHT - (player.height / 2 + 5));
+    life.path = new PointPath([new Point(x, y), endP], [15]);
 }
 
 function LifePowerup() {
@@ -579,7 +591,7 @@ function LifePowerup() {
         addLife(this.x, this.y);
     };
     this.instantiate = function(x, y) {
-        this.powerup = new Powerup(playerLife, x, y, this.width, this.height, this.hitCallback, this.newUpdateFn);
+        this.powerup = new Powerup(sprites.playerLife, x, y, this.width, this.height, this.hitCallback, this.newUpdateFn);
         return this.powerup;
     };
     return this;
@@ -591,7 +603,7 @@ function ShieldPowerup() {
         player.shield();
     };
     this.instantiate = function(x, y) {
-        return new Powerup(shieldPowerupSprite, x, y, this.width, this.height, this.hitCallback);
+        return new Powerup(sprites.shieldPowerup, x, y, this.width, this.height, this.hitCallback);
     };
     return this;
 }
@@ -608,7 +620,7 @@ function Button(c, text, x, y, size, font, fontColor, color, hoverColor) {
     this.y = y;
     this.width = this.size[0] + 15;
     this.height = this.size[1] + 12;
-    this.left = this.x-10;
+    this.left = this.x - 10;
     this.top = this.y;
     this.fontColor = fontColor || '#000';
     // this.color = color || '6e898a';

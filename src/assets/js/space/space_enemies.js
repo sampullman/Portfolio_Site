@@ -68,7 +68,7 @@ var enemy2Obj = {
             shotTimer -= 1;
             if(shotTimer <= 0) {
                 enemyShots.push(Shot({
-                    sprites: enemyShot,
+                    sprites: sprites.enemyShot,
                     x: E.x + E.width / 2,
                     y: E.y + E.height,
                     speed: 10
@@ -96,7 +96,7 @@ var enemy3Obj = {
             shotTimer -= 1;
             if(shotTimer <= 0) {
             enemyShots.push(Shot({
-                sprites: enemyShot,
+                sprites: sprites.enemyShot,
                 x: E.x + E.width / (left ? 4 : 1.75),
                 y: E.y + E.height,
                 speed: 10
@@ -124,13 +124,13 @@ var enemy4Obj = {
             shotTimer -= 1;
             if(shotTimer <= 0) {
                 enemyShots.push(Shot({
-                    sprites: enemyShot,
+                    sprites: sprites.enemyShot,
                     x: E.x + E.width / 4,
                     y: E.y + E.height,
                     speed: 10
                 }));
                 enemyShots.push(Shot({
-                    sprites: enemyShot,
+                    sprites: sprites.enemyShot,
                     x: E.x + E.width / 1.75,
                     y: E.y + E.height,
                     speed: 10
@@ -286,7 +286,7 @@ var enemy8Obj = {
                 if(rand < 0.2) {
                     for(var i = 1; i < 6; i++) {
                         enemyShots.push(Shot({
-                            sprites: enemyShot,
+                            sprites: sprites.enemyShot,
                             x: E.x + i * E.width / 6,
                             y: E.y + E.height - 5,
                             speed: 10
@@ -294,7 +294,7 @@ var enemy8Obj = {
                     }
                 } else {
                     enemyShots.push(Shot({
-                        sprites: enemyShot,
+                        sprites: sprites.enemyShot,
                         x: E.x + gun * E.width / 6,
                         y: E.y + E.height - 5,
                         speed: 10

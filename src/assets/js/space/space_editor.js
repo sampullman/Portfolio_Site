@@ -1,8 +1,8 @@
 
-import { player, explosions, entityCollision, clearEntities, enemyObjList, EnemyMode,
+import { player, explosions, entityCollision, clearEntities, EnemyMode,
     Button, Slider } from './space_objects.js';
 import { keyhandler } from '../util.js';
-import { enemies, setEnemies } from './space_enemies.js';
+import { enemies, setEnemies, enemyObjList } from './space_enemies.js';
 import { randomVerticalInit } from './space_paths.js';
 import { gameState, GameMode } from './game_state.js';
 import { levels } from './space_levels.js';
