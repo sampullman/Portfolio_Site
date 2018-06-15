@@ -9,7 +9,12 @@ let GameMode = {
 let gameState = {
     mode: GameMode.SINGLE,
     score: 0,
-    buttons: []
+    buttons: [],
+    soundOn: false,
+    isOver: false,
+    eventId: 0,
+    level: null,
+    attackTimer: 0
 };
 
 export { gameState, GameMode };

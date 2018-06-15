@@ -1,9 +1,11 @@
 
-import { player, explosions, entityCollision, enemyObjList } from './space_objects.js';
+import { player, explosions, entityCollision, clearEntities, enemyObjList, EnemyMode,
+    Button, Slider } from './space_objects.js';
 import { keyhandler } from '../util.js';
 import { enemies, setEnemies } from './space_enemies.js';
 import { randomVerticalInit } from './space_paths.js';
 import { gameState, GameMode } from './game_state.js';
+import { levels } from './space_levels.js';
 
 export { setupEditor, editMouseMove, editMouseClick, editMouseUp, editMouseDown, stopCustom };
 
@@ -20,10 +22,11 @@ var activating, activeSlider, togglePlay, mainButton;
 var showHelpButton, healthSlider, shotFreqSlider, speedSlider;
 var editorPlayerLives = 3;
 var editorPlayerMissiles = 2;
-var playerLivesSlider, playerMissilesSlider;
+var playerLivesSlider, playerMissilesSlider, attackFreqSlider;
 var prevX = 0;
 var prevY = 0;
 var drawFn;
+var startGame;
 var FPS;
 
 var selRegion = {
@@ -39,14 +42,16 @@ var selRegion = {
 };
 
 // TODO -- Separate into one time setup and return setup
-function setupEditor(c, draw, framesPerSecond) {
+function setupEditor(c, draw, framesPerSecond, startFn, showStart) {
+    startGame = startFn;
     FPS = framesPerSecond;
     drawFn = draw;
     keyhandler.fns.del = function() { deleteSelected(c) };
     keyhandler.fns.c = function() { copyEnemy(c) };
     keyhandler.fns.a = function() { activateEnemies(c) };
     staticEnemies = [];
-    var x = 0, y = c.boundary + 10;
+    var x = 0;
+    var y = c.boundary + 10;
     for(var i = 0; i < enemyObjList.length; i++) {
         var obj = enemyObjList[i];
         var e = obj.instantiate(x, y, obj.sprite.width, obj.sprite.height, 0, randomVerticalInit);
@@ -57,17 +62,17 @@ function setupEditor(c, draw, framesPerSecond) {
     setEnemies(staticEnemies.slice(0, staticEnemies.length).concat(editorEnemies.slice(0, editorEnemies.length)));
     c.font = '16px Arial Black';
     var s1 = 'MAIN'.size(c.font);
-    mainButton = new Button('MAIN', c.width - (s1[0] + 10), c.height - (s1[1] + 15), s1, c.font);
+    mainButton = new Button(c, 'MAIN', c.width - (s1[0] + 10), c.height - (s1[1] + 15), s1, c.font);
     mainButton.setClickListener(function() {
         teardownEditor();
         showStart();
     });
     var s2 = 'PLAY'.size(c.font);
-    togglePlay = new Button('PLAY', c.width - (s2[0] + 10), c.height - (s1[1] + s2[1] + 30), s2, c.font);
+    togglePlay = new Button(c, 'PLAY', c.width - (s2[0] + 10), c.height - (s1[1] + s2[1] + 30), s2, c.font);
     togglePlay.setClickListener(function() { playCustom(c) });
     c.font = '14px Arial Black';
     var s3 = 'HIDE'.size(c.font);
-    showHelpButton = new Button('HIDE', c.width - (s3[0] + 10), c.boundary - (s3[1] + 50), s3, c.font);
+    showHelpButton = new Button(c, 'HIDE', c.width - (s3[0] + 10), c.boundary - (s3[1] + 50), s3, c.font);
     showHelpButton.setClickListener(function(e) {
         showHelpButton.text = (showHelpButton.text === 'HIDE') ? 'HELP' : 'HIDE';
         showHelp = !showHelp;
@@ -82,16 +87,19 @@ function setupEditor(c, draw, framesPerSecond) {
     playerMissilesSlider.setToVal(editorPlayerMissiles);
     sliders = [attackFreqSlider, playerLivesSlider, playerMissilesSlider];
     var healthUpdate = function(val) {
-        selectedEnemies.forEach(function(enemy) { enemy.health = Math.round(val); });
+        selectedEnemies.forEach(function(enemy) { enemy.health = Math.round(val) });
     };
     var shotFreqUpdate = function(val) {
-    selectedEnemies.forEach(function(enemy) {
-        enemy.shotFreq = val * FPS;
-        if(enemy.hoverActionFn) enemy.hoverAction = enemy.hoverActionFn(enemy, enemy.shotFreq);
-        enemy.shoot = enemy.shootFn(enemy, enemy.shotFreq);
-    })};
+        selectedEnemies.forEach(function(enemy) {
+            enemy.shotFreq = val * FPS;
+            if(enemy.hoverActionFn) {
+                enemy.hoverAction = enemy.hoverActionFn(enemy, enemy.shotFreq);
+            }
+            enemy.shoot = enemy.shootFn(enemy, enemy.shotFreq);
+        });
+    };
     var speedUpdate = function(val) {
-        selectedEnemies.forEach(function(enemy) { enemy.speed = val; });
+        selectedEnemies.forEach(function(enemy) { enemy.speed = val });
     };
     var sliderWidth = 75;
     healthSlider = new Slider(c, 'Health', '', 0, 0, sliderWidth, 12, 1, 10, 1, true, healthUpdate);
@@ -102,11 +110,11 @@ function setupEditor(c, draw, framesPerSecond) {
 
 function playCustom(c) {
     editPlay = true;
-    level = levels.custom;
-    level.attack_freq = function () { return FPS * attackFreqSlider.val; };
-    attackTimer = level.attack_freq(0);
-    setupLives(playerLivesSlider.val);
-    numMissiles = Math.round(playerMissilesSlider.val);
+    gameState.level = levels.custom;
+    gameState.level.attack_freq = function () { return FPS * attackFreqSlider.val };
+    gameState.attackTimer = gameState.level.attack_freq(0);
+    player.setupLives(playerLivesSlider.val);
+    player.numMissiles = Math.round(playerMissilesSlider.val);
     gameState.buttons = [togglePlay];
     togglePlay.text = 'STOP';
     togglePlay.setClickListener(function() { stopCustom(c) });
@@ -115,21 +123,21 @@ function playCustom(c) {
         e.editX = e.x;
         e.editY = e.y;
         e.editHealth = e.health;
-        e.initPath = new e.initPathFn(e).instantiate();
+        e.initPath = e.initPathFn(e).instantiate();
         e.initPath.init();
         e.mode = EnemyMode.INIT;
     });
-    level.load();
+    gameState.level.load();
     player.visible = true;
     startGame();
 }
 
 function stopCustom(c) {
-    clearInterval(gameEventId);
+    clearInterval(gameState.eventId);
     editPlay = false;
-    isGameOver = false;
+    gameState.isOver = false;
     clearEntities();
-    playerLives = [];
+    player.lives = [];
     explosions.length = 0;
     gameState.buttons = [mainButton, togglePlay, showHelpButton];
     togglePlay.text = 'PLAY';

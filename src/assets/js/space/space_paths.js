@@ -1,6 +1,6 @@
 
 export { Point, PointPath };
-export { followPlayerPath, randomVerticalInit };
+export { followPlayerPath, randomInit, randomVerticalInit };
 
 function Point(x, y) {
     this.x = x; this.y = y;
@@ -36,7 +36,7 @@ function PointPath(points, durations, speed, pathStartCallback) {
             }
         }
         return new Point(this.xStep, this.yStep);
-    }
+    };
     this.lastPoint = function() {
         return this.points[this.points.length - 1];
     };
@@ -71,23 +71,24 @@ function AvoidPlayer(E, duration) {
     this.done = false;
     this.duration = duration;
     this.next = function() {
-    if(this.E.y > C_HEIGHT) {
-        this.finished = true;
-        return new Point(0, 0);
-    }
-    if(this.E.x < 0) return new Point(12, 0);
-    if(this.E.x > C_WIDTH) return new Point(-12, 0);
-    var projX = ((player.x+10*player.xVel) - this.E.x) + (player.x - this.E.x)/1.5;
-    var projY = (player.y+3*player.yVel) - this.E.y;
-    var dist = Math.sqrt(projX*projX + projY*projY);
-    var xVel = -10*projX / dist;
-    if((this.E.x < this.E.width && xVel < 0) ||
-       (this.E.x > C_WIDTH-2*this.E.width && xVel > 0) ||
-       Math.abs(projX) > C_WIDTH/2) {
-        xVel = 0;
-    }
-    var yVel = 7;
-    return new Point(xVel, yVel);
+        if(this.E.y > c.height) {
+            this.finished = true;
+            return new Point(0, 0);
+        }
+        if(this.E.x < 0) return new Point(12, 0);
+        if(this.E.x > c.width) return new Point(-12, 0);
+        var projX = ((player.x + 10 * player.xVel) - this.E.x) + (player.x - this.E.x) / 1.5;
+        var projY = (player.y + 3 * player.yVel) - this.E.y;
+        var dist = Math.sqrt(projX * projX + projY * projY);
+        var xVel = -10 * projX / dist;
+        if((this.E.x < this.E.width && xVel < 0) ||
+            (this.E.x > c.width - 2 * this.E.width && xVel > 0) ||
+            Math.abs(projX) > c.width/2) {
+
+            xVel = 0;
+        }
+        var yVel = 7;
+        return new Point(xVel, yVel);
     };
     return this;
 }
@@ -97,7 +98,7 @@ function clonePointPath(pathObj, entity) {
     var yDiff = 0;
     var newPoints = [];
     pathObj.points.forEach(function(point) {
-    newPoints.push(new Point(point.x + xDiff, point.y + yDiff));
+        newPoints.push(new Point(point.x + xDiff, point.y + yDiff));
     });
     return new PointPath(newPoints, pathObj.durs.slice(0, pathObj.durs.length), pathObj.E.speed);
 }
@@ -105,14 +106,14 @@ function clonePointPath(pathObj, entity) {
 function standardAttackPath(E) {
     this.E = E;
     this.instantiate = function() {
-    var dir = (Math.random() < 0.5) ? -1 : 1;
-    this.points = [new Point(E.x, E.y), new Point(E.x + dir*C_WIDTH/4, E.y + C_HEIGHT/6),
-               new Point(E.x - dir*C_WIDTH/3, C_HEIGHT)];
-    this.durs = [30, 80];
-    return new PointPath(this.points, this.durs, E.speed);
+        var dir = (Math.random() < 0.5) ? -1 : 1;
+        this.points = [new Point(E.x, E.y), new Point(E.x + dir * c.width / 4, E.y + c.height / 6),
+                new Point(E.x - dir*c.width / 3, c.height)];
+        this.durs = [30, 80];
+        return new PointPath(this.points, this.durs, E.speed);
     };
     this.clone = function(entity) {
-    return clonePointPath(this, entity);
+        return clonePointPath(this, entity);
     };
     return this;
 }
@@ -120,19 +121,19 @@ function standardAttackPath(E) {
 function sweepAttackPath(E) {
     this.E = E;
     this.instantiate = function() {
-    var x1, x2;
-    if(E.x < C_WIDTH / 2) {
-        x1 = 0; x2 = C_WIDTH;
-    } else {
-        x1 = C_WIDTH; x2 = 0;
-    }
-    this.durs = [40, 150];
-    this.points = [new Point(E.x, E.y), new Point(x1, E.y + C_HEIGHT/8), new Point(x2, C_HEIGHT-E.y)];
+        var x1, x2;
+        if(E.x < c.width / 2) {
+            x1 = 0; x2 = c.width;
+        } else {
+            x1 = c.width; x2 = 0;
+        }
+        this.durs = [40, 150];
+        this.points = [new Point(E.x, E.y), new Point(x1, E.y + c.height / 8), new Point(x2, c.height - E.y)];
         return new PointPath(this.points, this.durs, 1);
     };
     this.clone = function(entity) {
         return clonePointPath(this, entity);
-    }
+    };
     return this;
 }
 
@@ -144,7 +145,7 @@ function followPlayerPath(c, E, duration) {
     };
     this.clone = function(entity) {
         return new FollowPlayer(c, entity, this.duration);
-    }
+    };
     return this;
 }
 
@@ -163,35 +164,35 @@ function avoidPlayerPath(c, E, duration) {
 function randomVerticalInit(c, E, minDur) {
     this.minDur = minDur || 0;
     this.instantiate = function() {
-    this.points = [new Point(E.x, E.y - C_HEIGHT), new Point(E.x, E.y)];
-    this.durs = [this.minDur+20+Math.random()*40];
-    var pathStartCallback = function() {
-        E.y -= C_HEIGHT;
-    }
-    var path = new PointPath(this.points, this.durs, 1, pathStartCallback);
-    return path;
+        this.points = [new Point(E.x, E.y - c.height), new Point(E.x, E.y)];
+        this.durs = [this.minDur + 20 + Math.random() * 40];
+        var pathStartCallback = function() {
+            E.y -= c.height;
+        }
+        var path = new PointPath(this.points, this.durs, 1, pathStartCallback);
+        return path;
     };
     this.clone = function(entity) {
-    return clonePointPath(this, entity);
-    }
+        return clonePointPath(this, entity);
+    };
     return this;
 }
 
 function randomHorizontalInit(c, E, minDur) {
     this.minDur = minDur || 0;
     this.instantiate = function() {
-    var dir = (E.x < C_WIDTH/2) ? -1*C_WIDTH : C_WIDTH;
-    this.points = [new Point(E.x+dir, E.y), new Point(E.x, E.y)];
-    this.durs = [this.minDur+20+Math.random()*40];
-    var pathStartCallback = function() {
-        E.x += dir;
-    }
-    var path = new PointPath(this.points, this.durs, 1, pathStartCallback);
-    return path;
+        var dir = (E.x < c.width/2) ? -1 * c.width : c.width;
+        this.points = [new Point(E.x+dir, E.y), new Point(E.x, E.y)];
+        this.durs = [this.minDur + 20 + Math.random() * 40];
+        var pathStartCallback = function() {
+            E.x += dir;
+        }
+        var path = new PointPath(this.points, this.durs, 1, pathStartCallback);
+        return path;
     };
     this.clone = function(entity) {
-    return clonePointPath(this, entity);
-    }
+        return clonePointPath(this, entity);
+    };
     return this;
 }
 
@@ -199,18 +200,18 @@ function randomInit(c, E, minDur) {
     this.E = E;
     this.minDur = minDur || 0;
     this.instantiate = function() {
-    var newX = Math.random() * C_WIDTH;
-    this.points = [new Point(newX, E.y - C_HEIGHT), new Point(E.x, E.y)];
-    this.durs = [this.minDur+20+Math.random()*40];
-    var pathStartCallback = function() {
-        E.x = newX;
-        E.y -= C_HEIGHT;
-    }
-    var path = new PointPath(this.points, this.durs, 1, pathStartCallback);
+        var newX = Math.random() * c.width;
+        this.points = [new Point(newX, E.y - c.height), new Point(E.x, E.y)];
+        this.durs = [this.minDur + 20 + Math.random() * 40];
+        var pathStartCallback = function() {
+            E.x = newX;
+            E.y -= c.height;
+        };
+        var path = new PointPath(this.points, this.durs, 1, pathStartCallback);
         return path;
     };
     this.clone = function(entity) {
         return clonePointPath(this, entity);
-    }
+    };
     return this;
 }

@@ -1,20 +1,30 @@
 
 export {
-    player, explosions, setExplosions, Sound, Life, Mine, Laser, Missile, Shot, Enemy, Explosion, Stars,
+    player, explosions, setExplosions, Sound, Life, Mine, Laser, Missile, Shot, Enemy, EnemyMode, Explosion, Stars,
+    clearEntities, activeEnemies, sounds, playSound,
     entityCollision,
     Button, ImageButton, Slider,
     MissilePowerup, ShieldPowerup, LifePowerup
 };
 
-import { enemies } from './space_enemies.js';
+import { enemies, enemyData, enemyShots } from './space_enemies.js';
 import { keyhandler } from '../util.js';
 import { gameState } from './game_state.js';
+import { activeEnemies } from './space_levels.js';
 
 var powerupObjs = [new MissilePowerup(), new ShieldPowerup(), new LifePowerup()];
 var explosions = [];
+var sounds = {};
 
 function setExplosions(newExplosions) {
     explosions = newExplosions;
+}
+
+function playSound(sound) {
+    if(gameState.soundOn) {
+        sound.stop();
+        sound.play();
+    }
 }
 
 function Sound(src) {
@@ -30,6 +40,16 @@ function Sound(src) {
     this.stop = function(){
         this.sound.pause();
     }
+}
+
+function clearEntities() {
+    mines.length = 0;
+    enemies.length = 0;
+    activeEnemies.length = 0;
+    player.shots.length = 0;
+    enemyShots.length = 0;
+    enemyData.numAttacks = 0;
+    enemyData.initEnemyCount = 0;
 }
 
 function entityCollision(e1, e2) {
@@ -79,6 +99,9 @@ var player = {
     blinkNum: 0,
     blinkDur: 10,
     immobile: 0,
+    lives: [],
+    shots: [],
+    numMissiles: 2,
     state: PlayerState.NORMAL,
     shielded: false,
     switchState: function(state) {
@@ -94,12 +117,12 @@ var player = {
             this.shielded = false;
             return;
         }
-        playSound(enemyExpSound);
+        playSound(sounds.enemyExp);
         explosions.push(new Explosion(this.x, this.y, this.width, this.height));
-        playerLives.pop();
-        if(playerLives.length === 0) {
+        player.lives.pop();
+        if(player.lives.length === 0) {
             this.state = PlayerState.DESTROYED;
-            isGameOver = true;
+            gameState.isOver = true;
             gameOverTimer = 15;
         } else {
             this.x = c.width / 2;
@@ -142,19 +165,19 @@ var player = {
             }
             if(shotTimer > 10) {
                 if(keyhandler.Space) {
-                    playSound(shotSound);
+                    playSound(enemyHeight);
                     shotTimer = 0;
-                    playerShots.push(Shot({
+                    player.shots.push(Shot({
                         speed: -10,
                         x: this.x + (this.width / 2),
                         y: this.y,
                         sprites: playerShot
                     }));
                 }
-                if(keyhandler.Shift && numMissiles > 0) {
+                if(keyhandler.Shift && player.numMissiles > 0) {
                     shotTimer = 0;
-                    playerShots.push(new Missile(this.x, this.y));
-                    numMissiles -= 1;
+                    player.shots.push(new Missile(this.x, this.y));
+                    player.numMissiles -= 1;
                 }
             }
         }
@@ -170,11 +193,21 @@ var player = {
         }
     },
     draw: function(c) {
-        if(this.state !== PlayerState.DESTROYED && this.visible && !isGameOver) {
+        if(this.state !== PlayerState.DESTROYED && this.visible && !gameState.isOver) {
             this.sprites[this.state].draw(c, this.x, this.y);
             if(this.shielded) {
-                shieldSprite.draw(c, this.x-6, this.y-8);
+                shieldSprite.draw(c, this.x - 6, this.y - 8);
             }
+        }
+    },
+    setupLives: function(c, lives) {
+        this.blink(3);
+        for(var i = 0; i < lives; i++) {
+            this.lives.push(Life({
+                sprite: playerLife,
+                x: i * this.width / 2 + (i + 1) * 10,
+                y: c.height - (this.height / 2 + 5)
+            }));
         }
     }
 };
@@ -232,8 +265,8 @@ function Laser(L) {
         }
         L.y += L.yDiff;
         L.height -= L.yDiff;
-        //L.x = L.owner.x + L.owner.width/2;
-        //L.y = L.owner.y + L.owner.height;
+        // L.x = L.owner.x + L.owner.width/2;
+        // L.y = L.owner.y + L.owner.height;
     };
     return L;
 }
@@ -262,7 +295,7 @@ function Missile(x, y, speed, w, h) {
     this.hitEntity = function(entity) {
         if(entityCollision(this, entity)) {
             this.active = false;
-            var exp = new Explosion(this.x - 2*this.width, this.y - this.height, this.width*5, this.height*3)
+            var exp = new Explosion(this.x - 2 * this.width, this.y - this.height, this.width * 5, this.height * 3);
             explosions.push(exp);
             enemies.forEach(function(enemy) {
                 if(entityCollision(exp, enemy)) enemy.entityHit(2);
@@ -325,7 +358,7 @@ var EnemyMode = {
     HOVER: 1,
     ATTACK: 2,
     RETURN: 3
-}
+};
 
 function Enemy(E) {
     E.active = true;
@@ -386,7 +419,7 @@ function Enemy(E) {
                 var last = E.initPath.lastPoint();
                 E.x = last.x;
                 E.y = last.y;
-                initEnemyCount += 1;
+                enemyData.initEnemyCount += 1;
             }
             break;
         }
@@ -431,7 +464,7 @@ function Enemy(E) {
             c.strokeStyle = '#0F0';
             if(this.editorActive || activeEnemies.indexOf(this) !== -1) {
                 c.beginPath();
-                c.arc(this.x+this.width/2, this.y+this.height/2, 1.2*this.width/2, 0, 2 * Math.PI);
+                c.arc(this.x + this.width / 2, this.y + this.height / 2, 1.2 * this.width / 2, 0, 2 * Math.PI);
                 c.stroke();
                 c.closePath();
             }
@@ -454,7 +487,7 @@ function Enemy(E) {
         dmg = dmg || 1;
         this.health -= dmg;
         if(this.health <= 0) {
-            playSound(enemyExpSound);
+            playSound(sounds.enemyExp);
             var rand = Math.random();
             if(rand < 0.02) {
                 powerups.push(powerupObjs[0].instantiate(this.x, this.y));
@@ -521,7 +554,7 @@ function Powerup(sprite, x, y, w, h, hitCallback) {
     this.draw = function(c) {
         this.sprite.draw(c, this.x, this.y, this.width, this.height);
         c.beginPath();
-        c.arc(this.x+this.radius/1.5, this.y+this.radius/1.5, this.radius, 0, 2 * Math.PI);
+        c.arc(this.x+this.radius / 1.5, this.y + this.radius / 1.5, this.radius, 0, 2 * Math.PI);
         c.strokeStyle = '#DDD';
         c.stroke();
         c.closePath();
@@ -532,7 +565,7 @@ function Powerup(sprite, x, y, w, h, hitCallback) {
 function MissilePowerup() {
     this.width = 20; this.height = 20;
     this.hitCallback = function() {
-        numMissiles += 1;
+        player.numMissiles += 1;
     };
     this.instantiate = function(x, y) {
         return new Powerup(missile, x, y, this.width, this.height, this.hitCallback);
@@ -564,22 +597,22 @@ function ShieldPowerup() {
 }
 
 function pointInRect(px, py, x, y, w, h) {
-    return px > x && px < x+w && py > y && py < y+h;
+    return px > x && px < x + w && py > y && py < y + h;
 }
 
-function Button(text, x, y, size, font, fontColor, color, hoverColor) {
+function Button(c, text, x, y, size, font, fontColor, color, hoverColor) {
     this.font = font || '20px Arial Black';
     this.size = size || text.size(this.font);
     this.text = text;
     this.x = x;
     this.y = y;
-    this.width = this.size[0]+15;
+    this.width = this.size[0] + 15;
     this.height = this.size[1] + 12;
     this.left = this.x-10;
     this.top = this.y;
     this.fontColor = fontColor || '#000';
-    //this.color = color || '6e898a';
-    //this.hoverColor = hoverColor || '88babb';
+    // this.color = color || '6e898a';
+    // this.hoverColor = hoverColor || '88babb';
     this.color = 'rgb(110,137,138)';
     this.hoverColor = 'rgb(136,186,187)';
     this.mouseOver = false;
@@ -590,13 +623,13 @@ function Button(text, x, y, size, font, fontColor, color, hoverColor) {
         } else {
             c.fillStyle = this.color;
         }
-        c.lineWidth=1;
+        c.lineWidth = 1;
         c.fillRect(this.left, this.top, this.width, this.height);
         c.strokeStyle = '#000';
         c.strokeRect(this.left, this.top, this.width, this.height);
         c.font = this.font;
         c.fillStyle = this.fontColor;
-        c.fillText(this.text, this.x-5, this.y+this.height/1.5);
+        c.fillText(this.text, this.x - 5, this.y + this.height / 1.5);
     };
     this.hover = function(px, py) {
         this.mouseOver = pointInRect(px, py, this.left, this.top, this.width, this.height);
