@@ -47,7 +47,6 @@ var numAttacks = 0;
 var numMissiles = 2;
 var worldInd = 0;
 var levelInd = 0;
-var score = 0;
 var level, world;
 var explosionSprites = [];
 var mineSprites = [];
@@ -150,7 +149,7 @@ function loadGame() {
     canvas.click(mouseClick);
     csrftoken = getCookie('csrftoken');
     setupAjax();
-    initHighScores();
+    initHighScores(highScorePosted);
     saved = getCookie('saved');
     loadSprites();
     canvas.focus();
@@ -169,6 +168,12 @@ function loadGame() {
     gameState.buttons.push(toggleSound);
 }
 
+function highScorePosted() {
+    var rankText = 'Rank: ' + response.rank
+    var s = rankText.size(c.font)
+    c.fillText(rankText, C_WIDTH / 2 - s[0]/2, C_HEIGHT / 2 + 160);
+}
+
 function setCookie(key, value, expire) {
     expire = expire || new Date(2022, 1, 1);
 }
@@ -182,7 +187,7 @@ function save() {
     setCookie('saved', true);
     setCookie('world', worldInd);
     setCookie('level', levelInd);
-    setCookie('score', score);
+    setCookie('score', gameState.score);
     setCookie('lives', playerLives.length);
     // alert(worldInd+' '+levelInd+' '+score+' '+lives);
 }
@@ -191,7 +196,7 @@ function load() {
     if(saved) {
         worldInd = getCookie('world');
         levelInd = getCookie('level');
-        score = getCookie('score');
+        gameState.score = getCookie('score');
         var lives = getCookie('lives');
         setupLives(lives);
     }
@@ -230,7 +235,7 @@ function clearEntities() {
 
 function restartGame() {
     isGameOver = false;
-    score = 0;
+    gameState.score = 0;
     levelInd = 0;
     worldInd = 0;
     numMissiles = 2;

@@ -27,13 +27,12 @@ var keyhandler = {
     }
 };
 
-export { clamp, keyhandler, findPos, withId };
+export { clamp, escapeHtml, keyhandler, findPos, withId };
 
 function clamp(n, min, max) {
     return Math.min(Math.max(n, min), max);
 }
 
-/* eslint-disable no-unused-vars */
 function escapeHtml(str) {
     var div = document.createElement('div');
     div.appendChild(document.createTextNode(str));

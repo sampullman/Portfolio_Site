@@ -1,5 +1,5 @@
 
-import { player, explosions, entityCollision } from './space_objects.js';
+import { player, explosions, entityCollision, enemyObjList } from './space_objects.js';
 import { keyhandler } from '../util.js';
 import { enemies, setEnemies } from './space_enemies.js';
 import { randomVerticalInit } from './space_paths.js';

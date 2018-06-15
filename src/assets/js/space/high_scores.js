@@ -1,31 +1,28 @@
-import { withId } from '../util.js';
+import { escapeHtml, keyhandler, withId } from '../util.js';
+import { gameState } from './game_state.js';
 
 export { initHighScores };
 
 var hsRank;
 var end = false;
+var highScorePostedCallback;
 
-function initHighScores() {
+function initHighScores(callback) {
+    highScorePostedCallback = callback;
     getHighScores(1);
     withId('highscore_button').onclick = submitHighscore;
     withId('hs_left').onclick = function() {
-        getHighScores(hsRank-10);
+        getHighScores(hsRank - 10);
     };
     withId('hs_right').onclick = function() {
-        getHighScores(hsRank+10);
+        getHighScores(hsRank + 10);
     };
     withId('hs_goto_button').onclick = function() {
         getHighScores(parseInt(withId('hs_goto').val()));
     };
-    withId('feedback_button').onclick = function() {
-        submitFeedback()
-    };
-    withId('feedback_input').onfocusin = function() {
-        keysEnabled = true;
-    };
-    withId('feedback_input').onfocusout = function() {
-        keysEnabled = false;
-    };
+    withId('feedback_button').onclick = submitFeedback;
+    withId('feedback_input').onfocusin = keyhandler.start;
+    withId('feedback_input').onfocusout = keyhandler.stop;
 }
 
 function feedbackPosted(request) {
@@ -34,22 +31,26 @@ function feedbackPosted(request) {
 
 function submitFeedback() {
     var text = withId('feedback_input').text();
-    if(text.length > 500) text = text.substring(0, 499);
-     $.post('/portfolio/query/',
-       { 'query': 'submit_feedback',
-         'text': text },
-       feedbackPosted,
+    if(text.length > 500) {
+        text = text.substring(0, 499);
+    }
+    $.post('/portfolio/query/',
+        {
+            'query': 'submit_feedback',
+            'text': text
+        },
+        feedbackPosted,
         'json'
     );
 }
 
 function highScorePosted(response) {
-    if(response.refresh == '1') {
-    fillHighScores(response);
+    if(response.refresh === '1') {
+        fillHighScores(response);
     }
-    var rankText = 'Rank: '+response.rank
-    var s = rankText.size(c.font)
-    c.fillText(rankText, C_WIDTH / 2 - s[0]/2, C_HEIGHT / 2 + 160);
+    if(highScorePostedCallback) {
+        highScorePostedCallback();
+    }
     withId('submit_highscore').hide();
 }
 
@@ -63,7 +64,7 @@ function submitHighscore() {
         {
             'query': 'set_highscore',
             'name': name,
-            'val': score.toString()
+            'val': gameState.score.toString()
         },
         highScorePosted,
         'json'
@@ -80,7 +81,7 @@ function fillHighScores(response) {
         hsRank = rank;
     }
     for(var i = 0; i < names.length; i++) {
-        data += '<tr><td>' + (rank + i) + '.</td><td>' + escapeHtml(names[i]) + '</td><td>'+scores[i] + '</td></tr>';
+        data += '<tr><td>' + (rank + i) + '.</td><td>' + escapeHtml(names[i]) + '</td><td>' + scores[i] + '</td></tr>';
     }
     withId('scores').html(data);
     end = names.length < 10;

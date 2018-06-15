@@ -8,6 +8,7 @@ export {
 
 import { enemies } from './space_enemies.js';
 import { keyhandler } from '../util.js';
+import { gameState } from './game_state.js';
 
 var powerupObjs = [new MissilePowerup(), new ShieldPowerup(), new LifePowerup()];
 var explosions = [];
@@ -462,7 +463,7 @@ function Enemy(E) {
             } else if(rand < 0.06) {
                 powerups.push(powerupObjs[2].instantiate(this.x, this.y));
             }
-            score += E.score;
+            gameState.score += E.score;
             E.active = false;
             explosions.push(new Explosion(this.x, this.y, this.width, this.height));
             replaceActiveEnemy(E);
