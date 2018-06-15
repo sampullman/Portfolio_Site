@@ -1,9 +1,13 @@
 
-export { player, Sound, Life, Mine, Laser, Missile, Shot, Enemy, Explosion, Stars,
+export {
+    player, Sound, Life, Mine, Laser, Missile, Shot, Enemy, Explosion, Stars,
+    entityCollision,
     Button, ImageButton, Slider,
-    MissilePowerup, ShieldPowerup, LifePowerup };
+    MissilePowerup, ShieldPowerup, LifePowerup
+};
 
 import { enemies } from './space_enemies.js';
+import { keyhandler } from '../util.js';
 
 var powerupObjs = [new MissilePowerup(), new ShieldPowerup(), new LifePowerup()];
 
@@ -109,11 +113,11 @@ var player = {
         if(this.immobile > 0) {
             this.immobile -= 1;
         } else {
-            if (keydown.left || keydown.a) {
+            if (keyhandler.LeftArrow || keyhandler.a) {
                 this.xVel = -8;
                 this.x -= 8;
                 this.switchState(PlayerState.LEFT);
-            } else if (keydown.right || keydown.d) {
+            } else if (keyhandler.RightArrow || keyhandler.d) {
                 this.xVel = 8;
                 this.x += 8;
                 this.switchState(PlayerState.RIGHT);
@@ -121,17 +125,17 @@ var player = {
                 this.xVel = 0;
                 this.switchState(PlayerState.NORMAL);
             }
-            if(keydown.up || keydown.w) {
+            if(keyhandler.UpArrow || keyhandler.w) {
                 this.yVel = -8;
                 this.y -= 8;
-            } else if(keydown.down || keydown.s) {
+            } else if(keyhandler.DownArrow || keyhandler.s) {
                 this.yVel = 8;
                 this.y += 8;
             } else {
                 this.yVel = 0;
             }
             if(shotTimer > 10) {
-                if(keydown.space) {
+                if(keyhandler.Space) {
                     playSound(shotSound);
                     shotTimer = 0;
                     playerShots.push(Shot({
@@ -141,7 +145,7 @@ var player = {
                         sprites: playerShot
                     }));
                 }
-                if(keydown.shift && numMissiles > 0) {
+                if(keyhandler.Shift && numMissiles > 0) {
                     shotTimer = 0;
                     playerShots.push(new Missile(this.x, this.y));
                     numMissiles -= 1;

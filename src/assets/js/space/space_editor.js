@@ -1,4 +1,7 @@
 
+import { entityCollision } from './space_objects.js';
+import { keyhandler } from '../util.js';
+
 export { setupEditor, editMouseMove, editMouseClick, editMouseUp, editMouseDown, stopCustom };
 
 var editorEnemies=[];
@@ -30,9 +33,9 @@ var selRegion = {
 
 // TODO -- Separate into one time setup and return setup
 function setupEditor(c) {
-    keydownFns.del = deleteSelected;
-    keydownFns.c = copyEnemy;
-    keydownFns.a = activateEnemies;
+    keyhandler.fns.del = deleteSelected;
+    keyhandler.fns.c = function() { copyEnemy(c) };
+    keyhandler.fns.a = function() { activateEnemies(c) };
     staticEnemies = [];
     var x = 0, y = BOUNDARY+10;
     for(var i = 0; i < enemyObjList.length; i++) {
@@ -130,16 +133,16 @@ function stopCustom() {
     });
     enemies = staticEnemies.slice(0, staticEnemies.length).concat(editorEnemies.slice(0, editorEnemies.length));
     player.visible = false;
-    window.keydown = {};
+    keyhandler.stop();
     editorDraw(c);
 }
 
 function teardownEditor() {
     buttons = [];
     enemies = [];
-    keydownFns.del = null;
-    keydownFns.c = null;
-    keydownFns.a = null;
+    keyhandler.fns.del = null;
+    keyhandler.fns.c = null;
+    keyhandler.fns.a = null;
     gameMode = GameMode.MENU;
 }
 
@@ -257,7 +260,7 @@ function pushNewSelectedEnemy(newE) {
     newE.squared = true;
 }
 
-function activateEnemies() {
+function activateEnemies(c) {
     var allActive = true;
     selectedEnemies.forEach(function(e) { allActive = allActive && e.editorActive; });
     selectedEnemies.forEach(function(e) {
@@ -272,12 +275,12 @@ function activateEnemies() {
     editorDraw(c);
 }
 
-function copyEnemy() {
+function copyEnemy(c) {
     if(selectedEnemies.length === 0) return;
     var e = selectedEnemies[selectedEnemies.length - 1];
     var xDiff = e.width + 15;
     var xPos = e.x - xDiff;
-    if(keydown.shift) {
+    if(keyhandler.Shift) {
         var newE;
         selectedEnemies = [e];
         while(xPos > 0) {
@@ -299,7 +302,7 @@ function copyEnemy() {
     editorDraw(c);
 }
 
-function editMouseDown(x, y) {
+function editMouseDown(c, x, y) {
     if(editPlay) return;
     prevX = x;
     prevY = y;
@@ -311,20 +314,20 @@ function editMouseDown(x, y) {
             return;
         }
     }
-    for(var i = editorEnemies.length - 1; i >= 0; i--) {
+    for(i = editorEnemies.length - 1; i >= 0; i--) {
         var e = editorEnemies[i];
         if(clickHit(x, y, e)) {
-            if(keydown.ctrl) {
+            if(keyhandler.Ctrl) {
                 activating = e;
             } else if(!e.squared) {
                 e.squared = true;
-                if(keydown.shift) {
+                if(keyhandler.Shift) {
                     selectedEnemies.push(e);
                 } else {
                     clearSelectedEnemies();
                     selectedEnemies = [e];
                 }
-            } else if(keydown.shift) {
+            } else if(keyhandler.Shift) {
                 selectedEnemies.splice(selectedEnemies.indexOf(e), 1);
                 e.squared = false;
             }
@@ -334,10 +337,10 @@ function editMouseDown(x, y) {
             return;
         }
     }
-    for(var i = 0; i < staticEnemies.length; i++) {
-        var e = staticEnemies[i];
+    for(i = 0; i < staticEnemies.length; i++) {
+        e = staticEnemies[i];
         if(clickHit(x, y, e)) {
-            clearSelectedEnemies()
+            clearSelectedEnemies();
             var clickedEnemy = e.click();
             clickedEnemy.x = x;
             clickedEnemy.y = y;
@@ -348,7 +351,7 @@ function editMouseDown(x, y) {
             return;
         }
     }
-    if(!keydown.shift) clearSelectedEnemies();
+    if(!keyhandler.Shift) clearSelectedEnemies();
     selRegion.active = true;
     selRegion.x1 = x; selRegion.y1 = y;
     selRegion.width = 0; selRegion.height = 0;
@@ -357,7 +360,7 @@ function editMouseDown(x, y) {
     editorDraw(c);
 }
 
-function editMouseUp(x, y) {
+function editMouseUp(c, x, y) {
     if(editPlay) return;
     if(activeSlider) activeSlider.clicked = false;
     activeSlider = null;
@@ -370,8 +373,8 @@ function editMouseUp(x, y) {
                 parentChosen = true;
                 while(parent) {
                     if(parent === activating) {
-                    cycle = true;
-                    break;
+                        cycle = true;
+                        break;
                     }
                     parent = parent.parent;
                 }
@@ -387,7 +390,7 @@ function editMouseUp(x, y) {
     editorDraw(c);
 }
 
-function editMouseMove(x, y) {
+function editMouseMove(c, x, y) {
     if(editPlay) return;
     if(dragging && !activating) {
         if(activeSlider) {

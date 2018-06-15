@@ -552,7 +552,7 @@ function mouseDown(e) {
     var x = e.pageX - canvasPos.x;
     var y = e.pageY - canvasPos.y;
     if(gameMode === GameMode.EDIT) {
-        editMouseDown(x, y);
+        editMouseDown(c, x, y);
     }
 }
 
@@ -561,7 +561,7 @@ function mouseUp(e) {
     var x = e.pageX - canvasPos.x;
     var y = e.pageY - canvasPos.y;
     if(gameMode === GameMode.EDIT) {
-        editMouseUp(x, y);
+        editMouseUp(c, x, y);
     }
 }
 
@@ -576,7 +576,7 @@ function mouseMove(e) {
         return true;
     });
     if(gameMode === GameMode.EDIT) {
-        editMouseMove(x, y);
+        editMouseMove(c, x, y);
     }
 }
 
