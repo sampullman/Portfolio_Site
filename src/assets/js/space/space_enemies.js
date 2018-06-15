@@ -3,10 +3,8 @@ import { followPlayerPath } from './space_paths.js';
 var enemyWidth = 36, enemyHeight = 24;
 var enemies = [];
 
-function filterEnemies() {
-    enemies = enemies.filter(function(enemy) {
-        return enemy.active;
-    });
+function setEnemies(newEnemies) {
+    enemies = newEnemies
 }
 
 function initEnemy(sprite, x, y, w, h, score, health, initPathFn, attackPath,
@@ -350,4 +348,4 @@ var enemy9Obj = {
 var enemyObjList = [enemy1Obj, enemy2Obj, enemy3Obj, enemy4Obj, enemy5Obj, enemy6Obj, enemy7Obj, enemy8Obj];
 
 export { enemyObjList, enemy1Obj, enemy2Obj, enemy3Obj, enemy4Obj, enemy5Obj, enemy6Obj, enemy7Obj, enemy8Obj };
-export { enemies, filterEnemies, enemyWidth, enemyHeight };
+export { enemies, setEnemies, enemyWidth, enemyHeight };

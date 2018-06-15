@@ -1,6 +1,6 @@
 
 export { Point, PointPath };
-export { followPlayerPath };
+export { followPlayerPath, randomVerticalInit };
 
 function Point(x, y) {
     this.x = x; this.y = y;

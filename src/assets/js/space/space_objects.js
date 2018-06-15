@@ -1,6 +1,6 @@
 
 export {
-    player, Sound, Life, Mine, Laser, Missile, Shot, Enemy, Explosion, Stars,
+    player, explosions, setExplosions, Sound, Life, Mine, Laser, Missile, Shot, Enemy, Explosion, Stars,
     entityCollision,
     Button, ImageButton, Slider,
     MissilePowerup, ShieldPowerup, LifePowerup
@@ -10,6 +10,11 @@ import { enemies } from './space_enemies.js';
 import { keyhandler } from '../util.js';
 
 var powerupObjs = [new MissilePowerup(), new ShieldPowerup(), new LifePowerup()];
+var explosions = [];
+
+function setExplosions(newExplosions) {
+    explosions = newExplosions;
+}
 
 function Sound(src) {
     this.sound = document.createElement("audio");

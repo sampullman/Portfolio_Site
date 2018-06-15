@@ -1,11 +1,12 @@
 
-import { enemies, filterEnemies, enemyWidth, enemyHeight, enemyObjList, enemy1Obj, enemy2Obj,
+import { enemies, setEnemies, enemyWidth, enemyHeight, enemyObjList, enemy1Obj, enemy2Obj,
          enemy3Obj, enemy4Obj,enemy5Obj, enemy6Obj, enemy7Obj, enemy8Obj } from './space_enemies.js';
 
 import { setupEditor, editMouseMove, editMouseClick, editMouseUp, editMouseDown, stopCustom } from './space_editor.js';
-import { player, Sound, Life, Button, Stars, Slider, ImageButton } from './space_objects.js';
+import { player, explosions, setExplosions, Sound, Life, Button, Stars, Slider, ImageButton } from './space_objects.js';
 import { Point, PointPath } from './space_paths.js';
 
+import { gameState, GameMode } from './game_state.js';
 import { worlds } from './space_levels.js';
 import { findPos } from '../util.js';
 import { initHighScores } from './high_scores.js';
@@ -53,14 +54,12 @@ var mineSprites = [];
 var starSprite, starCollection;
 /* eslint-disable no-unused-vars */
 var shotSound, enemyShotSound, enemyExpSound, ambientSound, laserSound;
-var explosions = [];
 
 /* eslint-disable no-unused-vars */
 var playerShot, missile, shieldPowerupSprite, enemyShot;
 
 var powerups = [];
 
-var buttons = [];
 var pauseSprite, playSprite, soundOnSprite, soundOffSprite;
 
 var mines = [];
@@ -71,15 +70,6 @@ var xWander = 0;
 var xWanderMin = -10;
 var xWanderMax = 10;
 var xWanderSpeed = 0.2;
-
-var GameMode = {
-    MENU: 0,
-    SINGLE: 1,
-    MULTI: 2,
-    EDIT: 3
-}
-
-var gameMode;
 
 function loadSprites() {
     var w = player.width;
@@ -153,6 +143,7 @@ function loadGame() {
     c = canvas.getContext('2d');
     c.width = C_WIDTH;
     c.height = C_HEIGHT;
+    c.boundary = BOUNDARY;
     canvas.mousemove(mouseMove);
     canvas.mousedown(mouseDown);
     canvas.mouseup(mouseUp);
@@ -168,14 +159,14 @@ function loadGame() {
     userPause.setClickListener(function() {
         paused ? resume() : pause();
     });
-    buttons.push(userPause);
+    gameState.buttons.push(userPause);
     var toggleSound = new ImageButton(c, soundOffSprite, soundOnSprite, C_WIDTH - 52, 6, 20, 20);
     toggleSound.setClickListener(function() {
         soundOn = !soundOn;
         if(!soundOn) ambientSound.stop();
         else ambientSound.play();
     });
-    buttons.push(toggleSound);
+    gameState.buttons.push(toggleSound);
 }
 
 function setCookie(key, value, expire) {
@@ -261,8 +252,8 @@ function levelEditor() {
     isGameOver = false;
     clearEntities();
     player.visible = false;
-    buttons = buttons.filter(function(b) { return b.active });
-    setupEditor();
+    gameState.buttons = gameState.buttons.filter(function(b) { return b.active });
+    setupEditor(c, draw, FPS);
 }
 
 function nextLevel() {
@@ -319,7 +310,9 @@ function update() {
             enemy.wander(xWanderSpeed);
         }
     });
-    filterEnemies();
+    setEnemies(enemies.filter(function(enemy) {
+        return enemy.active;
+    }));
     mines = mines.filter(function(mine) {
         mine.update();
         mine.hitEntity(player);
@@ -329,10 +322,10 @@ function update() {
     if(xWander > xWanderMax || xWander < xWanderMin) {
         xWanderSpeed *= -1;
     }
-    explosions = explosions.filter(function(exp) {
+    setExplosions(explosions.filter(function(exp) {
         exp.update();
         return exp.active;
-    });
+    }));
     starCollection.update(c);
     if(attackTimer <= 0 && activeEnemies.length > 0) {
         var e = activeEnemies[Math.floor(Math.random() * activeEnemies.length)];
@@ -396,7 +389,7 @@ function draw() {
 }
 
 function drawButtons() {
-    buttons.forEach(function(b) { b.draw(c) });
+    gameState.buttons.forEach(function(b) { b.draw(c) });
 }
 
 function showStart() {
@@ -419,34 +412,34 @@ function showStart() {
         b2 = new Button('CONTINUE', C_WIDTH / 2 + 15, C_HEIGHT / 3, s2, c.font);
         b2.setClickListener(function() {
             setInterval(function() { playSound(ambientSound) }, 4000);
-            gameMode = GameMode.SINGLE;
+            gameState.mode = GameMode.SINGLE;
             continueGame();
             this.active = false;
             b1.active = false;
             b3.active = false;
         });
-        buttons.push(b2);
+        gameState.buttons.push(b2);
     } else {
         b1 = new Button('NEW GAME', C_WIDTH / 2 - s1[0] / 2, C_HEIGHT / 3, s1, c.font);
     }
-    buttons.push(b1);
+    gameState.buttons.push(b1);
     b1.setClickListener(function() {
         setInterval(function() { playSound(ambientSound) }, 4000);
         if(b2) b2.active = false;
         b3.active = false;
         this.active = false;
-        gameMode = GameMode.SINGLE;
+        gameState.mode = GameMode.SINGLE;
         restartGame();
     });
     s2 = 'LEVEL EDITOR'.size(c.font);
     var b3 = new Button('LEVEL EDITOR', C_WIDTH / 2 - s2[0] / 2, C_HEIGHT / 3 + s1[1] + 25, s2, c.font);
-    buttons.push(b3);
+    gameState.buttons.push(b3);
     b3.setClickListener(function() {
         setInterval(function() { playSound(ambientSound) }, 4000);
         b1.active = false;
         if(b2) b2.active = false;
         this.active = false;
-        gameMode = GameMode.EDIT;
+        gameState.mode = GameMode.EDIT;
         levelEditor();
     });
     drawEnemyScores();
@@ -493,8 +486,8 @@ function display(id, value) {
 
 function gameOver(won) {
     clearInterval(gameEventId);
-    if(gameMode === GameMode.EDIT) {
-        stopCustom();
+    if(gameState.mode === GameMode.EDIT) {
+        stopCustom(c);
         return;
     }
     c.fillStyle = '#000';
@@ -522,16 +515,16 @@ function gameOver(won) {
         display('#submit_highscore', 'none');
         this.active = false; b1.active = false; continueGame();
     });
-    buttons.push(b1);
-    if(!won) buttons.push(b2);
+    gameState.buttons.push(b1);
+    if(!won) gameState.buttons.push(b2);
     drawButtons();
     display('#submit_highscore', 'block');
 }
 
 function levelWon() {
     clearInterval(gameEventId);
-    if(gameMode === GameMode.EDIT) {
-        stopCustom();
+    if(gameState.mode === GameMode.EDIT) {
+        stopCustom(c);
         return;
     }
     levelInd += 1;
@@ -551,7 +544,7 @@ function mouseDown(e) {
     var canvasPos = findPos(this);
     var x = e.pageX - canvasPos.x;
     var y = e.pageY - canvasPos.y;
-    if(gameMode === GameMode.EDIT) {
+    if(gameState.mode === GameMode.EDIT) {
         editMouseDown(c, x, y);
     }
 }
@@ -560,7 +553,7 @@ function mouseUp(e) {
     var canvasPos = findPos(this);
     var x = e.pageX - canvasPos.x;
     var y = e.pageY - canvasPos.y;
-    if(gameMode === GameMode.EDIT) {
+    if(gameState.mode === GameMode.EDIT) {
         editMouseUp(c, x, y);
     }
 }
@@ -569,13 +562,13 @@ function mouseMove(e) {
     var canvasPos = findPos(this);
     var x = e.pageX - canvasPos.x;
     var y = e.pageY - canvasPos.y;
-    buttons = buttons.filter(function(b) {
+    gameState.buttons = buttons.filter(function(b) {
         if(!b.active) return false;
         b.hover(x, y);
         b.draw(c);
         return true;
     });
-    if(gameMode === GameMode.EDIT) {
+    if(gameState.mode === GameMode.EDIT) {
         editMouseMove(c, x, y);
     }
 }
@@ -584,13 +577,13 @@ function mouseClick(e) {
     var canvasPos = findPos(this);
     var x = e.pageX - canvasPos.x;
     var y = e.pageY - canvasPos.y;
-    buttons.forEach(function(b) {
+    gameState.buttons.forEach(function(b) {
         b.click(x, y);
     });
-    buttons = buttons.filter(function(b) {
+    gameState.buttons = gameState.buttons.filter(function(b) {
         return b.active;
     });
-    if(gameMode === GameMode.EDIT) editMouseClick(x, y);
+    if(gameState.mode === GameMode.EDIT) editMouseClick(x, y);
 }
 
 function debug(msg) {

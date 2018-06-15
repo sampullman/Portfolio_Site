@@ -1,24 +1,30 @@
 
-import { entityCollision } from './space_objects.js';
+import { player, explosions, entityCollision } from './space_objects.js';
 import { keyhandler } from '../util.js';
+import { enemies, setEnemies } from './space_enemies.js';
+import { randomVerticalInit } from './space_paths.js';
+import { gameState, GameMode } from './game_state.js';
 
 export { setupEditor, editMouseMove, editMouseClick, editMouseUp, editMouseDown, stopCustom };
 
-var editorEnemies=[];
-var staticEnemies=[];
-var selectedEnemies=[];
-var sliders=[];
-var editorActiveEnemies=[];
-var editPlay=false;
-var showHelp=true;
-var showEnemyOptions=false;
-var dragging=false, activating, activeSlider, togglePlay, mainButton;
+var editorEnemies = [];
+var staticEnemies = [];
+var selectedEnemies = [];
+var sliders = [];
+var editorActiveEnemies = [];
+var editPlay = false;
+var showHelp = true;
+var showEnemyOptions = false;
+var dragging = false;
+var activating, activeSlider, togglePlay, mainButton;
 var showHelpButton, healthSlider, shotFreqSlider, speedSlider;
-var editorPlayerLives=3;
-var editorPlayerMissiles=2;
+var editorPlayerLives = 3;
+var editorPlayerMissiles = 2;
 var playerLivesSlider, playerMissilesSlider;
-var prevX=0;
-var prevY=0;
+var prevX = 0;
+var prevY = 0;
+var drawFn;
+var FPS;
 
 var selRegion = {
     active: false,
@@ -29,15 +35,18 @@ var selRegion = {
     x1: 0,
     x2: 0,
     y1: 0,
-    y2: 0 };
+    y2: 0
+};
 
 // TODO -- Separate into one time setup and return setup
-function setupEditor(c) {
-    keyhandler.fns.del = deleteSelected;
+function setupEditor(c, draw, framesPerSecond) {
+    FPS = framesPerSecond;
+    drawFn = draw;
+    keyhandler.fns.del = function() { deleteSelected(c) };
     keyhandler.fns.c = function() { copyEnemy(c) };
     keyhandler.fns.a = function() { activateEnemies(c) };
     staticEnemies = [];
-    var x = 0, y = BOUNDARY+10;
+    var x = 0, y = c.boundary + 10;
     for(var i = 0; i < enemyObjList.length; i++) {
         var obj = enemyObjList[i];
         var e = obj.instantiate(x, y, obj.sprite.width, obj.sprite.height, 0, randomVerticalInit);
@@ -45,7 +54,7 @@ function setupEditor(c) {
         staticEnemies.push(e);
         x += e.sprite.width + 10;
     }
-    enemies = staticEnemies.slice(0, staticEnemies.length).concat(editorEnemies.slice(0, editorEnemies.length));
+    setEnemies(staticEnemies.slice(0, staticEnemies.length).concat(editorEnemies.slice(0, editorEnemies.length)));
     c.font = '16px Arial Black';
     var s1 = 'MAIN'.size(c.font);
     mainButton = new Button('MAIN', c.width - (s1[0] + 10), c.height - (s1[1] + 15), s1, c.font);
@@ -55,16 +64,16 @@ function setupEditor(c) {
     });
     var s2 = 'PLAY'.size(c.font);
     togglePlay = new Button('PLAY', c.width - (s2[0] + 10), c.height - (s1[1] + s2[1] + 30), s2, c.font);
-    togglePlay.setClickListener(playCustom);
+    togglePlay.setClickListener(function() { playCustom(c) });
     c.font = '14px Arial Black';
     var s3 = 'HIDE'.size(c.font);
-    showHelpButton = new Button('HIDE', c.width - (s3[0] + 10), BOUNDARY - (s3[1] + 50), s3, c.font);
+    showHelpButton = new Button('HIDE', c.width - (s3[0] + 10), c.boundary - (s3[1] + 50), s3, c.font);
     showHelpButton.setClickListener(function(e) {
         showHelpButton.text = (showHelpButton.text === 'HIDE') ? 'HELP' : 'HIDE';
         showHelp = !showHelp;
         editorDraw(c);
     });
-    buttons = [mainButton, togglePlay, showHelpButton];
+    gameState.buttons = [mainButton, togglePlay, showHelpButton];
     attackFreqSlider = new Slider(c, 'Time between Attacks', 'sec.', 20, c.height - 35, 110, 14, 0, 3, 0, true, null);
     attackFreqSlider.setToVal(1.5);
     playerLivesSlider = new Slider(c, 'Player Health', '', 160, c.height - 35, 80, 14, 1, 10, 1, true, null);
@@ -91,17 +100,17 @@ function setupEditor(c) {
     editorDraw(c);
 }
 
-function playCustom() {
+function playCustom(c) {
     editPlay = true;
     level = levels.custom;
     level.attack_freq = function () { return FPS * attackFreqSlider.val; };
     attackTimer = level.attack_freq(0);
     setupLives(playerLivesSlider.val);
     numMissiles = Math.round(playerMissilesSlider.val);
-    buttons = [togglePlay];
+    gameState.buttons = [togglePlay];
     togglePlay.text = 'STOP';
-    togglePlay.setClickListener(stopCustom);
-    enemies = editorEnemies.slice(0, editorEnemies.length);
+    togglePlay.setClickListener(function() { stopCustom(c) });
+    setEnemies(editorEnemies.slice(0, editorEnemies.length));
     enemies.forEach(function(e) {
         e.editX = e.x;
         e.editY = e.y;
@@ -115,35 +124,35 @@ function playCustom() {
     startGame();
 }
 
-function stopCustom() {
+function stopCustom(c) {
     clearInterval(gameEventId);
     editPlay = false;
     isGameOver = false;
     clearEntities();
     playerLives = [];
-    explosions = [];
-    buttons = [mainButton, togglePlay, showHelpButton];
+    explosions.length = 0;
+    gameState.buttons = [mainButton, togglePlay, showHelpButton];
     togglePlay.text = 'PLAY';
-    togglePlay.setClickListener(playCustom);
+    togglePlay.setClickListener(function() { playCustom(c) });
     editorEnemies.forEach(function(e) {
         e.x = e.editX;
         e.y = e.editY;
         e.health = e.editHealth;
         e.active = true;
     });
-    enemies = staticEnemies.slice(0, staticEnemies.length).concat(editorEnemies.slice(0, editorEnemies.length));
+    setEnemies(staticEnemies.slice(0, staticEnemies.length).concat(editorEnemies.slice(0, editorEnemies.length)));
     player.visible = false;
     keyhandler.stop();
     editorDraw(c);
 }
 
 function teardownEditor() {
-    buttons = [];
-    enemies = [];
+    gameState.buttons = [];
+    enemies.length = 0;
     keyhandler.fns.del = null;
     keyhandler.fns.c = null;
     keyhandler.fns.a = null;
-    gameMode = GameMode.MENU;
+    gameState.mode = GameMode.MENU;
 }
 
 function staticEnemyClick(enemyObj, enemy) {
@@ -157,9 +166,9 @@ function staticEnemyClick(enemyObj, enemy) {
         e.shotFreq = 30;
         e.type = enemyObj.type;
         return e;
-    }
+    };
 }
-function deleteSelected() {
+function deleteSelected(c) {
     selectedEnemies.forEach(function(e) {
         e.active = false;
     });
@@ -167,10 +176,10 @@ function deleteSelected() {
     editorDraw(c);
 }
 
-function updateEnemySliders() {
+function updateEnemySliders(c) {
     var show = true;
     if(selectedEnemies.length > 0) {
-        id = selectedEnemies[0].type;
+        let id = selectedEnemies[0].type;
         selectedEnemies.forEach(function(e) {
             show = show && (id === e.type);
         });
@@ -186,7 +195,6 @@ function updateEnemySliders() {
         sliders.push(speedSlider);
     }
     var e = selectedEnemies[0];
-    error = e.health;
     var sliderWidth = 75;
     var xPos = e.x + (e.x < c.width - 120 ? e.width + 10 : -1 * sliderWidth - 5);
     var yPos = e.y + e.height;
@@ -202,10 +210,10 @@ function editorUpdate(c) {
     selectedEnemies = selectedEnemies.filter(function(e) {
         return e.active;
     });
-    //updateEnemySliders();
-    enemies = enemies.filter(function(e) {
+    // updateEnemySliders();
+    setEnemies(enemies.filter(function(e) {
         return e.active;
-    });
+    }));
     editorEnemies = editorEnemies.filter(function(e) {
         if(e.x + e.width < 0) e.x = 0;
         else if(e.x > c.width) e.x = c.width - e.width;
@@ -216,28 +224,28 @@ function editorUpdate(c) {
 }
 
 function editorDraw(c) {
-    draw();
+    drawFn();
     if(selRegion.active) {
         c.strokeStyle = '#DDD';
         c.strokeRect(selRegion.x, selRegion.y, selRegion.width, selRegion.height);
     } else if(activating) {
         c.strokeStyle = '#0F0';
         c.beginPath();
-        c.moveTo(activating.x+activating.width / 2, activating.y+activating.height / 2);
+        c.moveTo(activating.x + activating.width / 2, activating.y + activating.height / 2);
         c.lineTo(prevX, prevY);
         c.closePath();
         c.stroke();
     }
     if(showHelp) {
         c.font = '14px Arial';
-        c.fillText('-Click and drag from a template below to create a new enemy.', 10, BOUNDARY - 160);
-        c.fillText('-Shift click or click and drag to select multiple enemies.', 10, BOUNDARY - 140);
-        c.fillText('-Type \'c\' to copy an enemy or \'shift-c\' to fill a row with copies.', 10, BOUNDARY - 120);
-        c.fillText('-Hit the delete key to remove selected enemies.', 10, BOUNDARY - 100);
-        c.fillText('-Type \'a\' to set selected enemies as attackers.', 10, BOUNDARY - 80);
-        c.fillText('-Control click and drag from one enemy to another to make the', 10, BOUNDARY - 60);
-        c.fillText('second enemy attack after the first is destroyed.', 30, BOUNDARY - 40);
-        c.fillText('-Use sliders to modify values. Values are copied along with enemies.', 10, BOUNDARY - 20);
+        c.fillText('-Click and drag from a template below to create a new enemy.', 10, c.boundary - 160);
+        c.fillText('-Shift click or click and drag to select multiple enemies.', 10, c.boundary - 140);
+        c.fillText('-Type \'c\' to copy an enemy or \'shift-c\' to fill a row with copies.', 10, c.boundary - 120);
+        c.fillText('-Hit the delete key to remove selected enemies.', 10, c.boundary - 100);
+        c.fillText('-Type \'a\' to set selected enemies as attackers.', 10, c.boundary - 80);
+        c.fillText('-Control click and drag from one enemy to another to make the', 10, c.boundary - 60);
+        c.fillText('second enemy attack after the first is destroyed.', 30, c.boundary - 40);
+        c.fillText('-Use sliders to modify values. Values are copied along with enemies.', 10, c.boundary - 20);
     }
     sliders.forEach(function(slider) {
         slider.draw(c);
@@ -249,7 +257,7 @@ function clickHit(x, y, E) {
 }
 
 function clearSelectedEnemies() {
-    selectedEnemies.forEach(function(e) { e.squared = false; });
+    selectedEnemies.forEach(function(e) { e.squared = false });
     selectedEnemies = [];
 }
 
@@ -262,7 +270,7 @@ function pushNewSelectedEnemy(newE) {
 
 function activateEnemies(c) {
     var allActive = true;
-    selectedEnemies.forEach(function(e) { allActive = allActive && e.editorActive; });
+    selectedEnemies.forEach(function(e) { allActive = allActive && e.editorActive });
     selectedEnemies.forEach(function(e) {
         if(allActive) {
             e.editorActive = false;
@@ -271,7 +279,7 @@ function activateEnemies(c) {
             e.editorActive = true;
         }
     });
-    editorActiveEnemies = editorActiveEnemies.filter(function(e) { return e.editorActive; });
+    editorActiveEnemies = editorActiveEnemies.filter(function(e) { return e.editorActive });
     editorDraw(c);
 }
 
@@ -280,8 +288,8 @@ function copyEnemy(c) {
     var e = selectedEnemies[selectedEnemies.length - 1];
     var xDiff = e.width + 15;
     var xPos = e.x - xDiff;
+    var newE;
     if(keyhandler.Shift) {
-        var newE;
         selectedEnemies = [e];
         while(xPos > 0) {
             newE = e.clone(xPos, e.y);
@@ -295,8 +303,8 @@ function copyEnemy(c) {
             xPos += xDiff;
         }
     } else {
-        var newX = (e.x > c.width) ? e.x - e.width / 2 : e.x+e.width / 2;
-        var newE = e.clone(newX, e.y + e.width / 2);
+        var newX = (e.x > c.width) ? e.x - e.width / 2 : e.x + e.width / 2;
+        newE = e.clone(newX, e.y + e.width / 2);
         pushNewSelectedEnemy(newE);
     }
     editorDraw(c);
@@ -332,7 +340,7 @@ function editMouseDown(c, x, y) {
                 e.squared = false;
             }
             dragging = true;
-            updateEnemySliders();
+            updateEnemySliders(c);
             editorDraw(c);
             return;
         }
@@ -346,7 +354,7 @@ function editMouseDown(c, x, y) {
             clickedEnemy.y = y;
             dragging = true;
             pushNewSelectedEnemy(clickedEnemy);
-            updateEnemySliders();
+            updateEnemySliders(c);
             editorDraw(c);
             return;
         }
@@ -355,7 +363,7 @@ function editMouseDown(c, x, y) {
     selRegion.active = true;
     selRegion.x1 = x; selRegion.y1 = y;
     selRegion.width = 0; selRegion.height = 0;
-    updateEnemySliders();
+    updateEnemySliders(c);
     editorUpdate(c);
     editorDraw(c);
 }
@@ -403,7 +411,7 @@ function editMouseMove(c, x, y) {
                     healthSlider.move(xDiff, yDiff);
                     shotFreqSlider.move(xDiff, yDiff);
                     speedSlider.move(xDiff, yDiff);
-                    updateEnemySliders();
+                    updateEnemySliders(c);
                 }
                 e.x += xDiff;
                 e.y += yDiff;
