@@ -1,16 +1,19 @@
 
 <template>
-    <router-view/>
+    <div id="app">
+        <div class="header">
+            <Header></Header>
+        </div>
+        <router-view/>
+    </div>
 </template>
 
 <script>
-import Site from '@/Site';
-import Game from '@/Game';
+import Header from './components/Header';
 export default {
-    name: 'App',
+    name: 'Site',
     components: {
-        Site,
-        Game
+        Header
     }
 };
 </script>
