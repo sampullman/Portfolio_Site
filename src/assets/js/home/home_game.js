@@ -20,6 +20,7 @@ var blockWidth, blockHeight;
 var legSprites, armSprites, headSprites, bodySprites, sprites, superSprites;
 
 function loadSprites() {
+    Sprite.imageRoot = '/static/img/home_game/';
     legSprites = [Sprite('android-leg.png', legWidth, legHeight), Sprite('android-leg1.png', legWidth, legHeight)];
     armSprites = [Sprite('android-arm.png', armWidth, armHeight), Sprite('android-arm1.png', armWidth, armHeight)];
     headSprites = [Sprite('android-head.png', headWidth, headHeight), Sprite('android-head1.png', headWidth, headHeight), Sprite('android-head2.png', headWidth, headHeight)];

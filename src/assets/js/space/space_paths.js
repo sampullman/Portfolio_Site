@@ -3,8 +3,8 @@ import { gameState } from './game_state.js';
 import { player } from './space_objects.js';
 
 export { Point, PointPath };
-export { followPlayerPath, avoidPlayerPath, standardAttackPath, sweepAttackPath, randomInit,
-    randomVerticalInit, randomHorizontalInit };
+export { FollowPlayerPath, AvoidPlayerPath, StandardAttackPath, SweepAttackPath, RandomInit,
+    RandomVerticalInit, RandomHorizontalInit };
 
 function Point(x, y) {
     this.x = x; this.y = y;
@@ -69,7 +69,7 @@ function FollowPlayer(c, E, duration) {
     return this;
 }
 
-function AvoidPlayer(E, duration) {
+function AvoidPlayer(c, E, duration) {
     this.E = E;
     this.finished = false;
     this.done = false;
@@ -106,12 +106,12 @@ function clonePointPath(pathObj, entity) {
     return new PointPath(newPoints, pathObj.durs.slice(0, pathObj.durs.length), pathObj.E.speed);
 }
 
-function standardAttackPath(E) {
+function StandardAttackPath(c, E) {
     this.E = E;
     this.instantiate = function() {
         var dir = (Math.random() < 0.5) ? -1 : 1;
-        this.points = [new Point(E.x, E.y), new Point(E.x + dir * gameState.c.width / 4, E.y + gameState.c.height / 6),
-            new Point(E.x - dir * gameState.c.width / 3, gameState.c.height)];
+        this.points = [new Point(E.x, E.y), new Point(E.x + dir * c.width / 4, E.y + c.height / 6),
+            new Point(E.x - dir * c.width / 3, c.height)];
         this.durs = [30, 80];
         return new PointPath(this.points, this.durs, E.speed);
     };
@@ -121,17 +121,17 @@ function standardAttackPath(E) {
     return this;
 }
 
-function sweepAttackPath(E) {
+function SweepAttackPath(c, E) {
     this.E = E;
     this.instantiate = function() {
         var x1, x2;
-        if(E.x < gameState.c.width / 2) {
-            x1 = 0; x2 = gameState.c.width;
+        if(E.x < c.width / 2) {
+            x1 = 0; x2 = c.width;
         } else {
-            x1 = gameState.c.width; x2 = 0;
+            x1 = c.width; x2 = 0;
         }
         this.durs = [40, 150];
-        this.points = [new Point(E.x, E.y), new Point(x1, E.y + gameState.c.height / 8), new Point(x2, gameState.c.height - E.y)];
+        this.points = [new Point(E.x, E.y), new Point(x1, E.y + c.height / 8), new Point(x2, c.height - E.y)];
         return new PointPath(this.points, this.durs, 1);
     };
     this.clone = function(entity) {
@@ -140,7 +140,7 @@ function sweepAttackPath(E) {
     return this;
 }
 
-function followPlayerPath(c, E, duration) {
+function FollowPlayerPath(c, E, duration) {
     this.E = E;
     this.duration = duration || 90;
     this.instantiate = function() {
@@ -152,7 +152,7 @@ function followPlayerPath(c, E, duration) {
     return this;
 }
 
-function avoidPlayerPath(c, E, duration) {
+function AvoidPlayerPath(c, E, duration) {
     this.E = E;
     this.duration = duration || 100;
     this.instantiate = function() {
@@ -164,7 +164,7 @@ function avoidPlayerPath(c, E, duration) {
     return this;
 }
 
-function randomVerticalInit(c, E, minDur) {
+function RandomVerticalInit(c, E, minDur) {
     this.minDur = minDur || 0;
     this.instantiate = function() {
         this.points = [new Point(E.x, E.y - c.height), new Point(E.x, E.y)];
@@ -181,7 +181,7 @@ function randomVerticalInit(c, E, minDur) {
     return this;
 }
 
-function randomHorizontalInit(c, E, minDur) {
+function RandomHorizontalInit(c, E, minDur) {
     this.minDur = minDur || 0;
     this.instantiate = function() {
         var dir = (E.x < c.width / 2) ? -1 * c.width : c.width;
@@ -199,7 +199,7 @@ function randomHorizontalInit(c, E, minDur) {
     return this;
 }
 
-function randomInit(c, E, minDur) {
+function RandomInit(c, E, minDur) {
     this.E = E;
     this.minDur = minDur || 0;
     this.instantiate = function() {

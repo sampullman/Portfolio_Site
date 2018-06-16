@@ -7,8 +7,8 @@ import { player, setExplosions, powerups, setPowerups, playSound, Button, ImageB
 
 import { gameState, GameMode } from './game_state.js';
 import { levels, worlds, activeEnemies } from './space_levels.js';
-import { findPos } from '../util.js';
-import { initHighScores } from './high_scores.js';
+import { findPos, textSize } from '../util.js';
+// import { initHighScores } from './high_scores.js';
 import { sounds, sprites, loadSprites } from './sprites.js';
 
 export { loadGame, startGame, pause, resume };
@@ -39,21 +39,21 @@ var xWanderMin = -10;
 var xWanderSpeed = 0.2;
 
 function loadGame() {
-    levels.init(c);
-    player.init(c);
     var canvas = document.getElementById('canvas');
     c = canvas.getContext('2d');
+    levels.init(c);
+    player.init(c);
     c.width = C_WIDTH;
     c.height = C_HEIGHT;
     gameState.c = c;
     c.boundary = BOUNDARY;
-    canvas.mousemove(mouseMove);
-    canvas.mousedown(mouseDown);
-    canvas.mouseup(mouseUp);
-    canvas.click(mouseClick);
+    canvas.onmousemove = mouseMove;
+    canvas.onmousedown = mouseDown;
+    canvas.onmouseup = mouseUp;
+    canvas.onclick = mouseClick;
     csrftoken = getCookie('csrftoken');
     // setupAjax();
-    initHighScores(highScorePosted);
+    // initHighScores(highScorePosted);
     saved = getCookie('saved');
     loadSprites(c, drawEnemyScores, drawButtons);
     canvas.focus();
@@ -75,9 +75,10 @@ function loadGame() {
     gameState.buttons.push(toggleSound);
 }
 
+/* eslint-disable no-unused-vars */
 function highScorePosted(response) {
     var rankText = 'Rank: ' + response.rank;
-    var s = rankText.size(c.font);
+    var s = textSize(rankText, c.font);
     c.fillText(rankText, C_WIDTH / 2 - s[0] / 2, C_HEIGHT / 2 + 160);
 }
 
@@ -277,19 +278,19 @@ function showStart() {
     c.clearRect(0, 0, C_WIDTH, C_HEIGHT);
     c.fillStyle = '#000';
     c.font = '56px Verdana';
-    var s = 'Xenophobia'.size(c.font);
+    var s = textSize('Xenophobia', c.font);
     c.fillText('Xenophobia', C_WIDTH / 2 - s[0] / 2, C_HEIGHT / 6);
     c.font = '28px Arial';
-    var s1 = 'Destroy the aliens, because'.size(c.font);
+    var s1 = textSize('Destroy the aliens, because', c.font);
     c.fillText('Destroy the aliens, because', C_WIDTH / 2 - s1[0] / 2, C_HEIGHT / 4);
-    var s2 = 'they are different from you.'.size(c.font);
+    var s2 = textSize('they are different from you.', c.font);
     c.fillText('they are different from you.', C_WIDTH / 2 - s2[0] / 2, C_HEIGHT / 4 + s1[1]);
     c.font = '20px Arial Black';
-    s1 = 'NEW GAME'.size(c.font);
+    s1 = textSize('NEW GAME', c.font);
     var b1, b2;
     if(saved) {
         b1 = new Button(c, 'NEW GAME', C_WIDTH / 2 - (s1[0] + 15), C_HEIGHT / 3, s1, c.font);
-        s2 = 'CONTINUE'.size(c.font);
+        s2 = textSize('CONTINUE', c.font);
         b2 = new Button(c, 'CONTINUE', C_WIDTH / 2 + 15, C_HEIGHT / 3, s2, c.font);
         b2.setClickListener(function() {
             setInterval(function() { playSound(sounds.ambient) }, 4000);
@@ -312,7 +313,7 @@ function showStart() {
         gameState.mode = GameMode.SINGLE;
         restartGame();
     });
-    s2 = 'LEVEL EDITOR'.size(c.font);
+    s2 = textSize('LEVEL EDITOR', c.font);
     var b3 = new Button(c, 'LEVEL EDITOR', C_WIDTH / 2 - s2[0] / 2, C_HEIGHT / 3 + s1[1] + 25, s2, c.font);
     gameState.buttons.push(b3);
     b3.setClickListener(function() {
@@ -341,7 +342,7 @@ function drawEnemyScores() {
             curX += C_WIDTH / 2;
             curY = C_HEIGHT / 2 + 60;
         }
-        if(e) {
+        if(e && e.sprite.loaded) {
             e.sprite.draw(c, curX, curY);
             var h = e.sprite.height;
             c.fillText(' = ' + enemyObjList[i].score, curX + e.sprite.width + 5, curY + (h + 20) / 2);
@@ -375,18 +376,18 @@ function gameOver(won) {
     c.font = '30px Arial Black';
     var s1;
     if(won) {
-        s1 = 'You Win!'.size(c.font);
+        s1 = textSize('You Win!', c.font);
         c.fillText('You Win!', C_WIDTH / 2 - s1[0] / 2, C_HEIGHT / 2 + 20);
     } else {
-        s1 = 'Game Over!'.size(c.font);
+        s1 = textSize('Game Over!', c.font);
         c.fillText('Game Over!', C_WIDTH / 2 - s1[0] / 2, C_HEIGHT / 2 + 20);
     }
     c.font = '24px Arial';
-    var s2 = 'Restart Game'.size(c.font);
+    var s2 = textSize('Restart Game', c.font);
     var b1 = new Button(c, 'Restart Game', C_WIDTH / 2 - (s2[0] + 15), C_HEIGHT / 2 + 20 + s2[1], s2);
-    s2 = 'Restart Level'.size(c.font);
+    s2 = textSize('Restart Level', c.font);
     var b2 = new Button(c, 'Replay Level', C_WIDTH / 2 + 15, C_HEIGHT / 2 + 20 + s2[1], s2);
-    s1 = 'Submit High Score'.size(c.font);
+    s1 = textSize('Submit High Score', c.font);
     c.fillText('Submit High Score', C_WIDTH / 2 - s1[0] / 2, C_HEIGHT / 2 + 125);
     b1.setClickListener(function() {
         display('#submit_highscore', 'none');

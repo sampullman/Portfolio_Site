@@ -1,11 +1,10 @@
 
 export { NewSprite as Sprite };
 
-var spriteImagePath = '/static/img/home_game/';
-
 function NewSprite(name, w, h, callback) {
-    return Sprite.load(spriteImagePath + name, w, h, callback);
+    return Sprite.load(NewSprite.imageRoot + name, w, h, callback);
 }
+NewSprite.imageRoot = '';
 
 function Sprite(image, width, height, sourceX, sourceY) {
     sourceX = sourceX || 0;
@@ -39,18 +38,19 @@ function Sprite(image, width, height, sourceX, sourceY) {
 
 Sprite.load = function(url, w, h, loadedCallback) {
     var img = new Image();
-    var proxy = {};
+    var proxy = { loaded: false };
 
     img.onload = function() {
         var tile = Sprite(this, w, h);
 
         Object.assign(proxy, tile);
+        proxy.loaded = true;
         if(loadedCallback) {
             loadedCallback(proxy);
         }
     };
     img.onerror = function() {
-        console.log('Load fail' + url);
+        console.log('Load fail: ' + url);
         if(loadedCallback) {
             loadedCallback(null);
         }

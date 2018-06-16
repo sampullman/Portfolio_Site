@@ -27,7 +27,7 @@ var keyhandler = {
     }
 };
 
-export { arrayRand, removeSquare, clamp, escapeHtml, keyhandler, findPos, withId, post };
+export { arrayRand, removeSquare, clamp, escapeHtml, keyhandler, findPos, withId, textSize, post };
 
 function clamp(n, min, max) {
     return Math.min(Math.max(n, min), max);
@@ -38,6 +38,23 @@ function escapeHtml(str) {
     div.appendChild(document.createTextNode(str));
     return div.innerHTML;
 };
+
+function textSize(str, font) {
+    var f = font || '12px arial';
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    div.style.position = 'absolute';
+    div.style.float = 'left';
+    div.style.whiteSpace = 'nowrap';
+    div.style.visibility = 'hidden';
+    div.style.font = f;
+    document.body.appendChild(div);
+    var w = div.offsetWidth;
+    var h = div.offsetHeight;
+    document.body.removeChild(div);
+
+    return [w, h];
+}
 
 /* eslint-disable no-unused-vars */
 function csrfSafeMethod(method) {

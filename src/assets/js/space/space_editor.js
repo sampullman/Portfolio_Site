@@ -3,7 +3,7 @@ import { player, explosions, entityCollision, clearEntities, EnemyMode,
     Button, Slider } from './space_objects.js';
 import { keyhandler } from '../util.js';
 import { enemies, setEnemies, enemyObjList } from './space_enemies.js';
-import { randomVerticalInit } from './space_paths.js';
+import { RandomVerticalInit } from './space_paths.js';
 import { gameState, GameMode } from './game_state.js';
 import { levels, editorActiveEnemies, setEditorActiveEnemies } from './space_levels.js';
 
@@ -53,7 +53,7 @@ function setupEditor(c, draw, framesPerSecond, startFn, showStart) {
     var y = c.boundary + 10;
     for(var i = 0; i < enemyObjList.length; i++) {
         var obj = enemyObjList[i];
-        var e = obj.instantiate(x, y, obj.sprite.width, obj.sprite.height, 0, randomVerticalInit);
+        var e = obj.instantiate(x, y, obj.sprite.width, obj.sprite.height, 0, RandomVerticalInit);
         e.click = staticEnemyClick(obj, e);
         staticEnemies.push(e);
         x += e.sprite.width + 10;
@@ -122,7 +122,7 @@ function playCustom(c) {
         e.editX = e.x;
         e.editY = e.y;
         e.editHealth = e.health;
-        e.initPath = e.initPathFn(e).instantiate();
+        e.initPath = e.initPathFn(c, e).instantiate();
         e.initPath.init();
         e.mode = EnemyMode.INIT;
     });
@@ -165,10 +165,10 @@ function teardownEditor() {
 function staticEnemyClick(enemyObj, enemy) {
     return function() {
         var e = enemyObj.instantiate(enemy.x, enemy.y, enemyObj.sprite.width, enemyObj.sprite.height, 30);
-        e.initPathFn = randomVerticalInit;
+        e.initPathFn = RandomVerticalInit;
         e.shootFn = enemyObj.shootFn;
         e.hoverActionFn = enemyObj.hoverActionFn;
-        e.attackPathFn = enemyObj.attackPath;
+        e.AttackPathFn = enemyObj.AttackPath;
         e.wanderFn = enemyObj.wanderFn;
         e.shotFreq = 30;
         e.type = enemyObj.type;

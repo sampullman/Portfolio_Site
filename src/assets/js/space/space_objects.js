@@ -1,6 +1,6 @@
 
 import { enemies, enemyData, enemyShots, mines } from './space_enemies.js';
-import { keyhandler } from '../util.js';
+import { keyhandler, clamp } from '../util.js';
 import { gameState, GameMode } from './game_state.js';
 import { activeEnemies } from './space_levels.js';
 import { sounds, sprites, shotW, shotH } from './sprites.js';
@@ -184,8 +184,8 @@ var player = {
                 }
             }
         }
-        this.x = this.x.clamp(0, gameState.c.width - this.width);
-        this.y = this.y.clamp(gameState.c.boundary, gameState.c.height - this.height);
+        this.x = clamp(this.x, 0, gameState.c.width - this.width);
+        this.y = clamp(this.y, gameState.c.boundary, gameState.c.height - this.height);
         if(this.blinks > 0) {
             this.blinkNum += 1;
             if(this.blinkNum >= this.blinkDur) {
@@ -411,12 +411,12 @@ function Enemy(E) {
         e.speed = E.speed;
         e.shotFreq = E.shotFreq;
         e.initPathFn = E.initPathFn;
-        e.attackPathFn = E.attackPathFn;
+        e.AttackPathFn = E.AttackPathFn;
         e.shootFn = E.shootFn;
         e.wanderFn = E.wanderFn;
         e.hoverActionFn = E.hoverActionFn;
-        if(E.initPathFn) e.initPath = E.initPathFn(e);
-        if(E.attackPathFn) e.attackPath = E.attackPathFn(gameState.c, e);
+        if(E.initPathFn) e.initPath = E.initPathFn(gameState.c, e);
+        if(E.AttackPathFn) e.AttackPath = new E.AttackPathFn(gameState.c, e);
         e.shoot = E.shootFn(e, E.shotFreq);
         if(E.hoverActionFn) e.hoverAction = e.hoverActionFn(e, e.shotFreq);
         if(e.wanderFn) e.wander = e.wanderFn(e);
@@ -431,13 +431,13 @@ function Enemy(E) {
     };
     E.attack = function(path) {
         if(E.mode === EnemyMode.ATTACK || E.mode === EnemyMode.INIT ||
-           E.x < 0 || E.x > gameState.c.width || E.attackPath === null) return;
+           E.x < 0 || E.x > gameState.c.width || E.AttackPath === null) return;
         if(E.mode === EnemyMode.HOVER) {
             E.startX = E.x;
             E.startY = E.y;
         }
         E.mode = EnemyMode.ATTACK;
-        E.path = path || E.attackPath.instantiate();
+        E.path = path || E.AttackPath.instantiate();
         E.notifyEscorts();
     };
     E.update = function() {
@@ -697,9 +697,13 @@ function ImageButton(c, image, clickImage, x, y, w, h) {
     this.active = true;
     this.draw = function(c) {
         if(this.off) {
-            this.image.draw(c, this.x, this.y, this.width, this.height);
+            if(this.image.loaded) {
+                this.image.draw(c, this.x, this.y, this.width, this.height);
+            }
         } else {
-            this.clickImage.draw(c, this.x, this.y, this.width, this.height);
+            if(this.clickImage.loaded) {
+                this.clickImage.draw(c, this.x, this.y, this.width, this.height);
+            }
         }
     };
     this.hover = function(px, py) {
@@ -785,11 +789,11 @@ function Slider(c, label, units, x, y, width, height, min, max, step, horizontal
     this.slide = function(xDiff, yDiff) {
         if(horizontal) {
             this.xKnob += xDiff;
-            this.xKnob = this.xKnob.clamp(this.x, this.x + this.width);
+            this.xKnob = clamp(this.xKnob, this.x, this.x + this.width);
             this.val = this.getVal(this.xKnob, this.x, this.width);
         } else {
             this.yKnob += yDiff;
-            this.yKnob = this.yKnob.clamp(this.y, this.y + this.height);
+            this.yKnob = clamp(this.yKnob, this.y, this.y + this.height);
             this.val = this.getVal(this.yKnob, this.y, this.height);
         }
         this.updateDisplayVal();

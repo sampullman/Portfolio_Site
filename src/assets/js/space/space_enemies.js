@@ -1,4 +1,4 @@
-import { followPlayerPath, avoidPlayerPath, standardAttackPath, sweepAttackPath } from './space_paths.js';
+import { FollowPlayerPath, AvoidPlayerPath, StandardAttackPath, SweepAttackPath } from './space_paths.js';
 import { Enemy, EnemyMode, playSound, Laser, Mine, Shot } from './space_objects.js';
 import { gameState } from './game_state.js';
 import { sounds, sprites } from './sprites.js';
@@ -28,7 +28,7 @@ function setEnemyShots(newShots) {
     enemyShots = newShots;
 }
 
-function initEnemy(sprite, x, y, w, h, score, health, initPathFn, attackPath,
+function initEnemy(sprite, x, y, w, h, score, health, InitPathFn, AttackPath,
     shootFn, shotFreq, speed, parent) {
     var enemy = Enemy({
         sprite: sprite,
@@ -41,29 +41,29 @@ function initEnemy(sprite, x, y, w, h, score, health, initPathFn, attackPath,
         speed: speed,
         health: health
     });
-    enemy.attackPath = attackPath(enemy);
+    enemy.AttackPath = new AttackPath(enemy);
     enemy.shoot = shootFn(enemy, shotFreq);
-    if(initPathFn) {
-        enemy.initPath = initPathFn(enemy).instantiate();
+    if(InitPathFn) {
+        enemy.initPath = new InitPathFn(gameState.c, enemy).instantiate();
     }
     return enemy;
 }
 
-var enemy1Obj = {
+var Enemy1Obj = {
     type: 1,
     score: 10,
     health: 1,
     shootFn: function() {
         return function() {};
     },
-    instantiate: function(x, y, w, h, shotFreq, initPathFn, speed, parent) {
-        return initEnemy(enemy1Obj.sprite, x, y, w, h, enemy1Obj.score, enemy1Obj.health, initPathFn,
-            enemy1Obj.attackPath, enemy1Obj.shootFn, shotFreq, speed, parent);
+    instantiate: function(x, y, w, h, shotFreq, InitPathFn, speed, parent) {
+        return initEnemy(Enemy1Obj.sprite, x, y, w, h, Enemy1Obj.score, Enemy1Obj.health, InitPathFn,
+            Enemy1Obj.AttackPath, Enemy1Obj.shootFn, shotFreq, speed, parent);
     },
-    attackPath: standardAttackPath
+    AttackPath: StandardAttackPath
 };
 
-var enemy2Obj = {
+var Enemy2Obj = {
     type: 2,
     score: 20,
     health: 1,
@@ -83,14 +83,14 @@ var enemy2Obj = {
             }
         };
     },
-    instantiate: function(x, y, w, h, shotFreq, initPathFn, speed, parent) {
-        return initEnemy(enemy2Obj.sprite, x, y, w, h, enemy2Obj.score, enemy2Obj.health, initPathFn,
-            enemy2Obj.attackPath, enemy2Obj.shootFn, shotFreq, speed, parent);
+    instantiate: function(x, y, w, h, shotFreq, InitPathFn, speed, parent) {
+        return initEnemy(Enemy2Obj.sprite, x, y, w, h, Enemy2Obj.score, Enemy2Obj.health, InitPathFn,
+            Enemy2Obj.AttackPath, Enemy2Obj.shootFn, shotFreq, speed, parent);
     },
-    attackPath: standardAttackPath
+    AttackPath: StandardAttackPath
 };
 
-var enemy3Obj = {
+var Enemy3Obj = {
     type: 3,
     score: 50,
     health: 1,
@@ -112,14 +112,14 @@ var enemy3Obj = {
             }
         };
     },
-    instantiate: function(x, y, w, h, shotFreq, initPathFn, speed, parent) {
-        return initEnemy(enemy3Obj.sprite, x, y, w, h, enemy3Obj.score, enemy3Obj.health, initPathFn,
-            enemy3Obj.attackPath, enemy3Obj.shootFn, shotFreq, speed, parent);
+    instantiate: function(x, y, w, h, shotFreq, InitPathFn, speed, parent) {
+        return initEnemy(Enemy3Obj.sprite, x, y, w, h, Enemy3Obj.score, Enemy3Obj.health, InitPathFn,
+            Enemy3Obj.AttackPath, Enemy3Obj.shootFn, shotFreq, speed, parent);
     },
-    attackPath: standardAttackPath
+    AttackPath: StandardAttackPath
 };
 
-var enemy4Obj = {
+var Enemy4Obj = {
     type: 4,
     score: 100,
     health: 1,
@@ -145,22 +145,22 @@ var enemy4Obj = {
             }
         };
     },
-    instantiate: function(x, y, w, h, shotFreq, initPathFn, parent, child) {
-        var enemy = initEnemy(enemy4Obj.sprite, x, y, w, h, enemy4Obj.score, enemy4Obj.health, initPathFn,
-            enemy4Obj.attackPath, enemy4Obj.shootFn, shotFreq, 1, parent);
+    instantiate: function(x, y, w, h, shotFreq, InitPathFn, parent, child) {
+        var enemy = initEnemy(Enemy4Obj.sprite, x, y, w, h, Enemy4Obj.score, Enemy4Obj.health, InitPathFn,
+            Enemy4Obj.AttackPath, Enemy4Obj.shootFn, shotFreq, 1, parent);
 
         if(child) child.parent = enemy;
         return enemy;
     },
-    attackPath: followPlayerPath
+    AttackPath: FollowPlayerPath
 };
 
-var enemy5Obj = {
+var Enemy5Obj = {
     type: 5,
     score: 250,
     health: 3,
     shootFn: function(E, freq) {
-        var cannonFn = enemy3Obj.shootFn(E, freq);
+        var cannonFn = Enemy3Obj.shootFn(E, freq);
         var laserTimer = freq;
         return function() {
             cannonFn();
@@ -180,7 +180,7 @@ var enemy5Obj = {
         return function() {
             escorts = escorts.filter(function(escort) {
                 if(escort.active) {
-                    escort.attack(E.attackPath.clone(escort));
+                    escort.attack(E.AttackPath.clone(escort));
                     escort.x = E.x + escort.relativeEscortX;
                     escort.y = E.y + escort.relativeEscortY;
                     return true;
@@ -189,30 +189,30 @@ var enemy5Obj = {
             });
         };
     },
-    instantiate: function(x, y, w, h, shotFreq, initPathFn, escorts) {
+    instantiate: function(x, y, w, h, shotFreq, InitPathFn, escorts) {
         var enemy = Enemy({
-            sprite: enemy5Obj.sprite,
+            sprite: Enemy5Obj.sprite,
             x: x,
             y: y,
             width: w,
             height: h,
-            score: enemy5Obj.score,
-            health: enemy5Obj.health
+            score: Enemy5Obj.score,
+            health: Enemy5Obj.health
         });
-        enemy.attackPath = enemy5Obj.attackPath(enemy);
+        enemy.AttackPath = new Enemy5Obj.AttackPath(enemy);
         enemy.shoot = this.shootFn(enemy, shotFreq);
-        if(initPathFn) {
-            enemy.initPath = initPathFn(enemy).instantiate(true);
+        if(InitPathFn) {
+            enemy.initPath = new InitPathFn(gameState.c, enemy).instantiate(true);
         }
         if(escorts) {
             enemy.notifyEscorts = this.notifyEscortsFn(enemy, escorts);
         }
         return enemy;
     },
-    attackPath: sweepAttackPath
+    AttackPath: SweepAttackPath
 };
 
-var enemy6Obj = {
+var Enemy6Obj = {
     type: 6,
     score: 300,
     health: 2,
@@ -239,19 +239,19 @@ var enemy6Obj = {
             E.x += newXWanderSpeed;
         };
     },
-    instantiate: function(x, y, w, h, shotFreq, initPathFn) {
+    instantiate: function(x, y, w, h, shotFreq, InitPathFn) {
         var enemy = Enemy({
-            sprite: enemy6Obj.sprite,
+            sprite: Enemy6Obj.sprite,
             x: x,
             y: y,
             width: w,
             height: h,
-            score: enemy6Obj.score,
-            health: enemy6Obj.health
+            score: Enemy6Obj.score,
+            health: Enemy6Obj.health
         });
         enemy.shoot = this.shootFn(enemy, shotFreq);
-        if(initPathFn) {
-            enemy.initPath = initPathFn(enemy).instantiate();
+        if(InitPathFn) {
+            enemy.initPath = new InitPathFn(gameState.c, enemy).instantiate();
         }
         enemy.wander = this.wanderFn(enemy);
         enemy.hoverAction = this.hoverActionFn(enemy, shotFreq);
@@ -259,7 +259,7 @@ var enemy6Obj = {
     }
 };
 
-var enemy7Obj = {
+var Enemy7Obj = {
     type: 7,
     score: 200,
     health: 2,
@@ -276,14 +276,14 @@ var enemy7Obj = {
             }
         };
     },
-    instantiate: function(x, y, w, h, shotFreq, initPathFn, speed, parent) {
-        return initEnemy(enemy7Obj.sprite, x, y, w, h, enemy7Obj.score, enemy7Obj.health, initPathFn,
-            enemy7Obj.attackPath, enemy7Obj.shootFn, shotFreq, speed, parent);
+    instantiate: function(x, y, w, h, shotFreq, InitPathFn, speed, parent) {
+        return initEnemy(Enemy7Obj.sprite, x, y, w, h, Enemy7Obj.score, Enemy7Obj.health, InitPathFn,
+            Enemy7Obj.AttackPath, Enemy7Obj.shootFn, shotFreq, speed, parent);
     },
-    attackPath: avoidPlayerPath
+    AttackPath: AvoidPlayerPath
 };
 
-var enemy8Obj = {
+var Enemy8Obj = {
     type: 8,
     score: 400,
     health: 5,
@@ -316,32 +316,32 @@ var enemy8Obj = {
             }
         };
     },
-    instantiate: function(x, y, w, h, shotFreq, initPathFn) {
+    instantiate: function(x, y, w, h, shotFreq, InitPathFn) {
         var enemy = Enemy({
-            sprite: enemy8Obj.sprite,
+            sprite: Enemy8Obj.sprite,
             x: x,
             y: y,
             width: w,
             height: h,
-            score: enemy8Obj.score,
-            health: enemy8Obj.health
+            score: Enemy8Obj.score,
+            health: Enemy8Obj.health
         });
-        enemy.attackPath = enemy8Obj.attackPath(enemy);
+        enemy.AttackPath = new Enemy8Obj.AttackPath(gameState.c, enemy);
         enemy.shoot = this.shootFn(enemy, shotFreq);
-        if(initPathFn) {
-            enemy.initPath = initPathFn(enemy).instantiate();
+        if(InitPathFn) {
+            enemy.initPath = new InitPathFn(gameState.c, enemy).instantiate();
         }
         return enemy;
     },
-    attackPath: standardAttackPath
+    AttackPath: StandardAttackPath
 };
 
-var enemy9Obj = {
+var Enemy9Obj = {
     type: 9,
     score: 2000,
     health: 20,
     shootFn: function(E, freq) {
-        var bottomEnemies = [enemy1Obj, enemy2Obj, enemy3Obj];
+        var bottomEnemies = [Enemy1Obj, Enemy2Obj, Enemy3Obj];
         var timer = freq;
         return function() {
             timer -= 1;
@@ -350,8 +350,8 @@ var enemy9Obj = {
                 var e1, e2;
                 var rand = Math.random();
                 if(rand < 0.3) {
-                    e1 = enemy4Obj.instantiate(E.x - enemyData.width, E.y + 10, enemyData.width, enemyData.height, 50, null, 1);
-                    e2 = enemy4Obj.instantiate(E.x + E.width, E.y + 10, enemyData.width, enemyData.height, 50, null, 1);
+                    e1 = Enemy4Obj.instantiate(E.x - enemyData.width, E.y + 10, enemyData.width, enemyData.height, 50, null, 1);
+                    e2 = Enemy4Obj.instantiate(E.x + E.width, E.y + 10, enemyData.width, enemyData.height, 50, null, 1);
                 } else if(rand < 0.8) {
                     e1 = arrayRand(bottomEnemies).instantiate(E.x + 10, E.y + E.height, enemyData.width, enemyData.height, 30, null, 1);
                     e2 = arrayRand(bottomEnemies).instantiate(E.x + E.width - (10 + enemyData.width), E.y + E.height, enemyData.width, enemyData.height, 30, null, 1);
@@ -372,24 +372,24 @@ var enemy9Obj = {
             }
         };
     },
-    instantiate: function(x, y, w, h, shotFreq, initPathFn) {
+    instantiate: function(x, y, w, h, shotFreq, InitPathFn) {
         var enemy = Enemy({
-            sprite: enemy9Obj.sprite,
+            sprite: Enemy9Obj.sprite,
             x: x,
             y: y,
             width: w,
             height: h,
-            score: enemy9Obj.score,
-            health: enemy9Obj.health
+            score: Enemy9Obj.score,
+            health: Enemy9Obj.health
         });
         enemy.shoot = this.shootFn(enemy, shotFreq);
-        if(initPathFn) enemy.initPath = initPathFn(enemy, 30).instantiate();
+        if(InitPathFn) enemy.initPath = new InitPathFn(gameState.c, enemy, 30).instantiate();
         enemy.hoverAction = this.shootFn(enemy, shotFreq);
         return enemy;
     }
 };
 
-var enemyObjList = [enemy1Obj, enemy2Obj, enemy3Obj, enemy4Obj, enemy5Obj, enemy6Obj, enemy7Obj, enemy8Obj];
+var enemyObjList = [Enemy1Obj, Enemy2Obj, Enemy3Obj, Enemy4Obj, Enemy5Obj, Enemy6Obj, Enemy7Obj, Enemy8Obj];
 
-export { enemyObjList, enemy1Obj, enemy2Obj, enemy3Obj, enemy4Obj, enemy5Obj, enemy6Obj, enemy7Obj, enemy8Obj, enemy9Obj };
+export { enemyObjList, Enemy1Obj, Enemy2Obj, Enemy3Obj, Enemy4Obj, Enemy5Obj, Enemy6Obj, Enemy7Obj, Enemy8Obj, Enemy9Obj };
 export { mines, setMines, enemyShots, setEnemyShots, enemies, setEnemies, enemyData, xWanderMax };
