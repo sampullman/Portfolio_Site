@@ -88,8 +88,8 @@ var player = {
     color: '#00A',
     width: 36,
     height: 36,
-    x: gameState.c.width / 2,
-    y: gameState.c.height - 36,
+    x: 0,
+    y: 0,
     sprites: [],
     xVel: 0,
     yVel: 0,
@@ -103,6 +103,10 @@ var player = {
     numMissiles: 2,
     state: PlayerState.NORMAL,
     shielded: false,
+    init: function(c) {
+        this.x = c.width / 2;
+        this.y = c.height - 36;
+    },
     switchState: function(state) {
         if(this.state !== PlayerState.DAMAGED) {
             this.state = state;

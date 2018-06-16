@@ -40,6 +40,7 @@ var xWanderSpeed = 0.2;
 
 function loadGame() {
     levels.init(c);
+    player.init(c);
     var canvas = document.getElementById('canvas');
     c = canvas.getContext('2d');
     c.width = C_WIDTH;

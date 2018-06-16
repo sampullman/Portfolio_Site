@@ -17,7 +17,7 @@
         </div>
     </div>
     <div id="feedback">
-        <textarea id="feedback_input" rows="5" cols="55">Feedback</textarea>
+        <textarea id="feedback_input" placeholder="Feedback" rows="5" cols="55"></textarea><br />
         <input id="feedback_button" type="submit" value="Submit" />
     </div>
 </div>
@@ -33,11 +33,16 @@ export default {
 <style lang="scss">
 
 .instructions {
-    font-family: 'Arial', sans-serif;
     width: 530px;
+    margin: 0 auto;
     text-align: center;
-    margin-left: -30px;
     margin-bottom: 20px;
+    padding-left: 32px;
+    padding-right: 24px;
+
+    > p {
+        text-align: left;
+    }
 }
 
 #game {
@@ -48,14 +53,14 @@ export default {
     padding-top: 20px;
 }
 
+#feedback {
+    text-align: center;
+    margin-bottom: 64px;
+}
+
 #feedback_input {
     margin: 0;
     padding: 4px;
 }
 
-#feedback_button {
-    display: block;
-    padding: 4px;
-    margin: -7px 0 0 15%;
-}
 </style>
