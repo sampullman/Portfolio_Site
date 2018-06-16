@@ -2,11 +2,8 @@
 
 <div id="wrap">
     <div id="games_content">
-        <!--
-        <iframe id="game" width="980" height="565" style="visibility:hidden;" onload="this.style.visibility = 'visible';"
-                    src="/games/space_game/">
+        <iframe id="game" width="485" height="565" src="/#/game/space/">
         </iframe>
-        -->
         <div style="clear: both;"></div>
         <div class="instructions section">
             <p id="instr_p">Xenophobia is a Galaga clone in the works. It uses free graphics created by
@@ -51,6 +48,7 @@ export default {
 
 #games_content {
     padding-top: 20px;
+    text-align: center;
 }
 
 #feedback {

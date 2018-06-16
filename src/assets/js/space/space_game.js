@@ -41,12 +41,12 @@ var xWanderSpeed = 0.2;
 function loadGame() {
     var canvas = document.getElementById('canvas');
     c = canvas.getContext('2d');
-    levels.init(c);
-    player.init(c);
     c.width = C_WIDTH;
     c.height = C_HEIGHT;
     gameState.c = c;
     c.boundary = BOUNDARY;
+    levels.init(c);
+    player.init(c);
     canvas.onmousemove = mouseMove;
     canvas.onmousedown = mouseDown;
     canvas.onmouseup = mouseUp;
@@ -209,7 +209,7 @@ function update() {
         return exp.active;
     }));
     sprites.stars.update(c);
-    if(gameState.ttackTimer <= 0 && activeEnemies.length > 0) {
+    if(gameState.attackTimer <= 0 && activeEnemies.length > 0) {
         var e = activeEnemies[Math.floor(Math.random() * activeEnemies.length)];
         e.attack();
         enemyData.numAttacks += 1;
@@ -363,7 +363,10 @@ function resume() {
 }
 
 function display(id, value) {
-    document.getElementById(id).style.display = value;
+    let node = document.getElementById(id);
+    if(node !== null) {
+        node.style.display = value;
+    }
 }
 
 function gameOver(won) {

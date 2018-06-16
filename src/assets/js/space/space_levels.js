@@ -13,9 +13,9 @@ function setEditorActiveEnemies(enemies) {
 
 let levels = {
     init: function(c) {
-        this.eCols = 8;
-        this.yDiff = enemyData.height * 1.6;
-        this.xDiff = (c.width - enemyData.width) / this.eCols;
+        levels.eCols = 8;
+        levels.yDiff = enemyData.height * 1.6;
+        levels.xDiff = (c.width - enemyData.width) / levels.eCols;
     },
     loadEnemies: function(enemyObjs, shotFreqs, initX, initY, xDiff, yDiff, InitPathFn, speeds) {
         for(var i = 0; i < enemyObjs.length; i++) {
@@ -310,6 +310,7 @@ let levels = {
         }
     }
 };
+window.levels = levels;
 
 var worlds = [
     [levels.level1, levels.level2, levels.level3, levels.level4],

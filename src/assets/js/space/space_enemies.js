@@ -41,7 +41,7 @@ function initEnemy(sprite, x, y, w, h, score, health, InitPathFn, AttackPath,
         speed: speed,
         health: health
     });
-    enemy.AttackPath = new AttackPath(enemy);
+    enemy.AttackPath = new AttackPath(gameState.c, enemy);
     enemy.shoot = shootFn(enemy, shotFreq);
     if(InitPathFn) {
         enemy.initPath = new InitPathFn(gameState.c, enemy).instantiate();

@@ -431,7 +431,9 @@ function Enemy(E) {
     };
     E.attack = function(path) {
         if(E.mode === EnemyMode.ATTACK || E.mode === EnemyMode.INIT ||
-           E.x < 0 || E.x > gameState.c.width || E.AttackPath === null) return;
+           E.x < 0 || E.x > gameState.c.width || E.AttackPath === null) {
+            return;
+        }
         if(E.mode === EnemyMode.HOVER) {
             E.startX = E.x;
             E.startY = E.y;
