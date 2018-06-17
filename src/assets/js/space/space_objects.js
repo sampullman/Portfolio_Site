@@ -145,11 +145,11 @@ var player = {
         if(this.immobile > 0) {
             this.immobile -= 1;
         } else {
-            if(keyhandler.LeftArrow || keyhandler.a) {
+            if(keyhandler.ArrowLeft || keyhandler.KeyA) {
                 this.xVel = -8;
                 this.x -= 8;
                 this.switchState(PlayerState.LEFT);
-            } else if(keyhandler.RightArrow || keyhandler.d) {
+            } else if(keyhandler.ArrowRight || keyhandler.KeyD) {
                 this.xVel = 8;
                 this.x += 8;
                 this.switchState(PlayerState.RIGHT);
@@ -157,10 +157,10 @@ var player = {
                 this.xVel = 0;
                 this.switchState(PlayerState.NORMAL);
             }
-            if(keyhandler.UpArrow || keyhandler.w) {
+            if(keyhandler.ArrowUp || keyhandler.KeyW) {
                 this.yVel = -8;
                 this.y -= 8;
-            } else if(keyhandler.DownArrow || keyhandler.s) {
+            } else if(keyhandler.ArrowDown || keyhandler.KeyS) {
                 this.yVel = 8;
                 this.y += 8;
             } else {
@@ -177,7 +177,7 @@ var player = {
                         sprites: sprites.playerShot
                     }));
                 }
-                if(keyhandler.Shift && player.numMissiles > 0) {
+                if(keyhandler.Shift() && player.numMissiles > 0) {
                     gameState.shotTimer = 0;
                     player.shots.push(new Missile(this.x, this.y));
                     player.numMissiles -= 1;

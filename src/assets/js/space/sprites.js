@@ -25,7 +25,7 @@ function loadSprites(c, enemyLoadFn, buttonLoadFn) {
     var w = player.width;
     var h = player.height;
     Sprite.imageRoot = '/static/img/space_game/';
-    player.sprites = [Sprite('player.png', w, h), Sprite('playerRight.png', w, h)];
+    player.sprites = [Sprite('player.png', w, h), Sprite('playerLeft.png', w, h), Sprite('playerRight.png', w, h)];
     Enemy1Obj.sprite = Sprite('enemy1.png', enemyData.width, enemyData.height, enemyLoadFn);
     Enemy2Obj.sprite = Sprite('enemy2.png', enemyData.width, enemyData.height, enemyLoadFn);
     Enemy3Obj.sprite = Sprite('enemy3.png', enemyData.width, enemyData.height, enemyLoadFn);

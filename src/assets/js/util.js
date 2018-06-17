@@ -2,10 +2,18 @@
 var keyhandler = {
     fns: {},
 
+    Control: function() {
+        return keyhandler.ShiftLeft || keyhandler.ShiftRight;
+    },
+
+    Shift: function() {
+        return keyhandler.ControlLeft || keyhandler.ControlRight;
+    },
+
     keydownHandler: function(event) {
         var key = event.code;
         keyhandler[key] = true;
-        console.log(keyhandler[key]);
+
         if(keyhandler.fns[key]) keyhandler.fns[key]();
         if(keyhandler.ArrowLeft || keyhandler.ArrowRight || keyhandler.ArrowUp || keyhandler.ArrowDown || keyhandler.Space) {
             event.preventDefault();

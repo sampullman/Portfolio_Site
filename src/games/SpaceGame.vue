@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { loadGame, startGame, pause } from '@/assets/js/space/space_game.js';
+import { loadGame, resume, pause } from '@/assets/js/space/space_game.js';
 export default {
     name: 'SpaceGame',
     mounted: function () {
@@ -21,7 +21,7 @@ export default {
         pause();
     },
     methods: {
-        startGame: startGame
+        resume: resume
     }
 };
 </script>

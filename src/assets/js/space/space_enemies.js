@@ -199,7 +199,7 @@ var Enemy5Obj = {
             score: Enemy5Obj.score,
             health: Enemy5Obj.health
         });
-        enemy.AttackPath = new Enemy5Obj.AttackPath(enemy);
+        enemy.AttackPath = new Enemy5Obj.AttackPath(gameState.c, enemy);
         enemy.shoot = this.shootFn(enemy, shotFreq);
         if(InitPathFn) {
             enemy.initPath = new InitPathFn(gameState.c, enemy).instantiate(true);

@@ -156,9 +156,9 @@ function stopCustom(c) {
 function teardownEditor() {
     gameState.buttons = [];
     enemies.length = 0;
-    keyhandler.fns.del = null;
-    keyhandler.fns.c = null;
-    keyhandler.fns.a = null;
+    keyhandler.fns.Delete = null;
+    keyhandler.fns.KeyC = null;
+    keyhandler.fns.KeyA = null;
     gameState.mode = GameMode.MENU;
 }
 
@@ -296,7 +296,7 @@ function copyEnemy(c) {
     var xDiff = e.width + 15;
     var xPos = e.x - xDiff;
     var newE;
-    if(keyhandler.Shift) {
+    if(keyhandler.Shift()) {
         selectedEnemies = [e];
         while(xPos > 0) {
             newE = e.clone(xPos, e.y);
@@ -332,17 +332,17 @@ function editMouseDown(c, x, y) {
     for(i = editorEnemies.length - 1; i >= 0; i--) {
         var e = editorEnemies[i];
         if(clickHit(x, y, e)) {
-            if(keyhandler.Ctrl) {
+            if(keyhandler.Control()) {
                 activating = e;
             } else if(!e.squared) {
                 e.squared = true;
-                if(keyhandler.Shift) {
+                if(keyhandler.Shift()) {
                     selectedEnemies.push(e);
                 } else {
                     clearSelectedEnemies();
                     selectedEnemies = [e];
                 }
-            } else if(keyhandler.Shift) {
+            } else if(keyhandler.Shift()) {
                 selectedEnemies.splice(selectedEnemies.indexOf(e), 1);
                 e.squared = false;
             }
@@ -366,7 +366,7 @@ function editMouseDown(c, x, y) {
             return;
         }
     }
-    if(!keyhandler.Shift) clearSelectedEnemies();
+    if(!keyhandler.Shift()) clearSelectedEnemies();
     selRegion.active = true;
     selRegion.x1 = x; selRegion.y1 = y;
     selRegion.width = 0; selRegion.height = 0;

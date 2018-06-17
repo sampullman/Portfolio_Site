@@ -7,7 +7,7 @@ import { player, setExplosions, powerups, setPowerups, playSound, Button, ImageB
 
 import { gameState, GameMode } from './game_state.js';
 import { levels, worlds, activeEnemies } from './space_levels.js';
-import { findPos, textSize } from '../util.js';
+import { findPos, textSize, keyhandler } from '../util.js';
 // import { initHighScores } from './high_scores.js';
 import { sounds, sprites, loadSprites } from './sprites.js';
 
@@ -275,6 +275,7 @@ function drawButtons() {
 }
 
 function showStart() {
+    keyhandler.start();
     c.clearRect(0, 0, C_WIDTH, C_HEIGHT);
     c.fillStyle = '#000';
     c.font = '56px Verdana';
@@ -353,11 +354,13 @@ function drawEnemyScores() {
 }
 
 function pause() {
+    keyhandler.stop();
     clearInterval(gameState.eventId);
     paused = true;
 }
 
 function resume() {
+    keyhandler.start();
     paused = false;
     startGame();
 }
