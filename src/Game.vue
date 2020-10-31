@@ -1,16 +1,14 @@
 
 <template>
-    <router-view/>
+<router-view />
 </template>
 
 <script>
 export default {
-    name: 'Game',
-    components: {
-    }
+  name: 'game',
 };
 </script>
 
 <style lang="scss">
-@import 'assets/scss/main.scss';
+@import 'main';
 </style>

@@ -1,76 +1,76 @@
 
-var keyhandler = {
-    fns: {},
+const keyhandler = {
+  fns: {},
 
-    Control: function() {
-        return keyhandler.ShiftLeft || keyhandler.ShiftRight;
-    },
+  Control: () => (
+    keyhandler.ShiftLeft || keyhandler.ShiftRight
+  ),
 
-    Shift: function() {
-        return keyhandler.ControlLeft || keyhandler.ControlRight;
-    },
+  Shift: () => (
+    keyhandler.ControlLeft || keyhandler.ControlRight
+  ),
 
-    keydownHandler: function(event) {
-        var key = event.code;
-        keyhandler[key] = true;
+  keydownHandler: (event) => {
+    const key = event.code;
+    keyhandler[key] = true;
 
-        if(keyhandler.fns[key]) keyhandler.fns[key]();
-        if(keyhandler.ArrowLeft || keyhandler.ArrowRight || keyhandler.ArrowUp || keyhandler.ArrowDown || keyhandler.Space) {
-            event.preventDefault();
-            return false;
-        }
-    },
-
-    keyupHandler: function(event) {
-        keyhandler[event.code] = false;
-    },
-
-    start: function() {
-        document.addEventListener('keydown', this.keydownHandler, true);
-        document.addEventListener('keyup', this.keyupHandler, true);
-    },
-    stop: function() {
-        document.removeEventListener('keydown', this.keydownHandler, true);
-        document.removeEventListener('keyup', this.keyupHandler, true);
+    if(keyhandler.fns[key]) {
+      keyhandler.fns[key]();
     }
+    if(keyhandler.ArrowLeft || keyhandler.ArrowRight || keyhandler.ArrowUp || keyhandler.ArrowDown || keyhandler.Space) {
+      event.preventDefault();
+      return false;
+    }
+    return true;
+  },
+
+  keyupHandler: (event) => {
+    keyhandler[event.code] = false;
+  },
+
+  start: () => {
+    document.addEventListener('keydown', this.keydownHandler, true);
+    document.addEventListener('keyup', this.keyupHandler, true);
+  },
+  stop: () => {
+    document.removeEventListener('keydown', this.keydownHandler, true);
+    document.removeEventListener('keyup', this.keyupHandler, true);
+  },
 };
 
-export { arrayRand, removeSquare, clamp, escapeHtml, keyhandler, findPos, withId, textSize, post };
-
 function clamp(n, min, max) {
-    return Math.min(Math.max(n, min), max);
+  return Math.min(Math.max(n, min), max);
 }
 
 function escapeHtml(str) {
-    var div = document.createElement('div');
-    div.appendChild(document.createTextNode(str));
-    return div.innerHTML;
-};
-
-function textSize(str, font) {
-    var f = font || '12px arial';
-    var div = document.createElement('div');
-    div.appendChild(document.createTextNode(str));
-    div.style.position = 'absolute';
-    div.style.float = 'left';
-    div.style.whiteSpace = 'nowrap';
-    div.style.visibility = 'hidden';
-    div.style.font = f;
-    document.body.appendChild(div);
-    var w = div.offsetWidth;
-    var h = div.offsetHeight;
-    document.body.removeChild(div);
-
-    return [w, h];
+  const div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
 }
 
-/* eslint-disable no-unused-vars */
-function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+function textSize(str, font) {
+  const f = font || '12px arial';
+  const div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  div.style.position = 'absolute';
+  div.style.float = 'left';
+  div.style.whiteSpace = 'nowrap';
+  div.style.visibility = 'hidden';
+  div.style.font = f;
+  document.body.appendChild(div);
+  const w = div.offsetWidth;
+  const h = div.offsetHeight;
+  document.body.removeChild(div);
+
+  return [w, h];
 }
 
 /*
+function csrfSafeMethod(method) {
+  // these HTTP methods do not require CSRF protection
+  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
 function setupAjax() {
     $.ajaxSetup({
         crossDomain: false, // obviates need for sameOrigin test
@@ -84,45 +84,58 @@ function setupAjax() {
 */
 
 function post(url, data, callback) {
-    var http = new XMLHttpRequest();
-    http.open('POST', url, true);
-    http.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    http.onreadystatechange = function() {
-        if(http.readyState === 4 && callback !== null) {
-            callback(http);
-        }
-    };
-    http.send(JSON.stringify(data));
+  const http = new XMLHttpRequest();
+  http.open('POST', url, true);
+  http.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+  http.onreadystatechange = () => {
+    if(http.readyState === 4 && callback !== null) {
+      callback(http);
+    }
+  };
+  http.send(JSON.stringify(data));
 }
 
 function removeSquare(arr, stride, x, y, w, h) {
-    for(var i = y; i < y + h; i += 1) {
-        for(var j = x; j < x + w; j += 1) {
-            if(i * stride + j < arr.length) {
-                arr[i * stride + j].active = false;
-            }
-        }
+  for(let i = y; i < y + h; i += 1) {
+    for(let j = x; j < x + w; j += 1) {
+      if(i * stride + j < arr.length) {
+        arr[i * stride + j].active = false;
+      }
     }
+  }
 }
 
 function arrayRand(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
 function findPos(obj) {
-    var curleft = 0;
-    var curtop = 0;
-    if(obj.offsetParent) {
-        do {
-            curleft += obj.offsetLeft;
-            curtop += obj.offsetTop;
-            obj = obj.offsetParent;
-        } while(obj);
-        return { x: curleft, y: curtop };
-    }
-    return undefined;
+  let curleft = 0;
+  let curtop = 0;
+  let curObj = obj;
+  if(curObj.offsetParent) {
+    do {
+      curleft += curObj.offsetLeft;
+      curtop += curObj.offsetTop;
+      curObj = curObj.offsetParent;
+    } while(curObj);
+    return { x: curleft, y: curtop };
+  }
+  return undefined;
 }
 
 function withId(id) {
-    return document.getElementById(id);
+  return document.getElementById(id);
 }
+
+export {
+  arrayRand,
+  removeSquare,
+  clamp,
+  escapeHtml,
+  keyhandler,
+  findPos,
+  withId,
+  textSize,
+  post,
+};

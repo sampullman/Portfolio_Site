@@ -1,27 +1,21 @@
 
 <template>
-    <router-view/>
+<router-view />
 </template>
 
 <script>
-import Site from '@/Site';
-import Game from '@/Game';
 export default {
-    name: 'App',
-    components: {
-        Site,
-        Game
-    }
+  name: 'app',
 };
 </script>
 
 <style lang="scss">
 @import 'assets/scss/main.scss';
 .svg-icon {
-    display: inline-block;
-    color: inherit;
-    vertical-align: middle;
-    fill: none;
-    stroke: #AAA;
+  display: inline-block;
+  color: inherit;
+  vertical-align: middle;
+  fill: none;
+  stroke: #aaa;
 }
 </style>

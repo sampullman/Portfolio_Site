@@ -1,40 +1,108 @@
-// https://eslint.org/docs/user-guide/configuring
-
 module.exports = {
   root: true,
-  parserOptions: {
-    parser: 'babel-eslint'
-  },
   env: {
-    browser: true,
+    node: true,
   },
   extends: [
-    // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
-    // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
-    'plugin:vue/essential',
-    // https://github.com/standard/standard/blob/master/docs/RULES-en.md
-    'standard'
+    'plugin:vue/recommended',
+    '@vue/airbnb',
   ],
-  // required to lint *.vue files
-  plugins: [
-    'vue'
-  ],
-  // add your custom rules here
+  parser: 'vue-eslint-parser',
+  parserOptions: {
+    parser: 'babel-eslint',
+    sourceType: 'module',
+    allowImportExportEverywhere: false,
+  },
+  ignorePatterns: ['node_modules/'],
   rules: {
-    "indent": ["error", 4],
-    "semi": ["error", "always", { "omitLastInOneLineBlock": true}],
-    "keyword-spacing": ["error", { "after": false, "overrides": {
-      "return": { "after": true },
-      "else": { "after": true },
-      "do": { "after": true },
-      "from": { "after": true },
-      "import": { "after": true },
-      "export": { "after": true }
-    }}],
-    // allow async-await
-    'generator-star-spacing': 'off',
-    'space-before-function-paren': 'off',
-    // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
-  }
+    'no-console': 'off',
+    'no-alert': 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'space-before-function-paren': ['error', { anonymous: 'never', named: 'never', asyncArrow: 'always' }],
+    'padded-blocks': 'off',
+    'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'no-multiple-empty-lines': ['error', { max: 1 }],
+    semi: ['error', 'always', { omitLastInOneLineBlock: true }],
+    'keyword-spacing': ['error', {
+      after: false,
+      overrides: {
+        return: { after: true },
+        else: { after: true },
+        do: { after: true },
+        from: { after: true },
+        import: { after: true },
+        export: { after: true },
+        try: { after: true },
+        const: { after: true },
+        let: { after: true },
+        default: { after: true },
+        case: { after: true },
+      },
+    }],
+    'max-len': ['error', { code: 180, ignorePattern: '^\\s*<path' }],
+    'no-param-reassign': [2, { props: false }],
+    'object-curly-newline': ['error', {
+      consistent: true,
+      multiline: true,
+    }],
+    'arrow-parens': ['error', 'as-needed', { requireForBlockBody: true }],
+    'no-extra-boolean-cast': 'error',
+    'import/extensions': 'off',
+    radix: 'off',
+    'vue/html-closing-bracket-spacing': ['error', {
+      startTag: 'never',
+      endTag: 'never',
+      selfClosingTag: 'always',
+    }],
+    indent: ['error', 2, { SwitchCase: 0 }],
+    'vue/order-in-components': ['error', {
+      order: [
+        'el',
+        'name',
+        'parent',
+        'functional',
+        ['delimiters', 'comments'],
+        ['components', 'directives', 'filters'],
+        'extends',
+        'mixins',
+        'inheritAttrs',
+        'model',
+        ['props', 'propsData'],
+        'data',
+        'computed',
+        'watch',
+        'methods',
+        'LIFECYCLE_HOOKS',
+        ['template', 'render'],
+        'renderError',
+      ],
+    }],
+    'vue/attributes-order': 'error',
+    'vue/html-indent': ['error', 2, { baseIndent: 0 }],
+    'vue/attribute-hyphenation': 'off',
+    'vue/name-property-casing': 'off',
+    'vue/singleline-html-element-content-newline': ['error', {
+      ignoreWhenNoAttributes: true,
+      ignoreWhenEmpty: true,
+    }],
+    'vue/max-attributes-per-line': ['error', {
+      singleline: 3,
+    }],
+    'vue/space-infix-ops': 'error',
+    'vue/no-v-html': 'off',
+    'vue/custom-event-name-casing': 'error',
+    'vue/component-definition-name-casing': ['error', 'kebab-case'],
+  },
+  overrides: [
+    {
+      files: ['src/**/*'],
+      parserOptions: {
+        parser: 'babel-eslint',
+        sourceType: 'module',
+      },
+      env: {
+        browser: true,
+      },
+    },
+  ],
 }
