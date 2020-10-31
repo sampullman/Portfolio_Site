@@ -32,6 +32,6 @@ export default {
   float: left;
   background-color: #777;
   border: 1px solid;
-  background-image: url("/static/img/space_game/background.png");
+  background-image: url('/static/img/space_game/background.png');
 }
 </style>

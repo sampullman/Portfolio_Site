@@ -78,7 +78,7 @@ function loadSprites(c, player, enemyLoadFn, buttonLoadFn) {
   }
   const w = player.width;
   const h = player.height;
-  Sprite.imageRoot = '/static/img/space_game/';
+  Sprite.imageRoot = 'space_game/';
   player.sprites = [Sprite('player.png', w, h), Sprite('playerLeft.png', w, h), Sprite('playerRight.png', w, h)];
   Enemy1Obj.sprite = Sprite('enemy1.png', gameState.enemyData.width, gameState.enemyData.height, enemyLoadFn);
   Enemy2Obj.sprite = Sprite('enemy2.png', gameState.enemyData.width, gameState.enemyData.height, enemyLoadFn);

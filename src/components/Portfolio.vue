@@ -5,13 +5,13 @@
       <div>
         <div v-for="(appItem, index) in $options.apps" :key="appItem.id" class="app_icon_holder">
           <img
-            :src="appItem.icon"
+            :src="getImage(appItem.icon)"
             class="app_icon"
             @click="app_index = index"
           >
         </div>
       </div>
-      <div><img id="app_arrow" src="/static/img/portfolio/app_arrow.png"></div>
+      <div><img id="app_arrow" :src="require('@/static/img/portfolio/app_arrow.png')"></div>
     </div>
     <div class="carousel">
       <div v-for="n in [app_index]" :key="n" class="app">
@@ -19,19 +19,19 @@
           <div class="app_subtitle">
             {{ app.name }}
           </div>
-          <p class="app_text section">
-            <span class="indent">
+          <div class="app_text section">
+            <div class="app_text_desc">
               <a v-if="app.link" :href="app.link" target="_blank">
                 {{ app.name }}
               </a>
               {{ app.description }}
-            </span>
+            </div>
             <ul v-if="app.features">
               <li v-for="(feature, index) in app.features" :key="index">
                 {{ feature }}
               </li>
             </ul>
-          </p>
+          </div>
         </div>
       </div>
     </div>
@@ -43,7 +43,7 @@
         <img
           v-for="n in [(screenshot + ' ' + app_index)]"
           :key="n"
-          :src="app.screenshots[screenshot]"
+          :src="getImage(app.screenshots[screenshot])"
         >
       </transition-group>
     </div>
@@ -70,7 +70,6 @@ export default {
       this.app = this.$options.apps[newIndex];
       this.$router.replace(`/portfolio/${this.app.id}`);
       const pos = 29 + (newIndex * 78);
-      console.log(pos);
       anime({
         targets: '#app_arrow',
         left: `${pos}px`,
@@ -81,15 +80,18 @@ export default {
     },
   },
   methods: {
-    screenshot_prev: () => {
+    screenshot_prev() {
       this.screenshotDir = 'left';
       const count = this.app.screenshots.length;
       this.screenshot = (count + this.screenshot - 1) % count;
     },
-    screenshot_next: () => {
+    screenshot_next() {
       this.screenshotDir = 'right';
       const count = this.app.screenshots.length;
       this.screenshot = (this.screenshot + 1) % count;
+    },
+    getImage(icon) {
+      return require(`@/static/img/${icon}`); // eslint-disable-line
     },
   },
   created() {
@@ -97,7 +99,7 @@ export default {
       {
         id: 'SciGraph_Calculator',
         name: 'SciGraph Calculator',
-        icon: '/static/img/app_icons/scigraph_calc.png',
+        icon: 'app_icons/scigraph_calc.png',
         link: 'https://github.com/sampullman/android--Scientific-Graphing-Calculator',
         description: ' is a powerful calculator app for Android. Some of its capabilities are highlighted below.',
         features: [
@@ -113,19 +115,19 @@ export default {
           'Minimal, intuitive interface',
         ],
         screenshots: [
-          'static/img/SciGraph_Calculator/screenshot0.png',
-          'static/img/SciGraph_Calculator/screenshot1.png',
-          'static/img/SciGraph_Calculator/screenshot2.png',
-          'static/img/SciGraph_Calculator/screenshot3.png',
-          'static/img/SciGraph_Calculator/screenshot4.png',
-          'static/img/SciGraph_Calculator/screenshot5.png',
-          'static/img/SciGraph_Calculator/screenshot6.png',
+          'SciGraph_Calculator/screenshot0.png',
+          'SciGraph_Calculator/screenshot1.png',
+          'SciGraph_Calculator/screenshot2.png',
+          'SciGraph_Calculator/screenshot3.png',
+          'SciGraph_Calculator/screenshot4.png',
+          'SciGraph_Calculator/screenshot5.png',
+          'SciGraph_Calculator/screenshot6.png',
         ],
       },
       {
         id: 'Molecular_Mass_Calculator',
         name: 'Molecular Mass Calculator',
-        icon: '/static/img/app_icons/molecular_mass.png',
+        icon: 'app_icons/molecular_mass.png',
         link: 'https://github.com/sampullman/android--Molecular-Mass-Calculator',
         description: ' is an application for calculating the molecular mass of any chemical formula. The percentages '
                   + 'for each mass in the formula are displayed, and the formula is checked against a government database. '
@@ -133,15 +135,15 @@ export default {
                   + 'landscape modes, resulting in a simple but pleasing app.',
         features: [],
         screenshots: [
-          'static/img/Molecular_Mass_Calculator/screenshot0.png',
-          'static/img/Molecular_Mass_Calculator/screenshot1.png',
-          'static/img/Molecular_Mass_Calculator/screenshot2.png',
+          'Molecular_Mass_Calculator/screenshot0.png',
+          'Molecular_Mass_Calculator/screenshot1.png',
+          'Molecular_Mass_Calculator/screenshot2.png',
         ],
       },
       {
         id: 'Cube_Droid',
         name: 'Cube Droid',
-        icon: '/static/img/app_icons/cube_droid.png',
+        icon: 'app_icons/cube_droid.png',
         link: 'https://github.com/sampullman/android--Puzzle-Droid',
         description: ' is a Rubik\'s '
                   + 'Cube implementation for Android. It was a first attempt at using OpenGL ES to create '
@@ -156,15 +158,15 @@ export default {
           'The cube is saved and restored between sessions',
         ],
         screenshots: [
-          'static/img/Cube_Droid/screenshot0.png',
-          'static/img/Cube_Droid/screenshot1.png',
-          'static/img/Cube_Droid/screenshot2.png',
+          'Cube_Droid/screenshot0.png',
+          'Cube_Droid/screenshot1.png',
+          'Cube_Droid/screenshot2.png',
         ],
       },
       {
         id: 'Quiz_Droid',
         name: 'Quiz Droid',
-        icon: '/static/img/app_icons/quiz_droid.png',
+        icon: 'app_icons/quiz_droid.png',
         link: '',
         description: 'Quiz Droid is a fun little app that provides quizzes in a variety of topics including '
                   + 'geography, history, science, and vocabulary. There are currently 8 quizzes totalling '
@@ -177,16 +179,16 @@ export default {
           'Questions/Answers are reversible',
         ],
         screenshots: [
-          'static/img/Quiz_Droid/screenshot0.png',
-          'static/img/Quiz_Droid/screenshot1.png',
-          'static/img/Quiz_Droid/screenshot2.png',
-          'static/img/Quiz_Droid/screenshot3.png',
+          'Quiz_Droid/screenshot0.png',
+          'Quiz_Droid/screenshot1.png',
+          'Quiz_Droid/screenshot2.png',
+          'Quiz_Droid/screenshot3.png',
         ],
       },
       {
         id: 'Web_Comic_Reader',
         name: 'Web Comic Reader',
-        icon: '/static/img/app_icons/comic_reader.png',
+        icon: 'app_icons/comic_reader.png',
         link: 'https://github.com/sampullman/android--Web-Comic-Reader',
         description: ' is an android app with a simple interface for reading some of the most popular comics on the web.',
         features: [
@@ -200,15 +202,15 @@ export default {
           'Direct link to the author\'s merchandise store',
         ],
         screenshots: [
-          'static/img/Web_Comic_Reader/screenshot0.png',
-          'static/img/Web_Comic_Reader/screenshot1.png',
-          'static/img/Web_Comic_Reader/screenshot2.png',
+          'Web_Comic_Reader/screenshot0.png',
+          'Web_Comic_Reader/screenshot1.png',
+          'Web_Comic_Reader/screenshot2.png',
         ],
       },
       {
         id: 'Number_Slide',
         name: 'Number Slide',
-        icon: '/static/img/app_icons/number_slide.png',
+        icon: 'app_icons/number_slide.png',
         link: 'https://github.com/sampullman/android--Number-Slider',
         description: ' is an implementation of the 8-puzzle and 15-puzzle for android. The app was written as a '
                   + 'demonstration for a few of android\'s backwards compatibilty libraries. It contains '
@@ -220,10 +222,10 @@ export default {
           'A file browser is included to select any image as the background',
         ],
         screenshots: [
-          'static/img/Number_Slide/screenshot0.png',
-          'static/img/Number_Slide/screenshot1.png',
-          'static/img/Number_Slide/screenshot2.png',
-          'static/img/Number_Slide/screenshot3.png',
+          'Number_Slide/screenshot0.png',
+          'Number_Slide/screenshot1.png',
+          'Number_Slide/screenshot2.png',
+          'Number_Slide/screenshot3.png',
         ],
       },
     ];
@@ -243,7 +245,7 @@ export default {
 
 #content::after {
   display: none;
-  content: url('/static/img/portfolio/right_btn_pressed.png') url('/static/img/portfolio/left_btn_pressed.png');
+  content: url('~@/static/img/portfolio/right_btn_pressed.png') url('~@/static/img/portfolio/left_btn_pressed.png');
 }
 
 #app_left {
@@ -291,11 +293,15 @@ export default {
   font-weight: bold;
 }
 
-.app_text {
+.app_content .app_text {
   line-height: 140%;
   font-size: 15px;
   margin: 0;
-  padding: 10px 10px 8px 10px;
+  padding: 16px 10px 8px 16px;
+  .app_text_desc {
+    padding-left: 16px;
+    max-width: 700px;
+  }
 }
 
 #app_viewer {
@@ -312,17 +318,17 @@ export default {
     background-size: contain;
   }
   #img_nav_left {
-    background-image: url("/static/img/portfolio/left_btn.png");
+    background-image: url('~@/static/img/portfolio/left_btn.png');
 
     &:hover {
-      background-image: url("/static/img/portfolio/left_btn_pressed.png");
+      background-image: url('~@/static/img/portfolio/left_btn_pressed.png');
     }
   }
   #img_nav_right {
-    background-image: url("/static/img/portfolio/right_btn.png");
+    background-image: url('~@/static/img/portfolio/right_btn.png');
 
     &:hover {
-      background-image: url("/static/img/portfolio/right_btn_pressed.png");
+      background-image: url('~@/static/img/portfolio/right_btn_pressed.png');
     }
   }
 }
@@ -332,7 +338,7 @@ export default {
   float: left;
   height: 460px;
   width: 170px;
-  background-image: url("/static/img/portfolio/phone.png");
+  background-image: url('~@/static/img/portfolio/phone.png');
   background-repeat: no-repeat;
   background-size: contain;
   padding: 40px;

@@ -2,15 +2,15 @@
 const keyhandler = {
   fns: {},
 
-  Control: () => (
-    keyhandler.ShiftLeft || keyhandler.ShiftRight
-  ),
+  Control() {
+    return keyhandler.ShiftLeft || keyhandler.ShiftRight;
+  },
 
-  Shift: () => (
-    keyhandler.ControlLeft || keyhandler.ControlRight
-  ),
+  Shift() {
+    return keyhandler.ControlLeft || keyhandler.ControlRight;
+  },
 
-  keydownHandler: (event) => {
+  keydownHandler(event) {
     const key = event.code;
     keyhandler[key] = true;
 
@@ -24,15 +24,15 @@ const keyhandler = {
     return true;
   },
 
-  keyupHandler: (event) => {
+  keyupHandler(event) {
     keyhandler[event.code] = false;
   },
 
-  start: () => {
+  start() {
     document.addEventListener('keydown', this.keydownHandler, true);
     document.addEventListener('keyup', this.keyupHandler, true);
   },
-  stop: () => {
+  stop() {
     document.removeEventListener('keydown', this.keydownHandler, true);
     document.removeEventListener('keyup', this.keyupHandler, true);
   },

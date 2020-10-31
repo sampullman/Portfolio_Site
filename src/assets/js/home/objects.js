@@ -47,7 +47,7 @@ function Ball(B) {
   B.draw = (c) => {
     c.beginPath();
     c.arc(B.x, B.y, B.radius, 0, 2 * Math.PI);
-    c.fillStyle = this.color;
+    c.fillStyle = B.color;
     c.fill();
     c.closePath();
     /*
@@ -121,10 +121,9 @@ function Ball(B) {
 function Block(B) {
   B.active = true;
   B.powerup = B.powerup || Powerups.NONE;
-  const self = this;
 
   B.draw = (c) => {
-    self.sprite.draw(c, self.x, self.y);
+    B.sprite.draw(c, B.x, B.y);
   };
 
   B.handleHit = (balls, other) => {
@@ -134,7 +133,7 @@ function Block(B) {
         other.randomSize();
       }
     }
-    self.active = false;
+    B.active = false;
   };
   return B;
 }
@@ -144,23 +143,22 @@ function SuperBlock(B) {
   B.active = true;
   B.state = 0;
   B.num_states = B.sprites.length;
-  const self = this;
 
   B.draw = (c) => {
-    self.sprites[self.state].draw(c, self.x, self.y);
+    B.sprites[B.state].draw(c, B.x, B.y);
   };
 
   B.handleHit = (balls, _other) => {
     // crack.play();
-    self.state += 1;
-    if(self.state >= self.num_states) {
-      self.active = false;
+    B.state += 1;
+    if(B.state >= B.num_states) {
+      B.active = false;
       switch(B.powerup) {
       case Powerups.EXTRA_BALL:
         balls.push(Ball({
           speed: 6,
-          x: self.x,
-          y: self.y,
+          x: B.x,
+          y: B.y,
         }));
         break;
       default:

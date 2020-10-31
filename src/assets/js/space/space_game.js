@@ -78,6 +78,7 @@ function load() {
 
 function setupGame() {
   world = worlds[worldInd];
+  console.log('SETUP', gameState);
   gameState.level = world[levelInd];
   gameState.attackTimer = gameState.level.attack_freq(0);
   gameState.level.load(c);
@@ -229,11 +230,11 @@ function gameOver(won) {
   c.fillText('Submit High Score', C_WIDTH / 2 - s1[0] / 2, C_HEIGHT / 2 + 125);
   b1.setClickListener(() => {
     display('#submit_highscore', 'none');
-    this.active = false; b2.active = false; restartGame();
+    b1.active = false; b2.active = false; restartGame();
   });
   b2.setClickListener(() => {
     display('#submit_highscore', 'none');
-    this.active = false; b1.active = false; continueGame();
+    b2.active = false; b1.active = false; continueGame();
   });
   gameState.buttons.push(b1);
   if(!won) gameState.buttons.push(b2);
@@ -303,7 +304,7 @@ function showStart() {
       setInterval(() => { playSound(sounds.ambient) }, 4000);
       gameState.mode = GameMode.SINGLE;
       continueGame();
-      this.active = false;
+      b2.active = false;
       b1.active = false;
       b3.active = false;
     });
@@ -318,7 +319,7 @@ function showStart() {
       b2.active = false;
     }
     b3.active = false;
-    this.active = false;
+    b1.active = false;
     gameState.mode = GameMode.SINGLE;
     restartGame();
   });
@@ -330,7 +331,7 @@ function showStart() {
     if(b2) {
       b2.active = false;
     }
-    this.active = false;
+    b3.active = false;
     gameState.mode = GameMode.EDIT;
     levelEditor();
   });

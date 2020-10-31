@@ -328,7 +328,7 @@ function Enemy(E) {
     E.notifyEscorts();
   };
   E.update = () => {
-    switch(self.mode) {
+    switch(E.mode) {
     case EnemyMode.INIT: {
       const dir = E.initPath.next();
       E.x += dir.x;

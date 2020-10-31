@@ -5,7 +5,7 @@
       id="game"
       width="485"
       height="565"
-      src="/#/game/space/"
+      src="/game/space/"
     />
     <div style="clear: both;" />
     <div class="instructions section">

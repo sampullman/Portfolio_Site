@@ -3,7 +3,7 @@ function Sprite(image, width, height, sourceX, sourceY) {
   const backupWidth = width || image.width;
   const backupHeight = height || image.height;
   return {
-    draw: (c, x, y, w, h) => {
+    draw(c, x, y, w, h) {
       c.drawImage(
         image,
         sourceX || 0,
@@ -16,7 +16,7 @@ function Sprite(image, width, height, sourceX, sourceY) {
         h || backupHeight,
       );
     },
-    fill: (c, x, y, w, h, repeat) => {
+    fill(c, x, y, w, h, repeat) {
       const pattern = c.createPattern(image, repeat || 'repeat');
       c.fillColor(pattern);
       c.fillRect(x, y, w, h);
@@ -26,33 +26,28 @@ function Sprite(image, width, height, sourceX, sourceY) {
   };
 }
 
-Sprite.load = (url, w, h, loadedCallback) => {
+function SpriteLoader(name, w, h, callback) {
   const img = new Image();
   const proxy = { loaded: false };
-  const self = this;
 
   img.onload = () => {
-    const tile = Sprite(self, w, h);
+    const tile = Sprite(img, w, h);
 
     Object.assign(proxy, tile);
     proxy.loaded = true;
-    if(loadedCallback) {
-      loadedCallback(proxy);
+    if(callback) {
+      callback(proxy);
     }
   };
   img.onerror = () => {
-    console.log(`Load fail: ${url}`);
-    if(loadedCallback) {
-      loadedCallback(null);
+    console.log(`Load fail: /static/img/${name}`);
+    if(callback) {
+      callback(null);
     }
   };
-  img.src = url;
+  img.src = require(`@/static/img/${SpriteLoader.imageRoot}${name}`); // eslint-disable-line
   return proxy;
-};
-
-function NewSprite(name, w, h, callback) {
-  return Sprite.load(NewSprite.imageRoot + name, w, h, callback);
 }
-NewSprite.imageRoot = '';
+SpriteLoader.imageRoot = '';
 
-export { NewSprite as Sprite }; // eslint-disable-line
+export { SpriteLoader as Sprite }; // eslint-disable-line
