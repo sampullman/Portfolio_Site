@@ -78,7 +78,6 @@ function load() {
 
 function setupGame() {
   world = worlds[worldInd];
-  console.log('SETUP', gameState);
   gameState.level = world[levelInd];
   gameState.attackTimer = gameState.level.attack_freq(0);
   gameState.level.load(c);

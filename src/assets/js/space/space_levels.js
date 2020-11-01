@@ -10,12 +10,12 @@ import { gameState } from './space_state';
 const { enemies, enemyData } = gameState;
 
 const levels = {
-  init: (c) => {
+  init(c) {
     levels.eCols = 8;
     levels.yDiff = gameState.enemyData.height * 1.6;
     levels.xDiff = (c.width - gameState.enemyData.width) / levels.eCols;
   },
-  loadEnemies: (enemyObjs, shotFreqs, initX, initY, xDiff, yDiff, InitPathFn, speeds) => {
+  loadEnemies(enemyObjs, shotFreqs, initX, initY, xDiff, yDiff, InitPathFn, speeds) {
     let enemyY = initY;
     for(let i = 0; i < enemyObjs.length; i += 1) {
       let x = initX;
@@ -31,7 +31,7 @@ const levels = {
       enemyY += yDiff;
     }
   },
-  setupEnemies: (extras, active) => {
+  setupEnemies(extras, active) {
     gameState.enemies = extras.concat(gameState.enemies);
     gameState.enemies.forEach((e) => { e.initPath.init() });
     gameState.activeEnemies = active;
@@ -55,7 +55,7 @@ const levels = {
         null,
         gameState.enemies[3],
       );
-      levels.setupEnemies([h], gameState.enemies.slice(gameState.enemies.length - levels.eCols, gameState.enemies.length));
+      levels.setupEnemies([h], gameState.enemies);
     },
   },
   level2: {

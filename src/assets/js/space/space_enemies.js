@@ -34,13 +34,13 @@ const Enemy1Obj = {
   type: 1,
   score: 10,
   health: 1,
-  shootFn: () => (
-    () => {}
-  ),
-  instantiate: (x, y, w, h, shotFreq, InitPathFn, speed, parent) => (
-    initEnemy(Enemy1Obj.sprite, x, y, w, h, Enemy1Obj.score, Enemy1Obj.health, InitPathFn,
-      Enemy1Obj.AttackPath, Enemy1Obj.shootFn, shotFreq, speed, parent)
-  ),
+  shootFn() {
+    return () => {};
+  },
+  instantiate(x, y, w, h, shotFreq, InitPathFn, speed, parent) {
+    return initEnemy(Enemy1Obj.sprite, x, y, w, h, Enemy1Obj.score, Enemy1Obj.health, InitPathFn,
+      Enemy1Obj.AttackPath, Enemy1Obj.shootFn, shotFreq, speed, parent);
+  },
   AttackPath: StandardAttackPath,
 };
 
@@ -48,7 +48,7 @@ const Enemy2Obj = {
   type: 2,
   score: 20,
   health: 1,
-  shootFn: (E, freq) => {
+  shootFn(E, freq) {
     let shotTimer = Math.random() * freq;
     return () => {
       shotTimer -= 1;
@@ -64,10 +64,10 @@ const Enemy2Obj = {
       }
     };
   },
-  instantiate: (x, y, w, h, shotFreq, InitPathFn, speed, parent) => (
-    initEnemy(Enemy2Obj.sprite, x, y, w, h, Enemy2Obj.score, Enemy2Obj.health, InitPathFn,
-      Enemy2Obj.AttackPath, Enemy2Obj.shootFn, shotFreq, speed, parent)
-  ),
+  instantiate(x, y, w, h, shotFreq, InitPathFn, speed, parent) {
+    return initEnemy(Enemy2Obj.sprite, x, y, w, h, Enemy2Obj.score, Enemy2Obj.health, InitPathFn,
+      Enemy2Obj.AttackPath, Enemy2Obj.shootFn, shotFreq, speed, parent);
+  },
   AttackPath: StandardAttackPath,
 };
 
@@ -75,7 +75,7 @@ const Enemy3Obj = {
   type: 3,
   score: 50,
   health: 1,
-  shootFn: (E, freq) => {
+  shootFn(E, freq) {
     let shotTimer = freq;
     let left = true;
     return () => {
@@ -93,10 +93,10 @@ const Enemy3Obj = {
       }
     };
   },
-  instantiate: (x, y, w, h, shotFreq, InitPathFn, speed, parent) => (
-    initEnemy(Enemy3Obj.sprite, x, y, w, h, Enemy3Obj.score, Enemy3Obj.health, InitPathFn,
-      Enemy3Obj.AttackPath, Enemy3Obj.shootFn, shotFreq, speed, parent)
-  ),
+  instantiate(x, y, w, h, shotFreq, InitPathFn, speed, parent) {
+    return initEnemy(Enemy3Obj.sprite, x, y, w, h, Enemy3Obj.score, Enemy3Obj.health, InitPathFn,
+      Enemy3Obj.AttackPath, Enemy3Obj.shootFn, shotFreq, speed, parent);
+  },
   AttackPath: StandardAttackPath,
 };
 
@@ -104,7 +104,7 @@ const Enemy4Obj = {
   type: 4,
   score: 100,
   health: 1,
-  shootFn: (E, freq) => {
+  shootFn(E, freq) {
     let shotTimer = Math.random() * freq;
     return () => {
       shotTimer -= 1;
@@ -126,7 +126,7 @@ const Enemy4Obj = {
       }
     };
   },
-  instantiate: (x, y, w, h, shotFreq, InitPathFn, parent, child) => {
+  instantiate(x, y, w, h, shotFreq, InitPathFn, parent, child) {
     const enemy = initEnemy(Enemy4Obj.sprite, x, y, w, h, Enemy4Obj.score, Enemy4Obj.health, InitPathFn,
       Enemy4Obj.AttackPath, Enemy4Obj.shootFn, shotFreq, 1, parent);
 
@@ -142,7 +142,7 @@ const Enemy5Obj = {
   type: 5,
   score: 250,
   health: 3,
-  shootFn: (E, freq) => {
+  shootFn(E, freq) {
     const cannonFn = Enemy3Obj.shootFn(E, freq);
     let laserTimer = freq;
     return () => {
@@ -157,7 +157,7 @@ const Enemy5Obj = {
       }
     };
   },
-  notifyEscortsFn: (E, escorts) => {
+  notifyEscortsFn(E, escorts) {
     escorts.forEach((escort) => {
       escort.relativeEscortX = escort.x - E.x;
       escort.relativeEscortY = escort.y - E.y;
@@ -174,7 +174,7 @@ const Enemy5Obj = {
       });
     };
   },
-  instantiate: (x, y, w, h, shotFreq, InitPathFn, escorts) => {
+  instantiate(x, y, w, h, shotFreq, InitPathFn, escorts) {
     const enemy = Enemy({
       sprite: Enemy5Obj.sprite,
       x,
@@ -201,7 +201,7 @@ const Enemy6Obj = {
   type: 6,
   score: 300,
   health: 2,
-  shootFn: (E, freq) => {
+  shootFn(E, freq) {
     let laserTimer = freq;
     return () => {
       laserTimer -= 1;
@@ -214,17 +214,19 @@ const Enemy6Obj = {
       }
     };
   },
-  hoverActionFn: (E, freq) => this.shootFn(E, freq),
-  wanderFn: E => (
-    (xWanderSpeed) => {
+  hoverActionFn(E, freq) {
+    return this.shootFn(E, freq);
+  },
+  wanderFn(E) {
+    return (xWanderSpeed) => {
       let newXWanderSpeed = 0.5 * xWanderSpeed * ((gameState.c.width / 2 - 20) / xWanderMax);
       if(E.x > gameState.c.width - E.width || E.x < 0) {
         newXWanderSpeed *= -1;
       }
       E.x += newXWanderSpeed;
-    }
-  ),
-  instantiate: (x, y, w, h, shotFreq, InitPathFn) => {
+    };
+  },
+  instantiate(x, y, w, h, shotFreq, InitPathFn) {
     const enemy = Enemy({
       sprite: Enemy6Obj.sprite,
       x,
@@ -248,7 +250,7 @@ const Enemy7Obj = {
   type: 7,
   score: 200,
   health: 2,
-  shootFn: (E, freq) => {
+  shootFn(E, freq) {
     let timer = Math.random() * freq;
     return () => {
       if(E.y > gameState.c.boundary && E.x > 0 && E.x < gameState.c.width && !E.path.done) {
@@ -261,10 +263,10 @@ const Enemy7Obj = {
       }
     };
   },
-  instantiate: (x, y, w, h, shotFreq, InitPathFn, speed, parent) => (
-    initEnemy(Enemy7Obj.sprite, x, y, w, h, Enemy7Obj.score, Enemy7Obj.health, InitPathFn,
-      Enemy7Obj.AttackPath, Enemy7Obj.shootFn, shotFreq, speed, parent)
-  ),
+  instantiate(x, y, w, h, shotFreq, InitPathFn, speed, parent) {
+    return initEnemy(Enemy7Obj.sprite, x, y, w, h, Enemy7Obj.score, Enemy7Obj.health, InitPathFn,
+      Enemy7Obj.AttackPath, Enemy7Obj.shootFn, shotFreq, speed, parent);
+  },
   AttackPath: AvoidPlayerPath,
 };
 
@@ -272,7 +274,7 @@ const Enemy8Obj = {
   type: 8,
   score: 400,
   health: 5,
-  shootFn: (E, freq) => {
+  shootFn(E, freq) {
     let timer = freq / 5;
     return () => {
       timer -= 1;
@@ -301,7 +303,7 @@ const Enemy8Obj = {
       }
     };
   },
-  instantiate: (x, y, w, h, shotFreq, InitPathFn) => {
+  instantiate(x, y, w, h, shotFreq, InitPathFn) {
     const enemy = Enemy({
       sprite: Enemy8Obj.sprite,
       x,
@@ -325,7 +327,7 @@ const Enemy9Obj = {
   type: 9,
   score: 2000,
   health: 20,
-  shootFn: (E, freq) => {
+  shootFn(E, freq) {
     const bottomEnemies = [Enemy1Obj, Enemy2Obj, Enemy3Obj];
     let timer = freq;
     return () => {
@@ -390,7 +392,7 @@ const Enemy9Obj = {
       }
     };
   },
-  instantiate: (x, y, w, h, shotFreq, InitPathFn) => {
+  instantiate(x, y, w, h, shotFreq, InitPathFn) {
     const enemy = Enemy({
       sprite: Enemy9Obj.sprite,
       x,

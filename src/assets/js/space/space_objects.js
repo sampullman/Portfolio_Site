@@ -80,13 +80,12 @@ function Shot(S) {
   S.mode = ShotMode.NORMAL;
   S.explosionTimer = 0;
   S.sprite = S.sprites[S.mode];
-  const self = this;
   S.inBounds = () => (
     S.x >= 0 && S.x <= gameState.c.width
       && S.y >= 0 && S.y <= gameState.c.height
   );
   S.draw = (c) => {
-    self.sprite.draw(c, self.x, self.y);
+    S.sprite.draw(c, S.x, S.y);
   };
   S.hitEntity = (entity) => {
     switch(S.mode) {
@@ -125,7 +124,9 @@ function Shot(S) {
 
 function replaceActiveEnemy(E) {
   let ind = gameState.activeEnemies.indexOf(E);
-  if(ind === -1) return;
+  if(ind === -1) {
+    return;
+  }
   while(ind !== -1) {
     gameState.activeEnemies.splice(ind, 1);
     ind = gameState.activeEnemies.indexOf(E);
@@ -137,7 +138,7 @@ function replaceActiveEnemy(E) {
       if(seen.indexOf(enemy) !== -1) {
         return;
       }
-      if(!E.active || (gameState.activeEnemies.indexOf(enemy) !== -1)) {
+      if(!enemy.active || (gameState.activeEnemies.indexOf(enemy) !== -1)) {
         seen.push(enemy);
         enemy = enemy.parent;
       } else {
@@ -270,7 +271,6 @@ function Enemy(E) {
   E.mode = E.mode || EnemyMode.INIT;
   E.speed = E.speed || 1;
   E.notifyEscorts = E.notifyEscorts || (() => {});
-  const self = this;
   E.returnPath = () => {
     E.y = 0;
     return new PointPath([new Point(E.x, E.y), new Point(E.startX, E.startY)], [30], 1);
@@ -348,7 +348,7 @@ function Enemy(E) {
       }
       break;
     case EnemyMode.ATTACK: {
-      const dir = self.path.next();
+      const dir = E.path.next();
       E.x += dir.x;
       E.y += dir.y;
       if(entityCollision(E, gameState.player)) {
@@ -379,24 +379,24 @@ function Enemy(E) {
   };
   // TODO -- move this functionality to editor
   E.draw = (c) => {
-    self.sprite.draw(c, self.x, self.y, self.width, self.height);
+    E.sprite.draw(c, E.x, E.y, E.width, E.height);
     if(gameState.mode === GameMode.EDIT) {
-      if(self.squared) {
+      if(E.squared) {
         c.strokeStyle = '#DDD';
-        c.strokeRect(self.x, self.y, self.width, self.height);
+        c.strokeRect(E.x, E.y, E.width, E.height);
       }
       c.strokeStyle = '#0F0';
-      if(self.editorActive || gameState.activeEnemies.indexOf(self) !== -1) {
+      if(E.editorActive || gameState.activeEnemies.indexOf(E) !== -1) {
         c.beginPath();
-        c.arc(self.x + self.width / 2, self.y + self.height / 2, 1.2 * (self.width / 2), 0, 2 * Math.PI);
+        c.arc(E.x + E.width / 2, E.y + E.height / 2, 1.2 * (E.width / 2), 0, 2 * Math.PI);
         c.stroke();
         c.closePath();
       }
-      let next = self.parent;
+      let next = E.parent;
       while(next) {
         if(next.active) {
           c.beginPath();
-          c.moveTo(self.x + self.width / 2, self.y + self.height / 2);
+          c.moveTo(E.x + E.width / 2, E.y + E.height / 2);
           c.lineTo(next.x + next.width / 2, next.y + next.height / 2);
           c.closePath();
           c.stroke();
@@ -408,20 +408,20 @@ function Enemy(E) {
     }
   };
   E.entityHit = (dmg) => {
-    self.health -= dmg || 1;
-    if(self.health <= 0) {
+    E.health -= dmg || 1;
+    if(E.health <= 0) {
       playSound(sounds.enemyExp);
       const rand = Math.random();
       if(rand < 0.02) {
-        gameState.powerups.push(powerupObjs[0].instantiate(self.x, self.y));
+        gameState.powerups.push(powerupObjs[0].instantiate(E.x, E.y));
       } else if(rand < 0.05) {
-        gameState.powerups.push(powerupObjs[1].instantiate(self.x, self.y));
+        gameState.powerups.push(powerupObjs[1].instantiate(E.x, E.y));
       } else if(rand < 0.06) {
-        gameState.powerups.push(powerupObjs[2].instantiate(self.x, self.y));
+        gameState.powerups.push(powerupObjs[2].instantiate(E.x, E.y));
       }
       gameState.score += E.score;
       E.active = false;
-      gameState.explosions.push(new Explosion(self.x, self.y, self.width, self.height));
+      gameState.explosions.push(new Explosion(E.x, E.y, E.width, E.height));
       replaceActiveEnemy(E);
     }
   };
