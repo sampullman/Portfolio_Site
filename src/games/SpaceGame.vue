@@ -23,7 +23,8 @@ onUnmounted(() => {
 
 <style lang="postcss">
 #wrap {
-  text-align: center;
+  display: flex;
+  justify-content: center;
 }
 #canvas {
   position: relative;
