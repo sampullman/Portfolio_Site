@@ -7,7 +7,7 @@
 
 <script lang="ts" setup>
 import { onMounted, nextTick, onUnmounted } from 'vue'
-import { loadGame, startGame, pause } from '/src/assets/js/space/space_game.js'
+import { loadGame, pause } from '/src/assets/js/space/space_game.js'
 
 onMounted(async () => {
   console.log('Starting the game')
@@ -22,6 +22,9 @@ onUnmounted(() => {
 </script>
 
 <style lang="postcss">
+#wrap {
+  text-align: center;
+}
 #canvas {
   position: relative;
   float: left;

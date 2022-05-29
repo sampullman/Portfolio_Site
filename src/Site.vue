@@ -11,6 +11,8 @@
 import Header from './components/Header.vue'
 </script>
 
-<style lang="postcss">
-@import '/src/assets/css/main.postcss';
+<style lang="postcss" scoped>
+#app {
+  margin-top: 72px;
+}
 </style>
