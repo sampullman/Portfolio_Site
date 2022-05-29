@@ -1,74 +1,62 @@
 <template>
-<div id="header">
-  <div id="header_text">
-    <h1>Sam Pullman</h1>
-    <h2>Personal Site</h2>
-  </div>
-  <div id="contact_icons">
-    <div
-      v-for="social in $options.social"
-      :key="social.icon"
-      class="contact_icon_holder"
-    >
-      <a id="Email" target="_blank" :href="social.href">
-        <svgicon :name="social.icon" />
-      </a>
+  <div id="header">
+    <div id="header_text">
+      <h1>Sam Pullman</h1>
+      <h2>Personal Site</h2>
     </div>
+    <div id="contact_icons">
+      <div v-for="s in social" :key="s.icon" class="contact_icon_holder">
+        <a id="Email" target="_blank" :href="s.href">
+          <img :src="s.icon" />
+        </a>
+      </div>
+    </div>
+    <div id="navlinks" @mouseover="notHover = false" @mouseleave="notHover = true">
+      <ul>
+        <li
+          v-for="link in links"
+          :id="link.label.toLowerCase()"
+          :key="link.label"
+          class="navlink"
+          :class="{ active: notHover && link.route === $route.path }"
+        >
+          <router-link :to="link.route">
+            {{ link.label }}
+          </router-link>
+        </li>
+      </ul>
+    </div>
+    <hr />
   </div>
-  <div
-    id="navlinks"
-    @mouseover="notHover = false"
-    @mouseleave="notHover = true"
-  >
-    <ul>
-      <li
-        v-for="link in $options.links"
-        :id="link.label | lowercase"
-        :key="link.label"
-        class="navlink"
-        :class="{ active: notHover && link.route === $route.path }"
-      >
-        <router-link :to="link.route">
-          {{ link.label }}
-        </router-link>
-      </li>
-    </ul>
-  </div>
-  <hr>
-</div>
 </template>
 
-<script>
-import '@/icons';
+<script lang="ts" setup>
+import { ref } from 'vue'
+import Envelope from '/src/static/icons/envelope.svg'
+import Android from '/src/static/icons/android.svg'
+import Github from '/src/static/icons/github.svg'
 
-export default {
-  name: 'portfolio-header',
-  data() {
-    return {
-      notHover: true,
-    };
+const links = [
+  { label: 'HOME', route: '/' },
+  { label: 'PORTFOLIO', route: '/portfolio' },
+  { label: 'GAMES', route: '/games' },
+  { label: 'RESUME', route: '/resume' },
+]
+
+const social = [
+  { icon: Envelope, href: 'mailto:sampullman@gmail.com' },
+  { icon: Github, href: 'https://github.com/sampullman' },
+  {
+    icon: Android,
+    href: 'https://play.google.com/store/search?q=threeDBJ&c=apps',
   },
-  created() {
-    this.$options.links = [
-      { label: 'HOME', route: '/' },
-      { label: 'PORTFOLIO', route: '/portfolio' },
-      { label: 'GAMES', route: '/games' },
-      { label: 'RESUME', route: '/resume' },
-    ];
-    this.$options.social = [
-      { icon: 'envelope', href: 'mailto:sampullman@gmail.com' },
-      { icon: 'github', href: 'https://github.com/sampullman' },
-      {
-        icon: 'android',
-        href: 'https://play.google.com/store/search?q=threeDBJ&c=apps',
-      },
-    ];
-  },
-};
+]
+
+const notHover = ref(true)
 </script>
 
-<style lang="scss" scoped>
-@import '@/assets/scss/colors.scss';
+<style lang="postcss" scoped>
+@import '/src/assets/css/colors.postcss';
 
 #contact_icons {
   margin: 48px 0;
@@ -78,7 +66,7 @@ export default {
   display: inline-block;
   padding: 0 15px 0 15px;
 
-  .svg-icon {
+  img {
     fill: $text-color;
     width: 40px;
     height: 40px;
@@ -112,7 +100,7 @@ hr {
 }
 
 #navlinks {
-  font-family: "Arial black", sans-serif;
+  font-family: 'Arial black', sans-serif;
   font-size: 13px;
   color: black;
   cursor: pointer;

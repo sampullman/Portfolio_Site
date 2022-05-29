@@ -1,32 +1,16 @@
-
 <template>
-<div id="app">
-  <div class="header">
-    <Header />
+  <div id="app">
+    <div class="header">
+      <Header />
+    </div>
+    <router-view />
   </div>
-  <router-view />
-</div>
 </template>
 
-<script>
-import Header from './components/Header';
-
-export default {
-  name: 'site',
-  components: {
-    Header,
-  },
-};
+<script lang="ts" setup>
+import Header from './components/Header.vue'
 </script>
 
-<style lang="scss">
-@import 'main';
-
-.svg-icon {
-  display: inline-block;
-  color: inherit;
-  vertical-align: middle;
-  fill: none;
-  stroke: #aaa;
-}
+<style lang="postcss">
+@import '/src/assets/css/main.postcss';
 </style>
